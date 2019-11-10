@@ -3,8 +3,12 @@ package com.cniekirk.traintimes
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), HasAndroidInjector {
@@ -15,22 +19,13 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        setSupportActionBar(bottom_bar)
+        setSupportActionBar(toolbar)
 
-        bottom_bar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.item_settings -> {
-                    true
-                }
-                else -> false
-            }
-        }
-    }
+        val host: NavHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
+        val navController = host.navController
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.navigation_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+        navigation_bar.setupWithNavController(navController)
     }
 
     override fun androidInjector() = dispatchingAndroidInjector

@@ -4,4 +4,5 @@
     <string name="search">Search</string>
     <string name="nearby">Nearby</string>
     <string name="add_train">Add Train</string>
+    <string name="trains">Trains</string>
 </resources>

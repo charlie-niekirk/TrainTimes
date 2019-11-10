@@ -37,12 +37,9 @@ class HomeFragment : Fragment(), Injectable {
             .get(HomeViewModel::class.java)
         viewModel.services.observe(this, Observer { service ->
             service.forEach {
-                message.append("\n${it.scheduledDeparture} : ${it.estimatedDeparture}")
+                //message.append("\n${it.scheduledDeparture} : ${it.estimatedDeparture}")
             }
         })
-        get_dep_board.setOnClickListener {
-            viewModel.getDepartureBoard("WAT")
-        }
     }
 
 }
