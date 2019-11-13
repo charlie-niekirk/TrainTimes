@@ -8,14 +8,18 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.cniekirk.traintimes.ui.main.HomeFragment"
-        android:label="main_fragment"
-        tools:layout="@layout/main_fragment" >
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_nearbyFragment"
-            app:destination="@id/nearbyFragment" />
+            app:destination="@id/nearbyFragment"/>
     </fragment>
     <fragment
         android:id="@+id/nearbyFragment"
         android:name="com.cniekirk.traintimes.ui.nearby.NearbyFragment"
-        android:label="NearbyFragment" />
+        android:label="NearbyFragment">
+        <action
+            android:id="@+id/action_nearbyFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

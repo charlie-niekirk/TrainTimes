@@ -2,30 +2,37 @@ package com.cniekirk.traintimes
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import kotlinx.android.synthetic.main.main_activity.*
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), HasAndroidInjector {
+
+    val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val host: NavHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
-        val navController = host.navController
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        navigation_bar.setupWithNavController(navController)
+        findViewById<BottomNavigationView>(R.id.navigation_bar)
+            .setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.nearbyFragment -> action_btn.hide()
+                R.id.homeFragment -> action_btn.show()
+            }
+        }
     }
 
     override fun androidInjector() = dispatchingAndroidInjector

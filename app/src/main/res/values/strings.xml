@@ -5,4 +5,5 @@
     <string name="nearby">Nearby</string>
     <string name="add_train">Add Train</string>
     <string name="trains">Trains</string>
+    <string name="station_transition_name">station_selector</string>
 </resources>
