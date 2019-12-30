@@ -1,5 +1,8 @@
 package com.cniekirk.traintimes.domain
 
+import android.util.Log
+import retrofit2.Call
+
 /**
  * An Either monad implemented in kotlin
  * @link https://github.com/android10/Android-CleanArchitecture-Kotlin/blob/master/app/src/main/kotlin/com/fernandocejas/sample/core/functional/Either.kt

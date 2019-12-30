@@ -14,13 +14,14 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
  * @author Charlie Niekirk
  */
 @Module(includes = [ViewModelModule::class])
-class NetworkModule {
+class NetworkRailModule {
 
     @Provides
     @Singleton
@@ -30,6 +31,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    @Named("NREOk")
     fun provideOkHttpClient(cache: Cache): OkHttpClient {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BODY
@@ -42,7 +44,8 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: dagger.Lazy<OkHttpClient>, tikXml: TikXml): Retrofit {
+    @Named("NRE")
+    fun provideRetrofit(@Named("NREOk") okHttpClient: dagger.Lazy<OkHttpClient>, tikXml: TikXml): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://lite.realtime.nationalrail.co.uk/")
             .callFactory { okHttpClient.get().newCall(it) }
@@ -62,7 +65,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNreService(retrofit: Retrofit): NREService = retrofit.create(NREService::class.java)
+    fun provideNreService(@Named("NRE") retrofit: Retrofit): NREService = retrofit.create(NREService::class.java)
 
     @Provides
     @Singleton

@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -29,8 +29,6 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.nearbyFragment -> action_btn.hide()
-                R.id.homeFragment -> action_btn.show()
             }
         }
     }

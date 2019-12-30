@@ -38,9 +38,7 @@ class HomeFragment : Fragment(), Injectable {
                 Log.d(this::class.java.simpleName, "Hello")
             }
         })
-        source_station.setOnClickListener {
-
-        }
+        viewModel.getCrsCodes()
     }
 
 }
