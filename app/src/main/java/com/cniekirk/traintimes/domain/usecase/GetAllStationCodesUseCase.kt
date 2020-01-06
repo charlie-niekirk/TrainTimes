@@ -5,8 +5,8 @@ import com.cniekirk.traintimes.repo.CrsRepository
 import javax.inject.Inject
 
 class GetAllStationCodesUseCase @Inject constructor(private val crsRepository: CrsRepository)
-    :BaseUseCase<List<CRS>, Any>() {
+    :BaseUseCase<List<CRS>, Unit?>() {
 
-    override suspend fun run(params: Any) = crsRepository.getCrsCodes()
+    override suspend fun run(params: Unit?) = crsRepository.getCrsCodes()
 
 }

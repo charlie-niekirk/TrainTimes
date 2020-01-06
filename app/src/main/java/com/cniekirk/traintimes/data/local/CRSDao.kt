@@ -11,7 +11,7 @@ import com.cniekirk.traintimes.data.local.model.CRS
 interface CRSDao {
 
     @Query("SELECT * FROM crscodes")
-    abstract fun getCrsCodes(): LiveData<List<CRS>>
+    fun getCrsCodes(): List<CRS>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(crsCodes: List<CRS>)

@@ -6,6 +6,6 @@ import com.cniekirk.traintimes.domain.Failure
 
 interface CrsRepository {
 
-    fun getCrsCodes(): Either<Failure, List<CRS>>
+    fun getCrsCodes(query: String = ""): Either<Failure, List<CRS>>
 
 }

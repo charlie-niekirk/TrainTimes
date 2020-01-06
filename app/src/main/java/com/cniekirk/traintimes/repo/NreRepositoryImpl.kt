@@ -15,14 +15,15 @@ import javax.inject.Singleton
 
 @Singleton
 class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,
-                                            private val nreService: NREService,
-                                            private val tikXml: TikXml): NreRepository {
+                                            private val nreService: NREService): NreRepository {
 
-    override fun getDeparturesAtStation(station: String): Either<Failure, GetStationBoardResult> {
+    override fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult> {
 
         val body = Body(GetDepBoardWithDetailsRequest(
             numRows = NumRows(numRows = "10"),
             crs = Crs(crs = station),
+            filterCrs = FilterCrs(filterCrs = destination),
+            filterType = FilterType(filterType = "to"),
             timeOffset = TimeOffset(timeOffset = "0"),
             timeWindow = TimeWindow(timeWindow = "0")))
         val envelope = Envelope(header = Header(AccessToken()), body = body)

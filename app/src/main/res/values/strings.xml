@@ -6,4 +6,10 @@
     <string name="add_train">Add Train</string>
     <string name="trains">Trains</string>
     <string name="station_transition_name">station_selector</string>
+    <string name="departing_from">Departing From</string>
+    <string name="arriving_at">Arriving At (Optional)</string>
+    <string name="find_trains">Find Trains</string>
+    <string name="dep_search_transition">depStationTransition</string>
+    <string name="favourites">Favourites</string>
+    <string name="station_search_hint">London Waterloo</string>
 </resources>

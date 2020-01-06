@@ -1,7 +1,5 @@
 package com.cniekirk.traintimes.repo
 
-import android.util.Log
-import com.cniekirk.traintimes.data.local.AppDb
 import com.cniekirk.traintimes.data.local.CRSDao
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.data.remote.CRSService
@@ -17,14 +15,18 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                                             private val crsService: CRSService,
                                             private val crsDao: CRSDao): CrsRepository {
 
-    override fun getCrsCodes(): Either<Failure, List<CRS>> {
+    override fun getCrsCodes(query: String): Either<Failure, List<CRS>> {
 
-        // Access DB first
-        crsDao.getCrsCodes().value?.let {
-            // DB has data
-            return Either.Right(it)
-        } ?: run {
-            return when (networkHandler.isConnected) {
+
+        return if (crsDao.getCrsCodes().isNotEmpty()) {
+            val codes = crsDao.getCrsCodes()
+            val matches = if (query.isNotEmpty()) {
+                codes.filter { crs -> crs.crs.contains(query, true)
+                    .or(crs.crs.contains(query, true)) }
+            } else { codes }
+            Either.Right(matches)
+        } else {
+            when (networkHandler.isConnected) {
                 true -> request(crsService.getCrsCodes()) { saveCrsCodes(it) }
                 false, null -> Either.Left(Failure.NetworkConnectionError())
             }
@@ -36,10 +38,10 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         val rows: List<Map<String, String>> = csvReader().readAllWithHeader(responseBody.string())
         crsDao.insertAll(rows.map {
-            CRS(it.getValue("Station Name"), it.getValue("CRS Code"))
+            CRS(it.getValue("CRS Code"), it.getValue("Station Name"))
         })
 
-        return crsDao.getCrsCodes().value!!
+        return crsDao.getCrsCodes()
 
     }
 

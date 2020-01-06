@@ -6,6 +6,6 @@ import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 
 interface NreRepository {
 
-    fun getDeparturesAtStation(station: String): Either<Failure, GetStationBoardResult>
+    fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult>
 
 }

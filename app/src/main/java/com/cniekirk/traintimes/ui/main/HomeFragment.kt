@@ -1,7 +1,6 @@
 package com.cniekirk.traintimes.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.di.Injectable
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -33,12 +35,29 @@ class HomeFragment : Fragment(), Injectable {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(HomeViewModel::class.java)
         viewModel.services.observe(this, Observer { service ->
-            service.forEach {
-                //message.append("\n${it.scheduledDeparture} : ${it.estimatedDeparture}")
-                Log.d(this::class.java.simpleName, "Hello")
-            }
+            val depAdapter = DepatureListAdapter(service)
+            home_services_list.adapter = depAdapter
+            depAdapter.notifyDataSetChanged()
         })
-        viewModel.getCrsCodes()
+        viewModel.depStation.observe(this, Observer {
+            search_dep_text.text = it.stationName
+        })
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        home_services_list.layoutManager = LinearLayoutManager(requireContext())
+        home_services_list.adapter = DepatureListAdapter(emptyList())
+        search_select_dep_station.setOnClickListener {
+            val extras = FragmentNavigatorExtras(search_select_dep_station
+                    to getString(R.string.dep_search_transition))
+            view.findNavController().navigate(R.id.depStationSearchFragment, null, null, extras)
+        }
+        search_select_dest_station.setOnClickListener {
+
+        }
+        search_button.setOnClickListener { viewModel.getDepartures() }
     }
 
 }

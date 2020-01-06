@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.cniekirk.traintimes.data.local.model.CRS
 
 @Database(entities = [CRS::class],
-    version = 1,
+    version = 2,
     exportSchema = false)
 abstract class AppDb: RoomDatabase() {
 
@@ -29,6 +29,7 @@ abstract class AppDb: RoomDatabase() {
         // https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
         private fun buildDatabase(context: Context): AppDb {
             return Room.databaseBuilder(context, AppDb::class.java, "crs-codes")
+                .fallbackToDestructiveMigration()
                 .build()
         }
     }

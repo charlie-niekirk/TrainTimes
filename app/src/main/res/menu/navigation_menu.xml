@@ -11,4 +11,8 @@
         android:icon="@drawable/ic_my_location_white"
         android:title="@string/nearby"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/favouritesFragment"
+        android:icon="@drawable/ic_star"
+        android:title="@string/favourites"
+        app:showAsAction="ifRoom"/>
 </menu>

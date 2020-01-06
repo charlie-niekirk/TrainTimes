@@ -13,10 +13,11 @@ import retrofit2.Call
 fun <T, R> request(call: Call<T>, transform: (T) -> R): Either<Failure, R> {
     return try {
         val response = call.execute()
-        Log.d("REPO", "Res: ${response.body().toString()}")
+        Log.d("REPO", "Res: ${response.body()}")
         when (response.isSuccessful) {
             true -> {
                 response.body()?.let {
+                    Log.d("REPO", "Result: ${it}")
                     Either.Right(transform(it))
                 } ?: Either.Left(Failure.ServerError())
             }
