@@ -23,11 +23,15 @@
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/depStationSearchFragment"
-        android:name="com.cniekirk.traintimes.ui.main.DepStationSearchFragment"
-        android:label="DepStationSearchFragment">
+        android:id="@+id/stationSearchFragment"
+        android:name="com.cniekirk.traintimes.ui.main.StationSearchFragment"
+        android:label="StationSearchFragment">
         <action
-            android:id="@+id/action_homeFragment_to_depStationSearchFragment"
-            app:destination="@id/depStationSearchFragment" />
+            android:id="@+id/action_homeFragment_to_stationSearchFragment"
+            app:destination="@id/stationSearchFragment" />
+        <argument
+            android:name="isDeparture"
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
 </navigation>

@@ -1,5 +1,8 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.annotation.SuppressLint
+import android.graphics.Paint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,23 +12,31 @@ import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
 
-class DepatureListAdapter(private val services: List<Service>)
-    : RecyclerView.Adapter<DepatureListAdapter.DepartureListViewHolder>() {
+class DepartureListAdapter(private val services: List<Service>)
+    : RecyclerView.Adapter<DepartureListAdapter.DepartureListViewHolder>() {
 
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        val item = services[position]
+        return item.hashCode().toLong()
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DepatureListAdapter.DepartureListViewHolder {
+    ): DepartureListViewHolder {
         val departureLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.departure_list_item, parent, false)
-        return DepatureListAdapter.DepartureListViewHolder(departureLayout)
+        return DepartureListViewHolder(departureLayout)
     }
 
     override fun getItemCount() = services.size
 
     override fun onBindViewHolder(
-        holder: DepatureListAdapter.DepartureListViewHolder,
+        holder: DepartureListViewHolder,
         position: Int
     ) {
         val platform = if (services[position].platform.isNullOrEmpty()) "TBD" else services[position].platform
@@ -34,6 +45,18 @@ class DepatureListAdapter(private val services: List<Service>)
         holder.departureDestinationName.text = destinations[destinations.size - 1].locationName
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)
         holder.scheduledDepartureTime.text = services[position].scheduledDeparture
+
+        val etd = services[position].estimatedDeparture
+        if (!etd.equals("On Time", ignoreCase = true)) {
+            holder.scheduledDepartureTime.paintFlags =
+                (holder.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
+            holder.estimatedDepartureTime
+                .setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+        } else {
+            holder.estimatedDepartureTime
+                .setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+        }
+
         holder.estimatedDepartureTime.text = services[position].estimatedDeparture
     }
 

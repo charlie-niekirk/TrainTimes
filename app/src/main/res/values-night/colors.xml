@@ -6,4 +6,6 @@
     <color name="colorBackground">#000000</color>
     <color name="colorPrimaryOff">#2000BCD4</color>
     <color name="colorFragSearch">#00BCD4</color>
+    <color name="colorRed">#ef5350</color>
+    <color name="colorGreen">#66BB6A</color>
 </resources>

@@ -1,6 +1,6 @@
 package com.cniekirk.traintimes.di
 
-import com.cniekirk.traintimes.ui.main.DepStationSearchFragment
+import com.cniekirk.traintimes.ui.main.StationSearchFragment
 import com.cniekirk.traintimes.ui.main.HomeFragment
 import com.cniekirk.traintimes.ui.nearby.NearbyFragment
 import dagger.Module
@@ -16,6 +16,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeNearbyFragment(): NearbyFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeDepStationSearchFragment(): DepStationSearchFragment
+    abstract fun contributeDepStationSearchFragment(): StationSearchFragment
 
 }

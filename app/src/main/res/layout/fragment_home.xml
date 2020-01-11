@@ -1,140 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_motion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".ui.main.HomeFragment"
-    android:background="@color/colorBackground">
+    app:layoutDescription="@xml/loading_animation"
+    app:currentState="@id/start">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/home_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/search"
+        android:textColor="@color/colorAccent"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
         app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
-        android:layout_marginStart="8dp"
-        android:text="@string/search"
-        android:textSize="28sp"
-        android:textColor="@color/colorAccent"
-        android:fontFamily="@font/circularstd"
-        tools:text="Search"/>
+        android:layout_marginTop="25dp"
+        tools:text="Search" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_select_dep_station"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/search_select_dest_station"
-        android:layout_marginTop="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.92"
+        android:layout_marginTop="35dp"
         android:background="@drawable/rounded_search_shape"
-        android:transitionName="firstTransition"/>
+        android:transitionName="firstTransition"
+        app:layout_constraintBottom_toTopOf="@id/search_select_dest_station"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_title"
+        app:layout_constraintWidth_percent="0.92" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/search_dep_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
-        app:layout_constraintTop_toTopOf="@id/search_select_dep_station"
-        app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
         android:layout_marginStart="20dp"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/departing_from"
         android:fontFamily="@font/circularstd"
-        android:textSize="16sp"/>
+        android:text="@string/departing_from"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
+        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
+        app:layout_constraintTop_toTopOf="@id/search_select_dep_station" />
 
     <ImageView
         android:id="@+id/search_arrow_dep"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_keyboard_arrow_right"
         android:tint="@color/colorPrimary"
-        app:layout_constraintTop_toTopOf="@id/search_select_dep_station"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
         app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
-        android:layout_marginEnd="8dp" />
+        app:layout_constraintTop_toTopOf="@id/search_select_dep_station" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_select_dest_station"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/search_select_dep_station"
-        app:layout_constraintBottom_toTopOf="@id/search_button"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.92"
         android:background="@drawable/rounded_search_shape"
-        android:transitionName="@string/dep_search_transition"/>
+        android:transitionName="secondTransition"
+        app:layout_constraintBottom_toTopOf="@id/search_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_select_dep_station"
+        app:layout_constraintWidth_percent="0.92" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/search_dest_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
-        app:layout_constraintTop_toTopOf="@id/search_select_dest_station"
-        app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
         android:layout_marginStart="20dp"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/arriving_at"
         android:fontFamily="@font/circularstd"
-        android:textSize="16sp"/>
+        android:text="@string/arriving_at"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
+        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
+        app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
 
     <ImageView
         android:id="@+id/search_arrow_dest"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_keyboard_arrow_right"
         android:tint="@color/colorPrimary"
-        app:layout_constraintTop_toTopOf="@id/search_select_dest_station"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
         app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
-        android:layout_marginEnd="8dp" />
+        app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/search_button"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
-        app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
-        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
-        app:layout_constraintBottom_toTopOf="@id/home_services_list"
         android:layout_marginTop="8dp"
-        app:backgroundTint="@color/colorAccent"
-        app:cornerRadius="16dp"
         android:fontFamily="@font/circularstd"
-        android:textColor="@color/colorPrimary"
         android:text="@string/find_trains"
         android:textAllCaps="false"
-        android:textSize="16sp"/>
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:backgroundTint="@color/colorAccent"
+        app:cornerRadius="16dp"
+        app:layout_constraintBottom_toTopOf="@id/home_services_list"
+        app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
+        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
+        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/no_train_services_placeholder_text"
+    <ProgressBar
+        android:id="@+id/departure_list_loading"
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:fontFamily="@font/circularstd"
-        android:textSize="16sp"
-        android:textColor="@color/colorAccent"
-        android:text="@string/no_services_found" />
+        android:backgroundTint="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/home_services_list"
+        app:layout_constraintEnd_toEndOf="@id/home_services_list"
+        app:layout_constraintStart_toStartOf="@id/home_services_list"
+        app:layout_constraintTop_toTopOf="@id/home_services_list" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/home_services_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/search_button"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_button"
         tools:itemCount="10"
         tools:listitem="@layout/departure_list_item" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/loading_bar"
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:background="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_title" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
