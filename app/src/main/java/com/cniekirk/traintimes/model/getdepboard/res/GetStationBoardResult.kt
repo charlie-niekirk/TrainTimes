@@ -21,5 +21,5 @@ data class GetStationBoardResult(
     @PropertyElement(name = "lt4:crs") val stationCode: String,
     @Element(name = "lt4:nrccMessages") val nrccMessages: NrccMessages?,
     @PropertyElement(name = "lt4:platformAvailable") val platformAvailable: Boolean,
-    @Element(name = "lt7:trainServices") val trainServices: TrainServices
+    @Element(name = "lt7:trainServices") val trainServices: TrainServices?
 )

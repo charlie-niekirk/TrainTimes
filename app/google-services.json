@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "613893065960",
+    "firebase_url": "https://traintimes-63297.firebaseio.com",
+    "project_id": "traintimes-63297",
+    "storage_bucket": "traintimes-63297.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613893065960:android:38c4a02f02accea4e44d5d",
+        "android_client_info": {
+          "package_name": "com.cniekirk.traintimes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613893065960-1i0sg4cpdev1vlen9f2m84hkh9gokher.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt9n_vsI93wU5QH0JHAjlSOFimbizJZjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613893065960-1i0sg4cpdev1vlen9f2m84hkh9gokher.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimaryOff"
+    android:background="@color/colorFragSearch"
     android:transitionName="@string/dep_search_transition">
 
     <ImageView
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_arrow_back"
-        android:tint="?android:attr/colorForeground"
+        android:tint="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
@@ -27,10 +27,11 @@
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
         android:layout_marginEnd="22dp"
         android:layout_marginStart="16dp"
-        android:backgroundTint="?android:attr/colorForeground"
+        android:backgroundTint="@color/colorPrimary"
         android:hint="@string/station_search_hint"
         android:inputType="text"
-        android:fontFamily="@font/circularstd"/>
+        android:fontFamily="@font/circularstd"
+        android:textColorHint="@color/colorPrimary"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/station_list"

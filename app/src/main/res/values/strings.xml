@@ -12,4 +12,6 @@
     <string name="dep_search_transition">depStationTransition</string>
     <string name="favourites">Favourites</string>
     <string name="station_search_hint">London Waterloo</string>
+    <string name="no_services_found">No services found &#129300;</string>
+    <string name="platform_prefix">Platform: %1$s</string>
 </resources>

@@ -1,9 +1,11 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,6 +20,7 @@ import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.ui.favourites.StationListAdapter
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
+import com.cniekirk.traintimes.utils.extensions.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_dep_search.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,7 +55,6 @@ class DepStationSearchFragment: Fragment(), Injectable, StationListAdapter.OnSta
                 adapter.notifyDataSetChanged()
             }
         })
-        //viewModel.getCrsCodes()
     }
 
     override fun onCreateView(
@@ -65,13 +67,15 @@ class DepStationSearchFragment: Fragment(), Injectable, StationListAdapter.OnSta
         set.addTransition(ChangeBounds().setInterpolator(interpolator).setDuration(350))
         set.addTransition(ChangeTransform().setInterpolator(interpolator).setDuration(350))
         sharedElementEnterTransition = set
+
         return inflater.inflate(R.layout.fragment_dep_search, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        station_list.layoutManager = LinearLayoutManager(requireContext())
+        station_list.layoutManager = LinearLayoutManager(requireContext()).apply { isAutoMeasureEnabled = false }
         station_list.adapter = StationListAdapter(emptyList(), this)
+        btn_back.setOnClickListener { requireActivity().onBackPressed() }
         search_dep_stations.doAfterTextChanged {
             GlobalScope.launch {
                 viewModel.queryChannel.send(it.toString())
@@ -80,6 +84,7 @@ class DepStationSearchFragment: Fragment(), Injectable, StationListAdapter.OnSta
     }
 
     override fun onStationItemClicked(crs: CRS) {
+        hideKeyboard()
         viewModel.depStation.value = crs
         requireActivity().onBackPressed()
     }

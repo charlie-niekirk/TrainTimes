@@ -18,6 +18,15 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
+    <ImageView
+        android:id="@+id/blur_bar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/navigation_bar"
+        app:layout_constraintEnd_toEndOf="@id/navigation_bar"
+        app:layout_constraintTop_toTopOf="@id/navigation_bar"
+        app:layout_constraintBottom_toBottomOf="@id/navigation_bar"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation_bar"
         android:layout_width="0dp"
@@ -25,10 +34,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:itemBackground="?android:attr/colorBackground"
+        app:itemBackground="@color/transparent"
         app:menu="@menu/navigation_menu"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/colorAccent"
         android:theme="@style/Widget.BottomNavigationView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

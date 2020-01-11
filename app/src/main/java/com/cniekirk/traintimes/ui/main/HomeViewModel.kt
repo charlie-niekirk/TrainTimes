@@ -61,6 +61,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleResponse(response: GetStationBoardResult) {
-        services.value = response.trainServices.trainServices
+        response.trainServices?.let {
+            services.value = it.trainServices
+        } ?: run {
+            services.value = emptyList()
+        }
     }
 }

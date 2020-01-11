@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.HomeFragment">
+    tools:context=".ui.main.HomeFragment"
+    android:background="@color/colorBackground">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/home_title"
@@ -13,9 +14,10 @@
         app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
+        android:layout_marginStart="8dp"
         android:text="@string/search"
         android:textSize="28sp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
         android:fontFamily="@font/circularstd"
         tools:text="Search"/>
 
@@ -28,9 +30,8 @@
         android:layout_marginTop="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintWidth_percent="0.92"
         android:background="@drawable/rounded_search_shape"
-        android:alpha="0.15"
         android:transitionName="firstTransition"/>
 
     <com.google.android.material.textview.MaterialTextView
@@ -51,7 +52,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:src="@drawable/ic_keyboard_arrow_right"
-        android:tint="@color/colorAccent"
+        android:tint="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="@id/search_select_dep_station"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
         app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
@@ -66,9 +67,8 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintWidth_percent="0.92"
         android:background="@drawable/rounded_search_shape"
-        android:alpha="0.15"
         android:transitionName="@string/dep_search_transition"/>
 
     <com.google.android.material.textview.MaterialTextView
@@ -89,7 +89,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:src="@drawable/ic_keyboard_arrow_right"
-        android:tint="@color/colorAccent"
+        android:tint="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="@id/search_select_dest_station"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
         app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
@@ -104,13 +104,26 @@
         app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
         app:layout_constraintBottom_toTopOf="@id/home_services_list"
         android:layout_marginTop="8dp"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
         app:cornerRadius="16dp"
         android:fontFamily="@font/circularstd"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:text="@string/find_trains"
         android:textAllCaps="false"
         android:textSize="16sp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/no_train_services_placeholder_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:fontFamily="@font/circularstd"
+        android:textSize="16sp"
+        android:textColor="@color/colorAccent"
+        android:text="@string/no_services_found" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/home_services_list"
@@ -120,6 +133,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="56dp"
+        tools:itemCount="10"
+        tools:listitem="@layout/departure_list_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

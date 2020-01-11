@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.di.Injectable
@@ -40,24 +41,27 @@ class HomeFragment : Fragment(), Injectable {
             depAdapter.notifyDataSetChanged()
         })
         viewModel.depStation.observe(this, Observer {
-            search_dep_text.text = it.stationName
+            search_dep_text.text = it.crs
         })
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        home_services_list.layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext())
+        home_services_list.layoutManager = layoutManager
         home_services_list.adapter = DepatureListAdapter(emptyList())
+        home_services_list.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
         search_select_dep_station.setOnClickListener {
             val extras = FragmentNavigatorExtras(search_select_dep_station
                     to getString(R.string.dep_search_transition))
             view.findNavController().navigate(R.id.depStationSearchFragment, null, null, extras)
         }
         search_select_dest_station.setOnClickListener {
-
+            // Go to detail view
         }
-        search_button.setOnClickListener { viewModel.getDepartures() }
+        search_button.setOnClickListener {
+            no_train_services_placeholder_text.visibility = View.GONE
+            viewModel.getDepartures()
+        }
     }
 
 }
