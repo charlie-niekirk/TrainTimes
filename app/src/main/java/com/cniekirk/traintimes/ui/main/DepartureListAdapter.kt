@@ -1,8 +1,6 @@
 package com.cniekirk.traintimes.ui.main
 
-import android.annotation.SuppressLint
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

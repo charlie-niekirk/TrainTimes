@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.ui.favourites
+package com.cniekirk.traintimes.ui.main
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +10,16 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
 
 class StationListAdapter(private val stations: List<CRS>,
-                         private val onStationItemSelected: OnStationItemSelected)
+                         private val onStationItemSelected: OnStationItemSelected
+)
     :RecyclerView.Adapter<StationListAdapter.StationListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationListViewHolder {
         val stationLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.station_list_item, parent, false)
-        return StationListViewHolder(stationLayout)
+        return StationListViewHolder(
+            stationLayout
+        )
     }
 
     override fun onBindViewHolder(holder: StationListViewHolder, position: Int) {

@@ -68,6 +68,7 @@ class HomeFragment : Fragment(), Injectable {
         home_services_list.layoutManager = layoutManager
         home_services_list.adapter = DepartureListAdapter(emptyList())
         home_services_list.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
+        // TODO: Why is this not working?
         home_services_list.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
             .withAddDuration(250)
@@ -89,10 +90,15 @@ class HomeFragment : Fragment(), Injectable {
 
         search_button.setOnClickListener {
             startLoadingAnim()
+            // Remove old items to make the UX more seamless
+            home_services_list.adapter = DepartureListAdapter(emptyList())
             viewModel.getDepartures()
         }
     }
 
+    /**
+     * Start the loading animation, looping it with the listeners
+     */
     private fun startLoadingAnim() {
         root_motion.setTransition(R.id.start, R.id.middle)
         root_motion.setTransitionListener(listener)

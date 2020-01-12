@@ -143,7 +143,7 @@
     <View
         android:id="@+id/loading_bar"
         android:layout_width="0dp"
-        android:layout_height="3dp"
+        android:layout_height="5dp"
         android:background="@color/colorAccent"
         app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
         app:layout_constraintStart_toStartOf="parent"

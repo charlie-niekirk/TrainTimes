@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_bar">
     <item android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_drive_eta"
+        android:icon="@drawable/ic_train"
         android:title="@string/trains"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/nearbyFragment"

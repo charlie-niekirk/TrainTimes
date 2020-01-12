@@ -16,7 +16,6 @@ import androidx.transition.TransitionSet
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.di.Injectable
-import com.cniekirk.traintimes.ui.favourites.StationListAdapter
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_station_search.*
@@ -49,7 +48,8 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
         viewModel.listenForNewSearch()
         viewModel.crsStationCodes.observe(this, Observer {
             it?.let {
-                val adapter = StationListAdapter(it, this)
+                val adapter =
+                    StationListAdapter(it, this)
                 station_list.adapter = adapter
                 adapter.notifyDataSetChanged()
             }
@@ -74,7 +74,8 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         station_list.layoutManager = LinearLayoutManager(requireContext())
-        station_list.adapter = StationListAdapter(emptyList(), this)
+        station_list.adapter =
+            StationListAdapter(emptyList(), this)
         btn_back.setOnClickListener { requireActivity().onBackPressed() }
         search_dep_stations.doAfterTextChanged {
             GlobalScope.launch {

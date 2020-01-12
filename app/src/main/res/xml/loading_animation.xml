@@ -20,7 +20,7 @@
         android:id="@+id/start">
         <Constraint
             android:id="@id/loading_bar"
-            android:layout_height="6dp"
+            android:layout_height="5dp"
             motion:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@id/home_title"
@@ -31,7 +31,7 @@
         android:id="@+id/middle">
         <Constraint
             android:id="@id/loading_bar"
-            android:layout_height="7dp"
+            android:layout_height="5dp"
             motion:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         android:id="@+id/end">
         <Constraint
             android:id="@id/loading_bar"
-            android:layout_height="7dp"
+            android:layout_height="5dp"
             motion:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toEndOf="parent"

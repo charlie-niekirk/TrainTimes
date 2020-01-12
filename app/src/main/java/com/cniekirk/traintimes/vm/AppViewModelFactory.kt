@@ -7,7 +7,7 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * ViewModelprovider.Factory to be provided with a map of valid ViewModels by Dagger
+ * ViewModelProvider.Factory to be provided with a map of valid ViewModels by Dagger
  */
 @Singleton
 class AppViewModelFactory @Inject constructor(

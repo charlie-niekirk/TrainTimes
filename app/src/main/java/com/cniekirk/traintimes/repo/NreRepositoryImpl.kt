@@ -6,6 +6,7 @@ import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.getdepboard.req.*
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
+import com.cniekirk.traintimes.model.servicedetails.ServiceDetails
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.request
 import com.tickaroo.tikxml.TikXml
@@ -33,6 +34,11 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 
+    }
+
+    // TODO: Full implementation
+    override fun getServiceDetails(serviceId: String): Either<Failure, ServiceDetails> {
+        return Either.Right(ServiceDetails(""))
     }
 
 }
