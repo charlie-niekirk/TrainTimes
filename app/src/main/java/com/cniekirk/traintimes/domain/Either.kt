@@ -1,8 +1,5 @@
 package com.cniekirk.traintimes.domain
 
-import android.util.Log
-import retrofit2.Call
-
 /**
  * An Either monad implemented in kotlin
  * @link https://github.com/android10/Android-CleanArchitecture-Kotlin/blob/master/app/src/main/kotlin/com/fernandocejas/sample/core/functional/Either.kt
@@ -17,13 +14,13 @@ sealed class Either<out Failure, out Success> {
     val isRight get() = this is Right<Success>
     val isLeft get() = this is Left<Failure>
 
-    fun <Failure> left(a: Failure) = Either.Left(a)
-    fun <Success> right(b: Success) = Either.Right(b)
+    fun <Failure> left(a: Failure) = Left(a)
+    fun <Success> right(b: Success) = Right(b)
 
     fun either(fncL: (Failure) -> Any, fncR: (Success) -> Any): Any =
         when(this) {
-            is Either.Left -> fncL(a)
-            is Either.Right -> fncR(b)
+            is Left -> fncL(a)
+            is Right -> fncR(b)
         }
 
 }

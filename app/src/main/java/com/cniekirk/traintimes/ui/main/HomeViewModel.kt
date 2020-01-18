@@ -56,6 +56,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun clearDepStation() { depStation.value = null }
+    fun clearDestStation() { destStation.value = null }
+
     private fun handleCrs(list: List<CRS>) {
         crsStationCodes.value = list
     }
