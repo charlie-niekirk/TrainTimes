@@ -1,16 +1,17 @@
 package com.cniekirk.traintimes.repo
 
-import android.util.Log
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.getdepboard.req.*
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
-import com.cniekirk.traintimes.model.servicedetails.ServiceDetails
+import com.cniekirk.traintimes.model.servicedetails.req.GetServiceDetailsRequest
+import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
+import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
+import com.cniekirk.traintimes.model.servicedetails.req.ServiceId
+import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.request
-import com.tickaroo.tikxml.TikXml
-import retrofit2.Call
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,9 +37,18 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     }
 
-    // TODO: Full implementation
-    override fun getServiceDetails(serviceId: String): Either<Failure, ServiceDetails> {
-        return Either.Right(ServiceDetails(""))
+    override fun getServiceDetails(serviceId: String): Either<Failure, GetServiceDetailsResult> {
+
+        val body = ServiceDetailsBody(GetServiceDetailsRequest(
+            serviceID = ServiceId(serviceID = serviceId)
+        ))
+        val envelope = ServiceDetailsEnvelope(header = Header(AccessToken()), serviceDetailsBody = body)
+
+        return when (networkHandler.isConnected) {
+            true -> request(nreService.getServiceDetails(envelope)) { it.body.getServiceDetailsResponse.getServiceDetailsResult }
+            false, null -> Either.Left(Failure.NetworkConnectionError())
+        }
+
     }
 
 }
