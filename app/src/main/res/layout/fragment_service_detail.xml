@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorBackground"
+    android:id="@+id/background_view">
 
     <ImageView
         android:id="@+id/operator_icon"
@@ -24,6 +26,7 @@
         android:fontFamily="@font/circularstd"
         android:textSize="22sp"
         android:textColor="@color/colorAccent"
+        android:alpha="1"
         tools:text="London Bridge"/>
 
 
