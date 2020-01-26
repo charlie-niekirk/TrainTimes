@@ -14,4 +14,6 @@
     <string name="station_search_hint">London Waterloo</string>
     <string name="no_services_found">No services found &#129300;</string>
     <string name="platform_prefix">Platform: %1$s</string>
+    <string name="departure_text_transition">departureDestTransitionName</string>
+    <string name="departure_background_transition">departureBackgroundTransition</string>
 </resources>

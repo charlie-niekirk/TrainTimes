@@ -25,14 +25,14 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-}
-
-repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/ksoap2-android-releases/' }
+    packagingOptions {
+        exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/INDEX.LIST'
+    }
 }
 
 dependencies {
@@ -76,7 +76,6 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.2.3'
 
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
-    implementation 'com.google.firebase:firebase-firestore:21.3.1'
 
     implementation 'com.github.tinder.scarlet:scarlet:0.2.4'
     implementation 'com.github.tinder.scarlet:scarlet-protocol-stomp:0.2.4'

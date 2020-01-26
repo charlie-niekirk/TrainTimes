@@ -10,7 +10,8 @@ import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
 
-class DepartureListAdapter(private val services: List<Service>)
+class DepartureListAdapter(private val services: List<Service>,
+                           private val clickListener: DepartureItemClickListener)
     : RecyclerView.Adapter<DepartureListAdapter.DepartureListViewHolder>() {
 
     init {
@@ -40,7 +41,11 @@ class DepartureListAdapter(private val services: List<Service>)
         val platform = if (services[position].platform.isNullOrEmpty()) "TBD" else services[position].platform
         val destinations = services[position].destination.locations
 
+        holder.itemView.transitionName = "${holder.itemView.context.getString(R.string.departure_background_transition)}-$position"
+
         holder.departureDestinationName.text = destinations[destinations.size - 1].locationName
+        holder.departureDestinationName.transitionName = "${holder.itemView.context.getString(R.string.departure_text_transition)}-$position"
+
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)
         holder.scheduledDepartureTime.text = services[position].scheduledDeparture
 
@@ -56,6 +61,7 @@ class DepartureListAdapter(private val services: List<Service>)
         }
 
         holder.estimatedDepartureTime.text = services[position].estimatedDeparture
+        holder.itemView.setOnClickListener { clickListener.onClick(position, holder.itemView, holder.departureDestinationName) }
     }
 
     open class DepartureListViewHolder(itemView: View):
@@ -76,6 +82,10 @@ class DepartureListAdapter(private val services: List<Service>)
         val estimatedDepartureTime: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.estimated_departure_time)
         }
+    }
+
+    interface DepartureItemClickListener {
+        fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView)
     }
 
 

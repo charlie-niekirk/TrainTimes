@@ -1,7 +1,6 @@
 package com.cniekirk.traintimes.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
-import com.cniekirk.traintimes.utils.extensions.dp
+import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
-class HomeFragment : Fragment(), Injectable {
+class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,8 +53,13 @@ class HomeFragment : Fragment(), Injectable {
                     loading_bar.alpha = 0f
                 }
             })
-            val depAdapter = DepartureListAdapter(service)
+            val depAdapter = DepartureListAdapter(service, this)
             home_services_list.adapter = depAdapter
+            postponeEnterTransition()
+            home_services_list.viewTreeObserver.addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
         })
 
         viewModel.depStation.observe(this, Observer {
@@ -92,7 +96,7 @@ class HomeFragment : Fragment(), Injectable {
 
         val layoutManager = LinearLayoutManager(requireContext())
         home_services_list.layoutManager = layoutManager
-        home_services_list.adapter = DepartureListAdapter(emptyList())
+        home_services_list.adapter = DepartureListAdapter(emptyList(), this)
         home_services_list.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
 
         search_select_dep_station.setOnClickListener {
@@ -112,7 +116,7 @@ class HomeFragment : Fragment(), Injectable {
         search_button.setOnClickListener {
             startLoadingAnim()
             // Remove old items to make the UX more seamless
-            home_services_list.adapter = DepartureListAdapter(emptyList())
+            home_services_list.adapter = DepartureListAdapter(emptyList(), this)
             viewModel.getDepartures()
         }
     }
@@ -153,6 +157,25 @@ class HomeFragment : Fragment(), Injectable {
 
             root_motion.transitionToEnd()
         }
+    }
+
+    override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
+
+        val bgName = "${getString(R.string.departure_background_transition)}-$position"
+        val destTransName = "${getString(R.string.departure_text_transition)}-$position"
+
+        val navigateBundle = bundleOf("backgroundTransName" to bgName, "destTransName" to destTransName)
+        viewModel.services.value?.let {
+            navigateBundle.putString("serviceId", it[position].serviceID)
+        }
+
+        val extras = FragmentNavigatorExtras(
+            (itemBackground as ConstraintLayout) to bgName,
+            destinationText to destTransName
+        )
+
+        view?.findNavController()?.navigate(R.id.serviceDetailFragment,
+            navigateBundle, null, extras)
     }
 
 }
