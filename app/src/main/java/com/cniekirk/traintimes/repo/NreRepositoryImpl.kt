@@ -1,10 +1,13 @@
 package com.cniekirk.traintimes.repo
 
+import com.cniekirk.traintimes.data.remote.JourneyPlanService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.getdepboard.req.*
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
+import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
+import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlanResponse
 import com.cniekirk.traintimes.model.servicedetails.req.GetServiceDetailsRequest
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
@@ -12,12 +15,16 @@ import com.cniekirk.traintimes.model.servicedetails.req.ServiceId
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.request
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,
-                                            private val nreService: NREService): NreRepository {
+                                            private val nreService: NREService,
+                                            private val journeyPlanService: JourneyPlanService): NreRepository {
 
     override fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult> {
 
@@ -46,6 +53,18 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         return when (networkHandler.isConnected) {
             true -> request(nreService.getServiceDetails(envelope)) { it.body.getServiceDetailsResponse.getServiceDetailsResult }
+            false, null -> Either.Left(Failure.NetworkConnectionError())
+        }
+
+    }
+
+    override fun getJourneyPlan(origin: String, destination: String): Either<Failure, JourneyPlanResponse> {
+
+        val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ").format(Date())
+
+        return when (networkHandler.isConnected) {
+            true -> request(journeyPlanService.planJourney(origin,
+                destination, JourneyPlanRequest(time))) { it }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 

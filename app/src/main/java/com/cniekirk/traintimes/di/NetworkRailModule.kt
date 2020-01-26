@@ -1,18 +1,21 @@
 package com.cniekirk.traintimes.di
 
 import android.content.Context
+import com.cniekirk.traintimes.data.remote.JourneyPlanService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.repo.NreRepository
 import com.cniekirk.traintimes.repo.NreRepositoryImpl
 import com.cniekirk.traintimes.utils.extensions.callFactory
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -62,6 +65,22 @@ class NetworkRailModule {
             .build()
 
     }
+
+    @Singleton
+    @Provides
+    @Named("JourneyPlan")
+    fun provideJourneyRetrofit(@Named("NREOk") okHttpClient: dagger.Lazy<OkHttpClient>): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://livetracktimes.co.uk/")
+            .callFactory { okHttpClient.get().newCall(it) }
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideJourneyPlannerService(@Named("JourneyPlan") retrofit: Retrofit): JourneyPlanService
+            = retrofit.create(JourneyPlanService::class.java)
 
     @Provides
     @Singleton
