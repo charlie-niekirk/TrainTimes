@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#0097A7</color>
+    <color name="colorPrimaryDark">#81D4FA</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorBackground">#000000</color>
     <color name="colorPrimaryOff">#2000BCD4</color>
-    <color name="colorFragSearch">#00BCD4</color>
-    <color name="colorRed">#ef5350</color>
-    <color name="colorGreen">#66BB6A</color>
+    <color name="colorFragSearch">#81D4FA</color>
+    <color name="colorRed">#ef9a9a</color>
+    <color name="colorGreen">#A5D6A7</color>
 </resources>

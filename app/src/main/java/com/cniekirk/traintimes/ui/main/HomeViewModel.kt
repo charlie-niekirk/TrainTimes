@@ -1,12 +1,15 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.usecase.GetAllStationCodesUseCase
 import com.cniekirk.traintimes.domain.usecase.GetDeparturesUseCase
+import com.cniekirk.traintimes.domain.usecase.GetJourneyPlanUseCase
 import com.cniekirk.traintimes.domain.usecase.GetStationsUseCase
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.getdepboard.res.Service
+import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlanResponse
 import com.cniekirk.traintimes.vm.BaseViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -21,7 +24,8 @@ import javax.inject.Singleton
 class HomeViewModel @Inject constructor(
     private val getStationsUseCase: GetStationsUseCase,
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
-    private val getDeparturesUseCase: GetDeparturesUseCase
+    private val getDeparturesUseCase: GetDeparturesUseCase,
+    private val getJourneyPlanUseCase: GetJourneyPlanUseCase
 ) : BaseViewModel() {
 
     val services = MutableLiveData<List<Service>>()
@@ -56,6 +60,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getJourneyPlan() {
+        destStation.value?.let { crs ->
+            getJourneyPlanUseCase(arrayOf(depStation.value!!.stationName, crs.stationName))
+            { it.either(::handleFailure, ::handleJorneyPlanResponse) }
+        } ?: run {
+            getJourneyPlanUseCase(arrayOf(depStation.value!!.stationName, ""))
+            { it.either(::handleFailure, ::handleJorneyPlanResponse) }
+        }
+    }
+
     fun clearDepStation() { depStation.value = null }
     fun clearDestStation() { destStation.value = null }
 
@@ -69,5 +83,9 @@ class HomeViewModel @Inject constructor(
         } ?: run {
             services.value = emptyList()
         }
+    }
+
+    private fun handleJorneyPlanResponse(journeyPlanResponse: JourneyPlanResponse) {
+        Log.d("VM", "JourneyPlanner: ${journeyPlanResponse.outwardJourney[0].destination}")
     }
 }

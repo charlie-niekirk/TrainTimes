@@ -11,8 +11,8 @@
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_nearbyFragment"
-            app:destination="@id/nearbyFragment"/>
+            android:id="@+id/action_homeFragment_to_journeyPlannerFragment"
+            app:destination="@id/journeyPlannerFragment"/>
         <action
             android:id="@+id/action_homeFragment_to_serviceDetailFragment"
             app:destination="@id/serviceDetailFragment"
@@ -22,11 +22,11 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/nearbyFragment"
-        android:name="com.cniekirk.traintimes.ui.nearby.NearbyFragment"
-        android:label="NearbyFragment">
+        android:id="@+id/journeyPlannerFragment"
+        android:name="com.cniekirk.traintimes.ui.planner.JourneyPlannerFragment"
+        android:label="JourneyPlannerFragment">
         <action
-            android:id="@+id/action_nearbyFragment_to_homeFragment"
+            android:id="@+id/action_journeyPlannerFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment

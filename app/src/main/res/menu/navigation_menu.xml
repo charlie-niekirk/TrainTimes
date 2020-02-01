@@ -8,8 +8,8 @@
         android:title="@string/trains"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/nearbyFragment"
-        android:icon="@drawable/ic_my_location_white"
-        android:title="@string/nearby"
+        android:icon="@drawable/ic_map"
+        android:title="@string/planner"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/favouritesFragment"
         android:icon="@drawable/ic_star"

@@ -16,4 +16,5 @@
     <string name="platform_prefix">Platform: %1$s</string>
     <string name="departure_text_transition">departureDestTransitionName</string>
     <string name="departure_background_transition">departureBackgroundTransition</string>
+    <string name="planner">Plan</string>
 </resources>

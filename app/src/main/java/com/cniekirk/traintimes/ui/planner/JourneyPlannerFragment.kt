@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.ui.nearby
+package com.cniekirk.traintimes.ui.planner
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.di.Injectable
 import javax.inject.Inject
 
-class NearbyFragment: Fragment(), Injectable {
+class JourneyPlannerFragment: Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
-        fun newInstance() = NearbyFragment()
+        fun newInstance() = JourneyPlannerFragment()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_nearby, container, false)
+        return inflater.inflate(R.layout.fragment_journey_planner, container, false)
     }
 
 }

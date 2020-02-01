@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.cniekirk.traintimes.ui.main.HomeViewModel
 import com.cniekirk.traintimes.ui.main.ServiceDetailViewModel
-import com.cniekirk.traintimes.ui.nearby.NearbyViewModel
+import com.cniekirk.traintimes.ui.planner.JourneyPlannerViewModel
 import com.cniekirk.traintimes.vm.AppViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -20,8 +20,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(NearbyViewModel::class)
-    abstract fun bindNearbyViewModel(nearbyViewModel: NearbyViewModel): ViewModel
+    @ViewModelKey(JourneyPlannerViewModel::class)
+    abstract fun bindNearbyViewModel(journeyPlannerViewModel: JourneyPlannerViewModel): ViewModel
 
     @Binds
     @IntoMap

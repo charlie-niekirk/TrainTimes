@@ -14,6 +14,7 @@ import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceId
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.utils.NetworkHandler
+import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.request
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -62,9 +63,12 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ").format(Date())
 
+        val header = "/api/journeyplan/$origin/to/$destination$time"
+            .hmac("/api/journeyplan/$origin/to/$destination")
+
         return when (networkHandler.isConnected) {
             true -> request(journeyPlanService.planJourney(origin,
-                destination, JourneyPlanRequest(time))) { it }
+                destination, JourneyPlanRequest(time), header)) { it }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 
