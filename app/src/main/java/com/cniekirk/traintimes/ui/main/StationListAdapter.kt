@@ -10,8 +10,7 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
 
 class StationListAdapter(private val stations: List<CRS>,
-                         private val onStationItemSelected: OnStationItemSelected
-)
+                         private val onStationItemSelected: OnStationItemSelected)
     :RecyclerView.Adapter<StationListAdapter.StationListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationListViewHolder {

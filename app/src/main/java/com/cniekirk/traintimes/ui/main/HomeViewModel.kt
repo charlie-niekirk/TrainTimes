@@ -3,13 +3,11 @@ package com.cniekirk.traintimes.ui.main
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.cniekirk.traintimes.data.local.model.CRS
-import com.cniekirk.traintimes.domain.usecase.GetAllStationCodesUseCase
-import com.cniekirk.traintimes.domain.usecase.GetDeparturesUseCase
-import com.cniekirk.traintimes.domain.usecase.GetJourneyPlanUseCase
-import com.cniekirk.traintimes.domain.usecase.GetStationsUseCase
+import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlanResponse
+import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.vm.BaseViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -25,20 +23,19 @@ class HomeViewModel @Inject constructor(
     private val getStationsUseCase: GetStationsUseCase,
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
     private val getDeparturesUseCase: GetDeparturesUseCase,
-    private val getJourneyPlanUseCase: GetJourneyPlanUseCase
+    private val getJourneyPlanUseCase: GetJourneyPlanUseCase,
+    private val getServiceDetailsUseCase: GetServiceDetailsUseCase
 ) : BaseViewModel() {
 
     val services = MutableLiveData<List<Service>>()
     val crsStationCodes = MutableLiveData<List<CRS>>()
     val depStation = MutableLiveData<CRS>()
     val destStation = MutableLiveData<CRS>()
+    val serviceDetailsResult = MutableLiveData<GetServiceDetailsResult>()
+    val serviceDetailId = MutableLiveData<String>()
 
     @ExperimentalCoroutinesApi
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
-
-    fun getCrsCodes() {
-        getAllStationCodesUseCase(null) { it.either(::handleFailure, ::handleCrs) }
-    }
 
     @FlowPreview
     @ObsoleteCoroutinesApi
@@ -48,6 +45,14 @@ class HomeViewModel @Inject constructor(
                 getStationsUseCase(query) { it.either(::handleFailure, ::handleCrs) }
             }
         }
+    }
+
+    fun setServiceId(serviceId: String) {
+        serviceDetailId.value = serviceId
+    }
+
+    fun getCrsCodes() {
+        getAllStationCodesUseCase(null) { it.either(::handleFailure, ::handleCrs) }
     }
 
     fun getDepartures() {
@@ -70,6 +75,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getServiceDetails() {
+        serviceDetailId.value?.let { serviceId ->
+            getServiceDetailsUseCase(serviceId) { it.either(::handleFailure, ::handleServiceDetails) }
+        }
+    }
+
     fun clearDepStation() { depStation.value = null }
     fun clearDestStation() { destStation.value = null }
 
@@ -83,6 +94,10 @@ class HomeViewModel @Inject constructor(
         } ?: run {
             services.value = emptyList()
         }
+    }
+
+    private fun handleServiceDetails(serviceDetails: GetServiceDetailsResult) {
+        serviceDetailsResult.value = serviceDetails
     }
 
     private fun handleJorneyPlanResponse(journeyPlanResponse: JourneyPlanResponse) {

@@ -61,7 +61,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     override fun getJourneyPlan(origin: String, destination: String): Either<Failure, JourneyPlanResponse> {
 
-        val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ").format(Date())
+        val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).format(Date())
 
         val header = "/api/journeyplan/$origin/to/$destination$time"
             .hmac("/api/journeyplan/$origin/to/$destination")

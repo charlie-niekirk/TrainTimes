@@ -48,7 +48,7 @@ class NetworkRailModule {
     @Singleton
     @Provides
     @Named("NRE")
-    fun provideRetrofit(@Named("NREOk") okHttpClient: dagger.Lazy<OkHttpClient>, tikXml: TikXml): Retrofit {
+    fun provideRetrofit(@Named("NREOk") okHttpClient: Lazy<OkHttpClient>, tikXml: TikXml): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://lite.realtime.nationalrail.co.uk/")
             .callFactory { okHttpClient.get().newCall(it) }
@@ -69,7 +69,7 @@ class NetworkRailModule {
     @Singleton
     @Provides
     @Named("JourneyPlan")
-    fun provideJourneyRetrofit(@Named("NREOk") okHttpClient: dagger.Lazy<OkHttpClient>): Retrofit {
+    fun provideJourneyRetrofit(@Named("NREOk") okHttpClient: Lazy<OkHttpClient>): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://livetracktimes.co.uk/")
             .callFactory { okHttpClient.get().newCall(it) }

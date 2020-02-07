@@ -18,6 +18,7 @@ import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.hideKeyboard
+import com.cniekirk.traintimes.utils.extensions.onFocusChange
 import kotlinx.android.synthetic.main.fragment_station_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -43,10 +44,10 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
+        viewModel = ViewModelProvider(this, viewModelFactory)
             .get(HomeViewModel::class.java)
         viewModel.listenForNewSearch()
-        viewModel.crsStationCodes.observe(this, Observer {
+        viewModel.crsStationCodes.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val adapter =
                     StationListAdapter(it, this)
@@ -73,6 +74,14 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        search_dep_stations.onFocusChange { hasFocus ->
+            if (hasFocus)
+                search_dep_stations.setHint(R.string.search_hint_focused)
+            else
+                search_dep_stations.setHint(R.string.station_search_hint)
+        }
+
         station_list.layoutManager = LinearLayoutManager(requireContext())
         station_list.adapter =
             StationListAdapter(emptyList(), this)

@@ -17,21 +17,36 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"/>
 
-    <EditText
-        android:id="@+id/search_dep_stations"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_layout_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/btn_back"
         app:layout_constraintStart_toEndOf="@id/btn_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
-        android:layout_marginEnd="22dp"
         android:layout_marginStart="16dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:hint="@string/station_search_hint"
-        android:inputType="text"
-        android:fontFamily="@font/circularstd"
-        android:textColorHint="@color/colorPrimary"/>
+        app:boxBackgroundColor="@color/colorFragSearch"
+        android:textColorHint="@color/colorPrimary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_dep_stations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/station_search_hint"
+            android:inputType="text"
+            android:fontFamily="@font/circularstd"
+            android:textColorHint="@color/colorPrimary"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        -->
+<!--        android:backgroundTint="@color/colorPrimary"-->
+<!--        android:hint="@string/station_search_hint"-->
+<!--        android:inputType="text"-->
+<!--        android:fontFamily="@font/circularstd"-->
+<!--        android:textColorHint="@color/colorPrimary"/>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/station_list"
@@ -39,7 +54,7 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_dep_stations"
+        app:layout_constraintTop_toBottomOf="@id/input_layout_search"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="16dp"/>
 

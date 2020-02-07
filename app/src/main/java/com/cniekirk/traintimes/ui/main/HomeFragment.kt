@@ -40,10 +40,10 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
+        viewModel = ViewModelProvider(this, viewModelFactory)
             .get(HomeViewModel::class.java)
 
-        viewModel.services.observe(this, Observer { service ->
+        viewModel.services.observe(viewLifecycleOwner, Observer { service ->
             root_motion.setTransitionListener(object : MotionLayout.TransitionListener {
                 override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
                 override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
@@ -62,7 +62,7 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
             }
         })
 
-        viewModel.depStation.observe(this, Observer {
+        viewModel.depStation.observe(viewLifecycleOwner, Observer {
             search_dep_text.text = it.crs
             search_arrow_dep.apply {
                 setImageDrawable(requireContext().getDrawable(R.drawable.ic_clear))
@@ -71,7 +71,7 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
             }
         })
 
-        viewModel.destStation.observe(this, Observer {
+        viewModel.destStation.observe(viewLifecycleOwner, Observer {
             search_dest_text.text = it.crs
             search_arrow_dest.apply {
                 setImageDrawable(requireContext().getDrawable(R.drawable.ic_clear))
@@ -166,8 +166,8 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
         val destTransName = "${getString(R.string.departure_text_transition)}-$position"
 
         val navigateBundle = bundleOf("backgroundTransName" to bgName, "destTransName" to destTransName)
-        viewModel.services.value?.let {
-            navigateBundle.putString("serviceId", it[position].serviceID)
+        viewModel.services.value?.let { services ->
+            viewModel.serviceDetailId.value = services[position].serviceID
         }
 
         val extras = FragmentNavigatorExtras(

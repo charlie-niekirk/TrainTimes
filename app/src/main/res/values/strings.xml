@@ -17,4 +17,5 @@
     <string name="departure_text_transition">departureDestTransitionName</string>
     <string name="departure_background_transition">departureBackgroundTransition</string>
     <string name="planner">Plan</string>
+    <string name="search_hint_focused">Station Name</string>
 </resources>
