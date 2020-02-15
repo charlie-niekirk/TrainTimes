@@ -1,7 +1,7 @@
 package com.cniekirk.traintimes.di
 
 import android.content.Context
-import com.cniekirk.traintimes.data.remote.JourneyPlanService
+import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.repo.NreRepository
 import com.cniekirk.traintimes.repo.NreRepositoryImpl
@@ -79,8 +79,8 @@ class NetworkRailModule {
 
     @Provides
     @Singleton
-    fun provideJourneyPlannerService(@Named("JourneyPlan") retrofit: Retrofit): JourneyPlanService
-            = retrofit.create(JourneyPlanService::class.java)
+    fun provideJourneyPlannerService(@Named("JourneyPlan") retrofit: Retrofit): TrackTimesService
+            = retrofit.create(TrackTimesService::class.java)
 
     @Provides
     @Singleton

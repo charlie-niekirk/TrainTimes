@@ -1,9 +1,10 @@
 package com.cniekirk.traintimes.repo
 
-import com.cniekirk.traintimes.data.remote.JourneyPlanService
+import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.model.delayrepay.DelayRepay
 import com.cniekirk.traintimes.model.getdepboard.req.*
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
@@ -17,7 +18,6 @@ import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.request
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,7 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,
                                             private val nreService: NREService,
-                                            private val journeyPlanService: JourneyPlanService): NreRepository {
+                                            private val trackTimesService: TrackTimesService): NreRepository {
 
     override fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult> {
 
@@ -68,8 +68,20 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             .hmac("/api/journeyplan/$origin/to/$destination")
 
         return when (networkHandler.isConnected) {
-            true -> request(journeyPlanService.planJourney(origin,
+            true -> request(trackTimesService.planJourney(origin,
                 destination, JourneyPlanRequest(time), header)) { it }
+            false, null -> Either.Left(Failure.NetworkConnectionError())
+        }
+
+    }
+
+    override fun getDelayRepayUrl(operator: String): Either<Failure, DelayRepay> {
+
+        val header = "/api/delayrepay/$operator"
+            .hmac("/api/delayrepay/$operator")
+
+        return when (networkHandler.isConnected) {
+            true -> request(trackTimesService.getDelayRepayUrl(operator, header)) { it }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 
