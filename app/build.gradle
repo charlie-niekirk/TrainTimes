@@ -90,6 +90,8 @@ dependencies {
     implementation 'com.github.tinder.scarlet:scarlet-stream-adapter-coroutines:0.2.4'
     implementation 'com.github.tinder.scarlet:scarlet-lifecycle-android:0.2.4'
 
+    implementation 'com.github.mmin18:realtimeblurview:1.2.1'
+
     kapt 'com.google.dagger:dagger-compiler:2.24'
     kapt 'com.google.dagger:dagger-android-processor:2.24'
     kapt 'com.github.bumptech.glide:compiler:4.10.0'

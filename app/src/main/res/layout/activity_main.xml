@@ -19,6 +19,16 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
+    <com.github.mmin18.widget.RealtimeBlurView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:realtimeBlurRadius="5dp"
+        app:realtimeOverlayColor="@color/transPrimary"
+        app:layout_constraintStart_toStartOf="@id/navigation_bar"
+        app:layout_constraintEnd_toEndOf="@id/navigation_bar"
+        app:layout_constraintTop_toTopOf="@id/navigation_bar"
+        app:layout_constraintBottom_toBottomOf="@id/navigation_bar"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation_bar"
         android:layout_width="0dp"
@@ -26,10 +36,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:itemBackground="@android:color/transparent"
+        app:itemBackground="@color/bottom_nav_color"
         app:menu="@menu/navigation_menu"
         app:itemIconTint="@color/colorAccent"
         app:itemTextColor="@color/colorAccent"
-        android:theme="@style/Widget.BottomNavigationView"/>
+        android:theme="@style/Widget.BottomNavigationView"
+        android:background="@color/bottom_nav_color"
+        android:backgroundTint="@color/bottom_nav_color"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

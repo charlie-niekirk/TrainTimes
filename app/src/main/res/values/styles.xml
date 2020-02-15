@@ -12,6 +12,7 @@
     <style name="Widget.BottomNavigationView"
         parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="fontFamily">@font/circularstd</item>
+        <item name="colorSurface">@android:color/transparent</item>
     </style>
 
 </resources>

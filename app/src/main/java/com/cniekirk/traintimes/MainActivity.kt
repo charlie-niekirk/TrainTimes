@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
@@ -8,6 +9,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), HasAndroidInjector {
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
         findViewById<BottomNavigationView>(R.id.navigation_bar)
             .setupWithNavController(navController)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

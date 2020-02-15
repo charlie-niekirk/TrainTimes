@@ -118,7 +118,7 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
             // Remove old items to make the UX more seamless
             home_services_list.adapter = DepartureListAdapter(emptyList(), this)
             viewModel.getDepartures()
-            viewModel.getJourneyPlan()
+            //viewModel.getJourneyPlan()
         }
     }
 

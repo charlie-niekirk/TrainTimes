@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorFragSearch"
     android:transitionName="@string/dep_search_transition">
 
@@ -35,8 +36,9 @@
             android:layout_height="match_parent"
             android:hint="@string/station_search_hint"
             android:inputType="text"
+            android:textColor="@color/colorPrimary"
             android:fontFamily="@font/circularstd"
-            android:textColorHint="@color/colorPrimary"/>
+            tools:text="London Wat"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

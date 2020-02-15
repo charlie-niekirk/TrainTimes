@@ -63,6 +63,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).format(Date())
 
+        // Do this more securely
         val header = "/api/journeyplan/$origin/to/$destination$time"
             .hmac("/api/journeyplan/$origin/to/$destination")
 

@@ -11,7 +11,7 @@
     <string name="find_trains">Find Trains</string>
     <string name="dep_search_transition">depStationTransition</string>
     <string name="favourites">Favourites</string>
-    <string name="station_search_hint">London Waterloo</string>
+    <string name="station_search_hint">Train station</string>
     <string name="no_services_found">No services found &#129300;</string>
     <string name="platform_prefix">Platform: %1$s</string>
     <string name="departure_text_transition">departureDestTransitionName</string>
