@@ -7,12 +7,18 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/circularstd</item>
+        <item name="preferenceTheme">@style/AppTheme.PreferenceThemeOverlay</item>
     </style>
 
     <style name="Widget.BottomNavigationView"
         parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="fontFamily">@font/circularstd</item>
         <item name="colorSurface">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
+        <item name="android:layout">@layout/preferences_layout</item>
     </style>
 
 </resources>

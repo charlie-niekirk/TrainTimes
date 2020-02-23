@@ -20,6 +20,7 @@ import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
@@ -88,6 +89,11 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val backward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
+        enterTransition = backward
+
+        val forward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+        exitTransition = forward
         // TODO: Why is this not working?
         home_services_list.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
@@ -119,6 +125,10 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
             home_services_list.adapter = DepartureListAdapter(emptyList(), this)
             viewModel.getDepartures()
             //viewModel.getJourneyPlan()
+        }
+
+        btn_settings.setOnClickListener {
+            view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
     }
 

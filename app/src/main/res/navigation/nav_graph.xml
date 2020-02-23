@@ -14,6 +14,9 @@
             android:id="@+id/action_homeFragment_to_journeyPlannerFragment"
             app:destination="@id/journeyPlannerFragment"/>
         <action
+            android:id="@+id/action_homeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"/>
+        <action
             android:id="@+id/action_homeFragment_to_serviceDetailFragment"
             app:destination="@id/serviceDetailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -45,4 +48,8 @@
         android:id="@+id/serviceDetailFragment"
         android:name="com.cniekirk.traintimes.ui.main.ServiceDetailFragment"
         android:label="ServiceDetailFragment"/>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.cniekirk.traintimes.ui.main.SettingsFragment"
+        android:label="SettingsFragment"/>
 </navigation>
