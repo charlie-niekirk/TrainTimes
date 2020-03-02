@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreferenceCompat
+        android:key="geek_mode"
+        android:icon="@drawable/ic_directions_railway"
+        android:title="Geek mode"
+        android:summaryOff="Turn on Geek mode"
+        android:summaryOn="Turn off Geek mode" />
+</PreferenceScreen>

@@ -63,7 +63,6 @@ class NetworkRailModule {
             .writeDefaultXmlDeclaration(true)
             .exceptionOnUnreadXml(false)
             .build()
-
     }
 
     @Singleton

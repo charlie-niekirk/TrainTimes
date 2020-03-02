@@ -19,4 +19,6 @@
     <string name="planner">Plan</string>
     <string name="search_hint_focused">Station Name</string>
     <string name="settings">Settings</string>
+    <string name="settings_button_content_description">Settings Button</string>
+    <string name="loading_indicator_content_description">Loading indicator</string>
 </resources>

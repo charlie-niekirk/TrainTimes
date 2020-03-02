@@ -48,6 +48,7 @@ class DepartureListAdapter(private val services: List<Service>,
 
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)
         holder.scheduledDepartureTime.text = services[position].scheduledDeparture
+        holder.tocName.text = services[position].operator
 
         val etd = services[position].estimatedDeparture
         if (!etd.equals("On Time", ignoreCase = true)) {
@@ -75,6 +76,9 @@ class DepartureListAdapter(private val services: List<Service>,
         }
         val platformName: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.departure_platform_name)
+        }
+        val tocName: MaterialTextView by lazy {
+            itemView.findViewById<MaterialTextView>(R.id.toc_name)
         }
         val scheduledDepartureTime: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.scheduled_departure_time)

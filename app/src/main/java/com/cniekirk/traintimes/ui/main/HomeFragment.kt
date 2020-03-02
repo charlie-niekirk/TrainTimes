@@ -1,17 +1,20 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.content.res.Resources
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -19,8 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
+import com.cniekirk.traintimes.utils.extensions.dp
 import com.google.android.material.textview.MaterialTextView
-import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
@@ -45,15 +48,6 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
             .get(HomeViewModel::class.java)
 
         viewModel.services.observe(viewLifecycleOwner, Observer { service ->
-            root_motion.setTransitionListener(object : MotionLayout.TransitionListener {
-                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
-                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
-                override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
-
-                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                    loading_bar.alpha = 0f
-                }
-            })
             val depAdapter = DepartureListAdapter(service, this)
             home_services_list.adapter = depAdapter
             postponeEnterTransition()
@@ -61,39 +55,27 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
                 startPostponedEnterTransition()
                 true
             }
+            val avd = loading_indicator.drawable as AnimatedVectorDrawable
+            avd.stop()
         })
 
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
             search_dep_text.text = it.crs
-            search_arrow_dep.apply {
-                setImageDrawable(requireContext().getDrawable(R.drawable.ic_clear))
-                // TODO: Replace with dimen
-                layoutParams.width = 30
-            }
         })
 
         viewModel.destStation.observe(viewLifecycleOwner, Observer {
             search_dest_text.text = it.crs
-            search_arrow_dest.apply {
-                setImageDrawable(requireContext().getDrawable(R.drawable.ic_clear))
-                // TODO: Replace with dimen
-                val lp = layoutParams as ConstraintLayout.LayoutParams
-                lp.width = 30
-                lp.height = 30
-                layoutParams = lp
-                requestLayout()
-            }
         })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val backward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
-        enterTransition = backward
-
-        val forward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
-        exitTransition = forward
+//        val backward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
+//        enterTransition = backward
+//
+//        val forward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+//        exitTransition = forward
         // TODO: Why is this not working?
         home_services_list.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
@@ -127,7 +109,7 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
             //viewModel.getJourneyPlan()
         }
 
-        btn_settings.setOnClickListener {
+        home_btn_settings.setOnClickListener {
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
     }
@@ -136,37 +118,9 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
      * Start the loading animation, looping it with the listeners
      */
     private fun startLoadingAnim() {
-        root_motion.setTransition(R.id.start, R.id.middle)
-        root_motion.setTransitionListener(listener)
-        root_motion.transitionToEnd()
-    }
-
-    private fun resetAnim() {
-        root_motion.rebuildScene()
-        root_motion.setTransition(R.id.start, R.id.middle)
-        root_motion.setTransitionListener(listener)
-        root_motion.transitionToEnd()
-    }
-
-    private val listener = object : MotionLayout.TransitionListener {
-        override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
-        override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
-        override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
-
-        override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-            root_motion.setTransition(R.id.middle, R.id.end)
-            root_motion.setTransitionListener(object : MotionLayout.TransitionListener {
-
-                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
-                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
-                override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
-
-                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                    resetAnim()
-                }
-            })
-
-            root_motion.transitionToEnd()
+        if (loading_indicator.drawable is AnimatedVectorDrawable) {
+            val avd = loading_indicator.drawable as AnimatedVectorDrawable
+            avd.start()
         }
     }
 
