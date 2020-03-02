@@ -20,18 +20,22 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
+import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.extensions.dp
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
-class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemClickListener {
+class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
+    DepartureListAdapter.DepartureItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val binding by viewBinding(FragmentHomeBinding::bind)
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
@@ -49,22 +53,22 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
 
         viewModel.services.observe(viewLifecycleOwner, Observer { service ->
             val depAdapter = DepartureListAdapter(service, this)
-            home_services_list.adapter = depAdapter
+            binding.homeServicesList.adapter = depAdapter
             postponeEnterTransition()
-            home_services_list.viewTreeObserver.addOnPreDrawListener {
+            binding.homeServicesList.viewTreeObserver.addOnPreDrawListener {
                 startPostponedEnterTransition()
                 true
             }
-            val avd = loading_indicator.drawable as AnimatedVectorDrawable
+            val avd = binding.loadingIndicator.drawable as AnimatedVectorDrawable
             avd.stop()
         })
 
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
-            search_dep_text.text = it.crs
+            binding.searchDepText.text = it.crs
         })
 
         viewModel.destStation.observe(viewLifecycleOwner, Observer {
-            search_dest_text.text = it.crs
+            binding.searchDestText.text = it.crs
         })
     }
 
@@ -77,39 +81,39 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
 //        val forward = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
 //        exitTransition = forward
         // TODO: Why is this not working?
-        home_services_list.itemAnimator = DepartureListItemAnimtor(0)
+        binding.homeServicesList.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
             .withAddDuration(250)
             .withRemoveDuration(250)
 
         val layoutManager = LinearLayoutManager(requireContext())
-        home_services_list.layoutManager = layoutManager
-        home_services_list.adapter = DepartureListAdapter(emptyList(), this)
-        home_services_list.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
+        binding.homeServicesList.layoutManager = layoutManager
+        binding.homeServicesList.adapter = DepartureListAdapter(emptyList(), this)
+        binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
 
-        search_select_dep_station.setOnClickListener {
-            val extras = FragmentNavigatorExtras(search_select_dep_station
+        binding.searchSelectDepStation.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.searchSelectDepStation
                     to getString(R.string.dep_search_transition))
             view.findNavController().navigate(R.id.stationSearchFragment,
                 bundleOf("isDeparture" to true), null, extras)
         }
 
-        search_select_dest_station.setOnClickListener {
-            val extras = FragmentNavigatorExtras(search_select_dest_station
+        binding.searchSelectDestStation.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.searchSelectDestStation
                     to getString(R.string.dep_search_transition))
             view.findNavController().navigate(R.id.stationSearchFragment,
                 bundleOf("isDeparture" to false), null, extras)
         }
 
-        search_button.setOnClickListener {
+        binding.searchButton.setOnClickListener {
             startLoadingAnim()
             // Remove old items to make the UX more seamless
-            home_services_list.adapter = DepartureListAdapter(emptyList(), this)
+            binding.homeServicesList.adapter = DepartureListAdapter(emptyList(), this)
             viewModel.getDepartures()
             //viewModel.getJourneyPlan()
         }
 
-        home_btn_settings.setOnClickListener {
+        binding.homeBtnSettings.setOnClickListener {
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
     }
@@ -119,7 +123,7 @@ class HomeFragment : Fragment(), Injectable, DepartureListAdapter.DepartureItemC
      */
     private fun startLoadingAnim() {
         if (loading_indicator.drawable is AnimatedVectorDrawable) {
-            val avd = loading_indicator.drawable as AnimatedVectorDrawable
+            val avd = binding.loadingIndicator.drawable as AnimatedVectorDrawable
             avd.start()
         }
     }
