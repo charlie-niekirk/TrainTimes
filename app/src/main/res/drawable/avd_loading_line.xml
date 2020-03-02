@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="300dp"
+            android:height="10dp"
+            android:viewportWidth="300"
+            android:viewportHeight="8">
+            <path
+                android:name="pathShape"
+                android:pathData="M 0 0 L 0 0 z"
+                android:fillColor="@color/colorAccent"
+                android:strokeColor="@color/colorAccent"
+                android:strokeWidth="8"/>
+        </vector>
+    </aapt:attr>
+    <target android:name="pathShape"
+        android:animation="@animator/loading_indeterminate"/>
+</animated-vector>

@@ -47,7 +47,7 @@ class ServiceDetailFragment: Fragment(), Injectable {
             val destinationIndex = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints?.lastIndex
             val destination = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints!![destinationIndex ?: 0]
             service_destination.text = destination.locationName
-
+            operator_name.text = serviceDetailsResult.operator
         })
 
         viewModel.getServiceDetails()
