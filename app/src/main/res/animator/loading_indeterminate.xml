@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:ordering="sequentially">
+<set xmlns:android="http://schemas.android.com/apk/res/android">
     <objectAnimator
         android:propertyName="pathData"
         android:duration="400"
@@ -11,6 +10,7 @@
         android:repeatCount="-1"/>
     <objectAnimator
         android:propertyName="pathData"
+        android:startOffset="400"
         android:duration="400"
         android:valueFrom="M 0 0 L 300 0 z"
         android:valueTo="M 300 0 L 300 0 z"

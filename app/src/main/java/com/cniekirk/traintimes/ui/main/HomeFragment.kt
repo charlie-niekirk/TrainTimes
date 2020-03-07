@@ -26,6 +26,8 @@ import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
@@ -37,6 +39,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private lateinit var viewModel: HomeViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = Hold()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,6 +121,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         }
 
         binding.homeBtnSettings.setOnClickListener {
+            val backward =  MaterialSharedAxis.create(requireContext(),  MaterialSharedAxis.Z,  false)
+            enterTransition = backward
+
+            val forward =  MaterialSharedAxis.create(requireContext(),  MaterialSharedAxis.Z,  true)
+            exitTransition = forward
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
     }

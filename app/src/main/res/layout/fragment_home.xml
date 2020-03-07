@@ -45,7 +45,8 @@
         android:background="@drawable/circular_bg"
         android:backgroundTint="@color/colorAccent"
         android:padding="5dp"
-        android:contentDescription="@string/settings_button_content_description" />
+        android:contentDescription="@string/settings_button_content_description"
+        android:transitionName="sharedElementContainer"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_select_dep_station"

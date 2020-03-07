@@ -1,6 +1,8 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +51,7 @@ class DepartureListAdapter(private val services: List<Service>,
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)
         holder.scheduledDepartureTime.text = services[position].scheduledDeparture
         holder.tocName.text = services[position].operator
+        setPillColor(holder.tocName.text.toString(), holder)
 
         val etd = services[position].estimatedDeparture
         if (!etd.equals("On Time", ignoreCase = true)) {
@@ -63,6 +66,24 @@ class DepartureListAdapter(private val services: List<Service>,
 
         holder.estimatedDepartureTime.text = services[position].estimatedDeparture
         holder.itemView.setOnClickListener { clickListener.onClick(position, holder.itemView, holder.departureDestinationName) }
+    }
+
+    private fun setPillColor(toc: String, holder: DepartureListViewHolder) {
+
+        holder.tocName.setTextColor(holder.tocName.resources.getColor(android.R.color.white, null))
+
+        when (toc.toLowerCase()) {
+            "tfl rail" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocTflRail, null))
+            }
+            "great western railway" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGwr, null))
+            }
+            "northern" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocNorthern, null))
+            }
+
+        }
     }
 
     open class DepartureListViewHolder(itemView: View):

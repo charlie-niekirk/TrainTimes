@@ -39,7 +39,7 @@ class NetworkRailModule {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
-            .callTimeout(10000, TimeUnit.MILLISECONDS)
+            .callTimeout(7000, TimeUnit.MILLISECONDS)
             .addInterceptor(logger)
             .cache(cache)
             .build()

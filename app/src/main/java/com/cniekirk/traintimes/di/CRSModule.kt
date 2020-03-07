@@ -25,7 +25,7 @@ class CRSModule {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
-            .callTimeout(10000, TimeUnit.MILLISECONDS)
+            .callTimeout(5000, TimeUnit.MILLISECONDS)
             .addInterceptor(logger)
             .build()
     }

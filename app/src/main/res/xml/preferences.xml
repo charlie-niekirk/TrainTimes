@@ -6,6 +6,6 @@
         android:summaryOff="Turn on Geek mode"
         android:summaryOn="Turn off Geek mode"
         android:title="Geek Mode"
-        android:icon="@drawable/ic_geek_mode"/>
+        android:icon="@drawable/ic_geek_mode" />
 
 </PreferenceScreen>

@@ -18,6 +18,7 @@ import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.hideKeyboard
 import com.cniekirk.traintimes.utils.extensions.onFocusChange
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.fragment_station_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -57,16 +58,25 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
         arguments?.let { isDeparture = it.getBoolean("isDeparture") }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
+            this.interpolator = interpolator
+            this.duration = 350
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val interpolator = SwooshInterpolator(350f)
-        val set = TransitionSet()
-        set.addTransition(ChangeBounds().setInterpolator(interpolator).setDuration(350))
-        set.addTransition(ChangeTransform().setInterpolator(interpolator).setDuration(350))
-        sharedElementEnterTransition = set
+//        val set = TransitionSet()
+//        set.addTransition(ChangeBounds().setInterpolator(interpolator).setDuration(350))
+//        set.addTransition(ChangeTransform().setInterpolator(interpolator).setDuration(350))
+//        sharedElementEnterTransition = set
 
         return inflater.inflate(R.layout.fragment_station_search, container, false)
     }
