@@ -160,6 +160,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_button"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/design_bottom_navigation_height"
         tools:itemCount="10"
         tools:listitem="@layout/departure_list_item" />
 

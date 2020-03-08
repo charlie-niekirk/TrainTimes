@@ -6,6 +6,8 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.model.getdepboard.res.Service
@@ -40,6 +42,7 @@ class DepartureListAdapter(private val services: List<Service>,
         holder: DepartureListViewHolder,
         position: Int
     ) {
+
         val platform = if (services[position].platform.isNullOrEmpty()) "TBD" else services[position].platform
         val destinations = services[position].destination.locations
 
@@ -82,7 +85,11 @@ class DepartureListAdapter(private val services: List<Service>,
             "northern" -> holder.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocNorthern, null))
             }
+            else -> holder.tocName.apply {
+                holder.tocName.setTextColor(holder.tocName.resources.getColor(android.R.color.black, null))
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.colorAccent, null))
 
+            }
         }
     }
 
