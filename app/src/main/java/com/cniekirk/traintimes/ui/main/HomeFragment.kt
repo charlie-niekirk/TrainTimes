@@ -1,15 +1,11 @@
 package com.cniekirk.traintimes.ui.main
 
-import android.content.res.Resources
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -23,10 +19,8 @@ import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
-import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.textview.MaterialTextView
-import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
@@ -39,11 +33,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private lateinit var viewModel: HomeViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        exitTransition = Hold()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,11 +60,35 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         })
 
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
-            binding.searchDepText.text = it.crs
+            if (it == null) {
+                binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+                binding.searchDepText.text = getString(R.string.departing_from)
+                binding.searchArrowDep.setOnClickListener(null)
+            } else {
+                if (binding.searchDepText.text.toString().equals(getString(R.string.departing_from), false)) {
+                    binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+                    binding.searchDepText.text = it.crs
+                    binding.searchArrowDep.setOnClickListener {
+                        viewModel.depStation.postValue(null)
+                    }
+                }
+            }
         })
 
         viewModel.destStation.observe(viewLifecycleOwner, Observer {
-            binding.searchDestText.text = it.crs
+            if (it == null) {
+                binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+                binding.searchDestText.text = getString(R.string.arriving_at)
+                binding.searchArrowDest.setOnClickListener(null)
+            } else {
+                if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at), false)) {
+                    binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+                    binding.searchDestText.text = it.crs
+                    binding.searchArrowDest.setOnClickListener {
+                        viewModel.destStation.postValue(null)
+                    }
+                }
+            }
         })
     }
 
@@ -116,7 +129,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             startLoadingAnim()
             // Remove old items to make the UX more seamless
             binding.homeServicesList.adapter = DepartureListAdapter(emptyList(), this)
-            viewModel.getDepartures()
+            viewModel.getTrains()
             //viewModel.getJourneyPlan()
         }
 
@@ -143,16 +156,14 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
     override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
 
         val bgName = "${getString(R.string.departure_background_transition)}-$position"
-        val destTransName = "${getString(R.string.departure_text_transition)}-$position"
 
-        val navigateBundle = bundleOf("backgroundTransName" to bgName, "destTransName" to destTransName)
+        val navigateBundle = bundleOf("backgroundTransName" to bgName)
         viewModel.services.value?.let { services ->
             viewModel.serviceDetailId.value = services[position].serviceID
         }
 
         val extras = FragmentNavigatorExtras(
-            (itemBackground as ConstraintLayout) to bgName,
-            destinationText to destTransName
+            (itemBackground as ConstraintLayout) to bgName
         )
 
         view?.findNavController()?.navigate(R.id.serviceDetailFragment,

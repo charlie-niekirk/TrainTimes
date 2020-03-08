@@ -85,10 +85,75 @@ class DepartureListAdapter(private val services: List<Service>,
             "northern" -> holder.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocNorthern, null))
             }
+            "south western railway" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocSwr, null))
+            }
+            "london overground" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocLondOverground, null))
+            }
+            "london north eastern railway" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocLner, null))
+            }
+            "hull trains" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocHullTrains, null))
+            }
+            "great northern" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGreatNorthern, null))
+            }
+            "thameslink" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocThameslink, null))
+            }
+            "greater anglia" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGreaterAnglia, null))
+            }
+            "crosscountry" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocXC, null))
+            }
+            "gatwick express" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGatwick, null))
+            }
+            "southern" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocSouthern, null))
+            }
+            "southeastern" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocSoutheastern, null))
+            }
+            "c2c" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocC2c, null))
+            }
+            "avanti west coast" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocAvantiWest, null))
+            }
+            "west midlands trains" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocWestmidlands, null))
+            }
+            "chiltern railways" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocChiltern, null))
+            }
+            "east midlands railway" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocEastMid, null))
+            }
+            "transpennine express" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocTranspenine, null))
+            }
+            "eurostar" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocEuStar, null))
+            }
+            "heathrow express" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocHeathrow, null))
+            }
+            "grand central" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGrandCentral, null))
+            }
+            "transport for wales" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocTfw, null))
+            }
+            "scotrail" -> holder.tocName.apply {
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocScotrail, null))
+            }
             else -> holder.tocName.apply {
                 holder.tocName.setTextColor(holder.tocName.resources.getColor(android.R.color.black, null))
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.colorAccent, null))
-
             }
         }
     }
@@ -119,6 +184,5 @@ class DepartureListAdapter(private val services: List<Service>,
     interface DepartureItemClickListener {
         fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView)
     }
-
 
 }

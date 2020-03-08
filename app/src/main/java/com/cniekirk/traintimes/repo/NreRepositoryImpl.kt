@@ -45,6 +45,22 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     }
 
+    override fun getArrivalsAtStation(destination: String): Either<Failure, GetStationBoardResult> {
+        val body = ArrBody(GetArrBoardWithDetailsRequest(
+            numRows = NumRows(numRows = "10"),
+            crs = Crs(crs = destination),
+            filterCrs = FilterCrs(filterCrs = destination),
+            filterType = FilterType(filterType = "to"),
+            timeOffset = TimeOffset(timeOffset = "0"),
+            timeWindow = TimeWindow(timeWindow = "0")))
+        val envelope = ArrEnvelope(header = Header(AccessToken()), body = body)
+
+        return when (networkHandler.isConnected) {
+            true -> request(nreService.getArrivalBoardWithDetails(envelope)) { it.body.getArrBoardWithDetailsResponse.getStationBoardResult }
+            false, null -> Either.Left(Failure.NetworkConnectionError())
+        }
+    }
+
     override fun getServiceDetails(serviceId: String): Either<Failure, GetServiceDetailsResult> {
 
         val body = ServiceDetailsBody(GetServiceDetailsRequest(

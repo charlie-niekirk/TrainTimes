@@ -12,6 +12,8 @@ interface NreRepository {
 
     fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult>
 
+    fun getArrivalsAtStation(destination: String): Either<Failure, GetStationBoardResult>
+
     fun getServiceDetails(serviceId: String): Either<Failure, GetServiceDetailsResult>
 
     fun getJourneyPlan(origin: String, destination: String): Either<Failure, JourneyPlanResponse>

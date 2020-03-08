@@ -24,7 +24,8 @@ class HomeViewModel @Inject constructor(
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
     private val getDeparturesUseCase: GetDeparturesUseCase,
     private val getJourneyPlanUseCase: GetJourneyPlanUseCase,
-    private val getServiceDetailsUseCase: GetServiceDetailsUseCase
+    private val getServiceDetailsUseCase: GetServiceDetailsUseCase,
+    private val getArrivalsUseCase: GetArrivalsUseCase
 ) : BaseViewModel() {
 
     val services = MutableLiveData<List<Service>>()
@@ -55,11 +56,19 @@ class HomeViewModel @Inject constructor(
         getAllStationCodesUseCase(null) { it.either(::handleFailure, ::handleCrs) }
     }
 
-    fun getDepartures() {
+    fun getTrains() {
         destStation.value?.let { crs ->
-            getDeparturesUseCase(arrayOf(depStation.value!!.stationName, crs.stationName))
-            { it.either(::handleFailure, ::handleResponse) }
+            depStation.value?.let { depCrs ->
+                // Get specific departures
+                getDeparturesUseCase(arrayOf(depCrs.stationName, crs.stationName))
+                { it.either(::handleFailure, ::handleResponse) }
+            } ?: run {
+                // Get all arrivals
+                getArrivalsUseCase(arrayOf(crs.stationName))
+                { it.either(::handleFailure, ::handleResponse) }
+            }
         } ?: run {
+            // Get all departures
             getDeparturesUseCase(arrayOf(depStation.value!!.stationName, ""))
             { it.either(::handleFailure, ::handleResponse) }
         }
