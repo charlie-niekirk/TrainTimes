@@ -67,7 +67,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
     }
 
     private fun changeTocBg() {
-        binding.operatorName.setTextColor(resources.getColor(R.color.colorAccent, null))
+        binding.operatorName.setTextColor(resources.getColor(android.R.color.white, null))
 
         Log.e("Details", "TOC: ${binding.operatorName.text}")
 
@@ -146,6 +146,10 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
             }
             "scotrail" -> binding.operatorName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocScotrail, null))
+            }
+            "merseyrail" -> binding.operatorName.apply {
+                binding.operatorName.setTextColor(binding.operatorName.resources.getColor(R.color.colorBackground, null))
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocMerseyRail, null))
             }
             else -> binding.operatorName.apply {
                 binding.operatorName.setTextColor(binding.operatorName.resources.getColor(android.R.color.black, null))

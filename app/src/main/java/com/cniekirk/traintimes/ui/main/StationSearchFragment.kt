@@ -14,10 +14,12 @@ import androidx.transition.ChangeTransform
 import androidx.transition.TransitionSet
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.data.local.model.CRS
+import com.cniekirk.traintimes.databinding.FragmentStationSearchBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.hideKeyboard
 import com.cniekirk.traintimes.utils.extensions.onFocusChange
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.fragment_station_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,11 +30,12 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStationItemSelected {
+class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injectable, StationListAdapter.OnStationItemSelected {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val binding by viewBinding(FragmentStationSearchBinding::bind)
     private lateinit var viewModel: HomeViewModel
 
     private var isDeparture: Boolean = false
@@ -51,11 +54,17 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
             it?.let {
                 val adapter =
                     StationListAdapter(it, this)
-                station_list.adapter = adapter
+                binding.stationList.adapter = adapter
                 adapter.notifyDataSetChanged()
             }
         })
         arguments?.let { isDeparture = it.getBoolean("isDeparture") }
+    }
+
+    override fun onPause() {
+        // To reset the search screen, horrible I know
+        GlobalScope.launch { viewModel.queryChannel.send("") }
+        super.onPause()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,35 +76,20 @@ class StationSearchFragment: Fragment(), Injectable, StationListAdapter.OnStatio
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val interpolator = SwooshInterpolator(350f)
-//        val set = TransitionSet()
-//        set.addTransition(ChangeBounds().setInterpolator(interpolator).setDuration(350))
-//        set.addTransition(ChangeTransform().setInterpolator(interpolator).setDuration(350))
-//        sharedElementEnterTransition = set
-
-        return inflater.inflate(R.layout.fragment_station_search, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        search_dep_stations.onFocusChange { hasFocus ->
+        binding.searchDepStations.onFocusChange { hasFocus ->
             if (hasFocus)
-                search_dep_stations.setHint(R.string.search_hint_focused)
+                binding.searchDepStations.setHint(R.string.search_hint_focused)
             else
-                search_dep_stations.setHint(R.string.station_search_hint)
+                binding.searchDepStations.setHint(R.string.station_search_hint)
         }
 
-        station_list.layoutManager = LinearLayoutManager(requireContext())
-        station_list.adapter =
-            StationListAdapter(emptyList(), this)
-        btn_back.setOnClickListener { requireActivity().onBackPressed() }
-        search_dep_stations.doAfterTextChanged {
+        binding.stationList.layoutManager = LinearLayoutManager(requireContext())
+        binding.stationList.adapter = StationListAdapter(emptyList(), this)
+        binding.btnBack.setOnClickListener { requireActivity().onBackPressed() }
+        binding.searchDepStations.doAfterTextChanged {
             GlobalScope.launch {
                 viewModel.queryChannel.send(it.toString())
             }

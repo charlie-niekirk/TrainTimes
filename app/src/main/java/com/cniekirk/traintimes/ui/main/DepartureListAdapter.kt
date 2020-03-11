@@ -151,6 +151,10 @@ class DepartureListAdapter(private val services: List<Service>,
             "scotrail" -> holder.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocScotrail, null))
             }
+            "merseyrail" -> holder.tocName.apply {
+                holder.tocName.setTextColor(holder.tocName.resources.getColor(R.color.colorBackground, null))
+                (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocMerseyRail, null))
+            }
             else -> holder.tocName.apply {
                 holder.tocName.setTextColor(holder.tocName.resources.getColor(android.R.color.black, null))
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.colorAccent, null))
