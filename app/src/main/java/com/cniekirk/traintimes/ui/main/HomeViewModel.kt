@@ -3,6 +3,7 @@ package com.cniekirk.traintimes.ui.main
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.cniekirk.traintimes.data.local.model.CRS
+import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.getdepboard.res.Service
@@ -68,9 +69,13 @@ class HomeViewModel @Inject constructor(
                 { it.either(::handleFailure, ::handleResponse) }
             }
         } ?: run {
-            // Get all departures
-            getDeparturesUseCase(arrayOf(depStation.value!!.stationName, ""))
-            { it.either(::handleFailure, ::handleResponse) }
+            // Check if empty
+            depStation.value?.let {
+                Log.e("VM", "????")
+                // Get all departures
+                getDeparturesUseCase(arrayOf(depStation.value!!.stationName, ""))
+                { it.either(::handleFailure, ::handleResponse) }
+            } ?: run { handleFailure(Failure.NoCrsFailure()) }
         }
     }
 

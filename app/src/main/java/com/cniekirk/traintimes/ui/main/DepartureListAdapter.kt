@@ -11,6 +11,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.model.getdepboard.res.Service
+import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
 
@@ -48,7 +49,7 @@ class DepartureListAdapter(private val services: List<Service>,
 
         holder.itemView.transitionName = "${holder.itemView.context.getString(R.string.departure_background_transition)}-$position"
 
-        holder.departureDestinationName.text = destinations[destinations.size - 1].locationName
+        holder.departureDestinationName.text = destinations[destinations.size - 1].locationName.parseEncoded()
         holder.departureDestinationName.transitionName = "${holder.itemView.context.getString(R.string.departure_text_transition)}-$position"
 
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)

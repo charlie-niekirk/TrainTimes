@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
+import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -87,6 +89,16 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
                     binding.searchArrowDest.setOnClickListener {
                         viewModel.destStation.postValue(null)
                     }
+                }
+            }
+        })
+
+        viewModel.failure.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Failure.NoCrsFailure -> {
+                    Snackbar.make(binding.root, "No station selected!", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(resources.getColor(R.color.colorRed, null))
+                        .show()
                 }
             }
         })

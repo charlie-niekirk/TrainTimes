@@ -11,13 +11,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.transition.ChangeTransform
 import androidx.transition.TransitionSet
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
+import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
+import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.fragment_service_detail.*
 import javax.inject.Inject
@@ -47,10 +52,11 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
             val destinationIndex = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints?.lastIndex
             val destination = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints!![destinationIndex ?: 0]
-            binding.serviceDestination.text = destination.locationName
+            binding.serviceDestination.text = destination.locationName.parseEncoded()
             binding.operatorName.text = serviceDetailsResult.operator
-            changeTocBg()
             binding.operatorName.alpha = 1f
+            changeTocBg()
+            processTimePill(serviceDetailsResult)
         })
 
         viewModel.getServiceDetails()
@@ -58,11 +64,33 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         arguments?.let {
             binding.backgroundView.transitionName = it.getString("backgroundTransName")
             //service_destination.transitionName = it.getString("destTransName")
-        } ?:run {  }
+        } ?:run {}
+    }
+
+    private fun processTimePill(serviceDetailsResult: GetServiceDetailsResult) {
+        serviceDetailsResult.etd?.let {
+            if (it.equals(getString(R.string.on_time), true)) {
+                binding.currentRunningTime.text = serviceDetailsResult.std
+                binding.currentRunningTime.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null))
+                binding.currentRunningTime.alpha = 1f
+            } else {
+                binding.currentRunningTime.text = it
+                binding.currentRunningTime.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.colorRed, null))
+                binding.currentRunningTime.alpha = 1f
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.backUpBtn.setOnClickListener { findNavController().popBackStack() }
     }
 
     override fun onPause() {
         binding.operatorName.alpha = 0f
+        binding.currentRunningTime.alpha = 0f
         super.onPause()
     }
 

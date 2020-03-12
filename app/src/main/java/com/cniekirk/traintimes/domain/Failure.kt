@@ -7,6 +7,7 @@ sealed class Failure {
 
     class NetworkConnectionError: Failure()
     class ServerError(): Failure()
+    class NoCrsFailure(): Failure()
 
     abstract class FeatureFailure: Failure()
 

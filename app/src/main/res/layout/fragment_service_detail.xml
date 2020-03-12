@@ -25,7 +25,7 @@
         android:id="@+id/operator_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPillText"
         android:textSize="14sp"
         android:fontFamily="@font/circularstd"
         app:layout_constraintStart_toStartOf="@id/service_destination"
@@ -37,7 +37,28 @@
         android:paddingEnd="8dp"
         android:layout_marginTop="8dp"
         android:alpha="0"
-        tools:text="Great Western Railway"/>
+        tools:text="Great Western Railway"
+        tools:alpha="1"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/current_running_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPillText"
+        android:textSize="14sp"
+        android:fontFamily="@font/circularstd"
+        app:layout_constraintStart_toEndOf="@id/operator_name"
+        app:layout_constraintTop_toTopOf="@id/operator_name"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/pill_toc_bg"
+        android:backgroundTint="@color/colorGreen"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:alpha="0"
+        tools:text="16:04"
+        tools:alpha="1"/>
 
     <ImageView
         android:id="@+id/back_up_btn"

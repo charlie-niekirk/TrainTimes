@@ -9,4 +9,5 @@
     <color name="colorFragSearch">#81D4FA</color>
     <color name="colorRed">#ef9a9a</color>
     <color name="colorGreen">#A5D6A7</color>
+    <color name="colorPillText">#FFFFFF</color>
 </resources>

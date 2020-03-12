@@ -11,7 +11,7 @@ import com.cniekirk.traintimes.domain.Failure
  */
 abstract class BaseViewModel: ViewModel() {
 
-    private val failure: MutableLiveData<Failure> = MutableLiveData()
+    val failure: MutableLiveData<Failure> = MutableLiveData()
 
     /**
      * @param failure: The failure associated with the failed operation
