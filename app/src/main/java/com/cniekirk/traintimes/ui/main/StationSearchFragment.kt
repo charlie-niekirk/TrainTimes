@@ -1,27 +1,21 @@
 package com.cniekirk.traintimes.ui.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.ChangeBounds
-import androidx.transition.ChangeTransform
-import androidx.transition.TransitionSet
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.databinding.FragmentStationSearchBinding
 import com.cniekirk.traintimes.di.Injectable
-import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
+import com.cniekirk.traintimes.ui.adapter.StationListAdapter
 import com.cniekirk.traintimes.utils.extensions.hideKeyboard
 import com.cniekirk.traintimes.utils.extensions.onFocusChange
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.transition.MaterialContainerTransform
-import kotlinx.android.synthetic.main.fragment_station_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -53,7 +47,10 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
         viewModel.crsStationCodes.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val adapter =
-                    StationListAdapter(it, this)
+                    StationListAdapter(
+                        it,
+                        this
+                    )
                 binding.stationList.adapter = adapter
                 adapter.notifyDataSetChanged()
             }
@@ -87,7 +84,11 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
         }
 
         binding.stationList.layoutManager = LinearLayoutManager(requireContext())
-        binding.stationList.adapter = StationListAdapter(emptyList(), this)
+        binding.stationList.adapter =
+            StationListAdapter(
+                emptyList(),
+                this
+            )
         binding.btnBack.setOnClickListener { requireActivity().onBackPressed() }
         binding.searchDepStations.doAfterTextChanged {
             GlobalScope.launch {

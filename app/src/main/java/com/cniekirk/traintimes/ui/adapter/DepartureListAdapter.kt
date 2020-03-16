@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.ui.main
+package com.cniekirk.traintimes.ui.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Paint
@@ -6,8 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.model.getdepboard.res.Service
@@ -16,7 +14,8 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
 
 class DepartureListAdapter(private val services: List<Service>,
-                           private val clickListener: DepartureItemClickListener)
+                           private val clickListener: DepartureItemClickListener
+)
     : RecyclerView.Adapter<DepartureListAdapter.DepartureListViewHolder>() {
 
     init {
@@ -34,7 +33,9 @@ class DepartureListAdapter(private val services: List<Service>,
     ): DepartureListViewHolder {
         val departureLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.departure_list_item, parent, false)
-        return DepartureListViewHolder(departureLayout)
+        return DepartureListViewHolder(
+            departureLayout
+        )
     }
 
     override fun getItemCount() = services.size

@@ -5,5 +5,5 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "lt7:callingPointList")
 data class CallingPointsList(
-    @Element val callingPoints: List<CallingPoint>
+    @Element var callingPoints: MutableList<CallingPoint>
 )

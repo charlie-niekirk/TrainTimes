@@ -10,4 +10,5 @@
     <color name="colorRed">#ef9a9a</color>
     <color name="colorGreen">#A5D6A7</color>
     <color name="colorPillText">#FFFFFF</color>
+    <color name="colorSidelineTrans">#60FFFFFF</color>
 </resources>

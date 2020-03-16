@@ -19,10 +19,12 @@ import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
@@ -50,7 +52,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             .get(HomeViewModel::class.java)
 
         viewModel.services.observe(viewLifecycleOwner, Observer { service ->
-            val depAdapter = DepartureListAdapter(service, this)
+            val depAdapter =
+                DepartureListAdapter(
+                    service,
+                    this
+                )
             binding.homeServicesList.adapter = depAdapter
             postponeEnterTransition()
             binding.homeServicesList.viewTreeObserver.addOnPreDrawListener {
@@ -102,6 +108,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
                 }
             }
         })
+
+        exitTransition = Hold().apply { duration = 270 }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -120,7 +128,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         val layoutManager = LinearLayoutManager(requireContext())
         binding.homeServicesList.layoutManager = layoutManager
-        binding.homeServicesList.adapter = DepartureListAdapter(emptyList(), this)
+        binding.homeServicesList.adapter =
+            DepartureListAdapter(
+                emptyList(),
+                this
+            )
         binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
 
         binding.searchSelectDepStation.setOnClickListener {
@@ -140,7 +152,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         binding.searchButton.setOnClickListener {
             startLoadingAnim()
             // Remove old items to make the UX more seamless
-            binding.homeServicesList.adapter = DepartureListAdapter(emptyList(), this)
+            binding.homeServicesList.adapter =
+                DepartureListAdapter(
+                    emptyList(),
+                    this
+                )
             viewModel.getTrains()
             //viewModel.getJourneyPlan()
         }

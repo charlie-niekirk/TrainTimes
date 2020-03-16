@@ -6,6 +6,7 @@ import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.delayrepay.DelayRepay
 import com.cniekirk.traintimes.model.getdepboard.req.*
+import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlanResponse
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 @Singleton
 class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,
@@ -69,7 +71,26 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         val envelope = ServiceDetailsEnvelope(header = Header(AccessToken()), serviceDetailsBody = body)
 
         return when (networkHandler.isConnected) {
-            true -> request(nreService.getServiceDetails(envelope)) { it.body.getServiceDetailsResponse.getServiceDetailsResult }
+            true -> request(nreService.getServiceDetails(envelope)) {
+                val serviceDetails = it.body.getServiceDetailsResponse.getServiceDetailsResult
+                val previous = serviceDetails.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints
+                val subsequent = serviceDetails.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints
+                val realPrev = ArrayList<CallingPoint>()
+                val realSub = ArrayList<CallingPoint>()
+                previous?.forEach { callingPoint ->
+                    callingPoint.actualTime?.let {
+                        realPrev.add(callingPoint)
+                    } ?: run { realSub.add(callingPoint) }
+                }
+
+                val current = CallingPoint(serviceDetails.locationName!!, serviceDetails.stationCode!!,
+                    serviceDetails.std!!, serviceDetails.etd, serviceDetails.atd)
+                realSub.add(current)
+
+                serviceDetails.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints = realPrev
+                serviceDetails.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints = (realSub + subsequent!!).toMutableList()
+                serviceDetails
+            }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 

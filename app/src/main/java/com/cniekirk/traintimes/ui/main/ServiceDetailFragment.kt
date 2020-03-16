@@ -8,22 +8,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.ChangeTransform
 import androidx.transition.TransitionSet
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
+import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
+import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
+import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_IN
 import kotlinx.android.synthetic.main.fragment_service_detail.*
 import javax.inject.Inject
 
@@ -38,6 +45,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
+            fadeMode = FADE_MODE_CROSS
             interpolator = SwooshInterpolator(270f)
             duration = 270
         }
@@ -52,6 +60,21 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
             val destinationIndex = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints?.lastIndex
             val destination = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints!![destinationIndex ?: 0]
+            val previousCallingPoints = serviceDetailsResult.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints
+            val subsequentCallingPoints = serviceDetailsResult.subsequentCallingPoints.subsequentCallingPoints[0].callingPoints
+
+            //serviceDetailsResult.
+
+//            val current = listOf(CallingPoint(serviceDetailsResult.locationName!!, serviceDetailsResult.stationCode!!,
+//                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
+
+            val allCallingPoints = previousCallingPoints?.plus(subsequentCallingPoints)
+                ?: subsequentCallingPoints
+            val currentIndex = if (previousCallingPoints != null)  previousCallingPoints.size - 1 else 0
+
+            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex)
+            binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
+
             binding.serviceDestination.text = destination.locationName.parseEncoded()
             binding.operatorName.text = serviceDetailsResult.operator
             binding.operatorName.alpha = 1f
@@ -71,13 +94,11 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         serviceDetailsResult.etd?.let {
             if (it.equals(getString(R.string.on_time), true)) {
                 binding.currentRunningTime.text = serviceDetailsResult.std
-                binding.currentRunningTime.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null))
+                binding.currentRunningTime.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null))
                 binding.currentRunningTime.alpha = 1f
             } else {
                 binding.currentRunningTime.text = it
-                binding.currentRunningTime.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.colorRed, null))
+                binding.currentRunningTime.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorRed, null))
                 binding.currentRunningTime.alpha = 1f
             }
         }
@@ -86,6 +107,14 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.backUpBtn.setOnClickListener { findNavController().popBackStack() }
+
+        binding.stationStops.itemAnimator = DepartureListItemAnimtor(0)
+            .withInterpolator(FastOutSlowInInterpolator())
+            .withAddDuration(250)
+            .withRemoveDuration(250)
+
+        binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
+        binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0)
     }
 
     override fun onPause() {
