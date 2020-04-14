@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/colorFragSearch"
+    android:background="@color/colorAccent"
     android:transitionName="@string/dep_search_transition">
 
     <ImageView
@@ -27,7 +27,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
         android:layout_marginStart="16dp"
-        app:boxBackgroundColor="@color/colorFragSearch"
+        android:layout_marginEnd="16dp"
+        app:boxBackgroundColor="@color/colorAccent"
         android:textColorHint="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText

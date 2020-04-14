@@ -23,7 +23,7 @@ import javax.inject.Singleton
 /**
  * @author Charlie Niekirk
  */
-@Module(includes = [ViewModelModule::class])
+@Module
 class NetworkRailModule {
 
     @Provides

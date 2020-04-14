@@ -1,6 +1,7 @@
 package com.cniekirk.traintimes
 
 import android.app.Application
+import android.content.res.Configuration
 import com.cniekirk.traintimes.di.AppInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector

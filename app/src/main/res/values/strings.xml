@@ -22,4 +22,54 @@
     <string name="settings_button_content_description">Settings Button</string>
     <string name="loading_indicator_content_description">Loading indicator</string>
     <string name="on_time">On Time</string>
+    <string name="error_no_destination">Please select a destination!</string>
+    <string name="jouney_plan">Plan Journey</string>
+    <string name="default_datetime">Today, now</string>
+    <string name="date_key">date_string</string>
+    <string name="default_railcard">No Railcards</string>
+    <string name="railcard_title">Railcards</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="increment">+</string>
+    <string name="railcards_chip_text">Railcards: %1$s</string>
+    <string name="default_passengers">1 Adult</string>
+    <string name="passenger_select_title">People</string>
+    <string name="passenger_text">People: %1$s</string>
+    <string name="error_more_railcards">Cannot have more railcards than people!</string>
+    <string-array name="railcard_codes">
+        <item name="yng">YNG</item>
+        <item name="tsu">TSU</item>
+        <item name="fam">FAM</item>
+        <item name="jcp">JCP</item>
+        <item name="dcr">DCR</item>
+        <item name="dis">DIS</item>
+        <item name="dcg">DCG</item>
+        <item name="hmf">HMF</item>
+        <item name="2tr">2TR</item>
+        <item name="ngc">NGC</item>
+        <item name="new">NEW</item>
+        <item name="ndj">NDJ</item>
+        <item name="srn">SRN</item>
+        <item name="hrc">HRC</item>
+    </string-array>
+    <string-array name="railcards">
+        <item name="yng">16–25</item>
+        <item name="tsu">16–17</item>
+        <item name="fam">Family &amp; Friends</item>
+        <item name="jcp">Jobcentre Plus discount</item>
+        <item name="dcr">Devon &amp; Cornwall</item>
+        <item name="dis">Disabled Persons</item>
+        <item name="dcg">Devon &amp; Cornwall Gold</item>
+        <item name="hmf">HM Forces (MOD)</item>
+        <item name="2tr">Two Together</item>
+        <item name="ngc">Annual Gold (Network gold)</item>
+        <item name="new">Network Railcard</item>
+        <item name="ndj">New Deal Photocard Scotland</item>
+        <item name="srn">Senior Railcard</item>
+        <item name="hrc">Highland Railcard</item>
+    </string-array>
+    <string-array name="passenger_types">
+        <item>Adults</item>
+        <item>Children (4–14)</item>
+    </string-array>
 </resources>

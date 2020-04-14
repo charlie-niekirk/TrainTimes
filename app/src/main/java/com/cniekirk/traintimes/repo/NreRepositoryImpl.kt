@@ -8,8 +8,9 @@ import com.cniekirk.traintimes.model.delayrepay.DelayRepay
 import com.cniekirk.traintimes.model.getdepboard.req.*
 import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
+import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
-import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlanResponse
+import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
 import com.cniekirk.traintimes.model.servicedetails.req.GetServiceDetailsRequest
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
@@ -96,17 +97,15 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     }
 
-    override fun getJourneyPlan(origin: String, destination: String): Either<Failure, JourneyPlanResponse> {
-
-        val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).format(Date())
+    override fun getJourneyPlan(request: JourneyPlanRepoRequest): Either<Failure, JourneyPlannerResponse> {
 
         // Do this more securely
-        val header = "/api/journeyplan/$origin/to/$destination$time"
-            .hmac("/api/journeyplan/$origin/to/$destination")
+        val header = "/api/journeyplan/${request.origin}/to/${request.destination}${request.journeyPlanRequest.departTime}"
+            .hmac("/api/journeyplan/${request.origin}/to/${request.destination}")
 
         return when (networkHandler.isConnected) {
-            true -> request(trackTimesService.planJourney(origin,
-                destination, JourneyPlanRequest(time), header)) { it }
+            true -> request(trackTimesService.planJourney(request.origin,
+                request.destination, request.journeyPlanRequest, header)) { it }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 

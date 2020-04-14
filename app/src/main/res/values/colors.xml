@@ -2,15 +2,18 @@
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
     <color name="transPrimary">#30FFFFFF</color>
-    <color name="colorPrimaryDark">#1976D2</color>
-    <color name="colorAccent">#1976D2</color>
+    <color name="colorPrimaryDark">#2196F3</color>
+<!--    <color name="colorAccent">#2196F3</color>-->
+    <color name="colorAccent">#101010</color>
+    <color name="colorText">#101010</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorPrimaryOff">#2000BCD4</color>
-    <color name="colorFragSearch">#1976D2</color>
     <color name="colorRed">#ef5350</color>
     <color name="colorGreen">#66BB6A</color>
     <color name="colorPillText">#FFFFFF</color>
+    <color name="colorUnselected">#757575</color>
     <color name="colorSidelineTrans">#60FFFFFF</color>
+    <color name="nreOrange">#E24E25</color>
     <color name="transparent">#00000000</color>
 
     <color name="tocTflRail">#000CA6</color>

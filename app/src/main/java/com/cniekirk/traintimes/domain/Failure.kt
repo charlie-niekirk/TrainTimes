@@ -8,6 +8,8 @@ sealed class Failure {
     class NetworkConnectionError: Failure()
     class ServerError(): Failure()
     class NoCrsFailure(): Failure()
+    class NoDestinationFailure(): Failure()
+    class MoreRailcardsThanPassengersError: Failure()
 
     abstract class FeatureFailure: Failure()
 

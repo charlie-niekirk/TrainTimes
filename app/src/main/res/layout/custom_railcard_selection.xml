@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/railcard_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="22sp"
+        android:fontFamily="@font/circularstd_bold"
+        android:text="@string/railcard_title"
+        android:textColor="@color/colorAccent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/railcard_list"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_railcard_ok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/railcard_title"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_railcard" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_railcard_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintTop_toTopOf="@id/btn_railcard_ok"
+        app:layout_constraintEnd_toStartOf="@id/btn_railcard_ok"
+        android:layout_marginEnd="8dp"
+        android:text="@string/cancel"
+        android:textColor="@color/colorAccent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_railcard_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintTop_toBottomOf="@id/railcard_list"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/ok"
+        android:textColor="@color/colorAccent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

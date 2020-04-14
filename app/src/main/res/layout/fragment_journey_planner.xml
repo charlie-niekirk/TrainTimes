@@ -2,8 +2,190 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true">
 
+    <ImageView
+        android:id="@+id/loading_indicator"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/avd_loading_line"
+        android:contentDescription="@string/loading_indicator_content_description" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/planner_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/planner"
+        android:textColor="@color/colorText"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
+        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="25dp"
+        tools:text="Plan" />
+
+    <ImageView
+        android:id="@+id/home_btn_settings"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
+        app:layout_constraintTop_toTopOf="@id/planner_title"
+        app:layout_constraintBottom_toBottomOf="@id/planner_title"
+        android:src="@drawable/ic_settings"
+        android:tint="@color/colorPrimary"
+        android:background="@drawable/circular_bg"
+        android:backgroundTint="@color/colorAccent"
+        android:padding="5dp"
+        android:contentDescription="@string/settings_button_content_description"
+        android:transitionName="sharedElementContainer"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_select_dep_station"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/rounded_search_shape"
+        android:transitionName="firstTransition"
+        app:layout_constraintBottom_toTopOf="@id/search_select_dest_station"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/planner_title"
+        app:layout_constraintWidth_percent="0.92" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/search_dep_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/departing_from"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
+        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
+        app:layout_constraintTop_toTopOf="@id/search_select_dep_station" />
+
+    <ImageView
+        android:id="@+id/search_arrow_dep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_keyboard_arrow_right"
+        android:tint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
+        app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
+        app:layout_constraintTop_toTopOf="@id/search_select_dep_station" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_select_dest_station"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_search_shape"
+        android:transitionName="secondTransition"
+        app:layout_constraintBottom_toTopOf="@id/datetime_chip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_select_dep_station"
+        app:layout_constraintWidth_percent="0.92" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/search_dest_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/arriving_at"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
+        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
+        app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
+
+    <ImageView
+        android:id="@+id/search_arrow_dest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_keyboard_arrow_right"
+        android:tint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
+        app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
+        app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/datetime_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
+        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
+        android:layout_marginTop="8dp"
+        app:chipIcon="@drawable/ic_date_range"
+        app:chipCornerRadius="8dp"
+        app:chipStrokeWidth="2dp"
+        app:chipStrokeColor="@color/colorAccent"
+        app:chipIconTint="@color/colorAccent"
+        app:chipEndPadding="5dp"
+        app:chipStartPadding="5dp"
+        android:text="@string/default_datetime"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/railcard_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/datetime_chip"
+        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        app:chipIcon="@drawable/ic_credit_card"
+        app:chipCornerRadius="8dp"
+        app:chipStrokeWidth="2dp"
+        app:chipStrokeColor="@color/nreOrange"
+        app:chipIconTint="@color/nreOrange"
+        app:chipEndPadding="5dp"
+        app:chipStartPadding="5dp"
+        android:textColor="@color/nreOrange"
+        android:text="@string/default_railcard"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/passengers_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/railcard_chip"
+        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        app:chipIcon="@drawable/ic_person_add"
+        app:chipCornerRadius="8dp"
+        app:chipStrokeWidth="2dp"
+        app:chipStrokeColor="@color/colorAccent"
+        app:chipIconTint="@color/colorAccent"
+        app:chipEndPadding="5dp"
+        app:chipStartPadding="5dp"
+        android:textColor="@color/colorAccent"
+        android:text="@string/default_passengers"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_journey_plan"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
+        app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
+        app:layout_constraintTop_toBottomOf="@id/datetime_chip"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/jouney_plan"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:backgroundTint="@color/colorAccent"
+        app:cornerRadius="6dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,13 +50,12 @@
         app:layout_constraintStart_toEndOf="@id/operator_name"
         app:layout_constraintTop_toTopOf="@id/operator_name"
         android:layout_marginStart="8dp"
-        android:background="@drawable/pill_toc_bg"
-        android:backgroundTint="@color/colorGreen"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:alpha="0"
+        android:textStyle="bold"
         tools:text="16:04"
         tools:alpha="1"/>
 

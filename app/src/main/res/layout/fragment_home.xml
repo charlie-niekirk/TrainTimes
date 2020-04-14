@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context=".ui.main.HomeFragment">
+    tools:context=".view.main.HomeFragment">
 
     <ImageView
         android:id="@+id/loading_indicator"
@@ -25,7 +25,7 @@
         android:layout_marginStart="8dp"
         android:fontFamily="@font/circularstd"
         android:text="@string/search"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorText"
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
         app:layout_constraintStart_toStartOf="@id/search_select_dep_station"

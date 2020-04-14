@@ -1,11 +1,16 @@
 package com.cniekirk.traintimes
 
-import android.graphics.PorterDuff
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.cniekirk.traintimes.databinding.ActivityMainBinding
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -15,13 +20,26 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
     private val navController by lazy { findNavController(R.id.nav_host_fragment) }
+    private val binding by viewBinding(ActivityMainBinding::inflate)
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        // If is dark mode
+        when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                Log.e(MainActivity::class.java.simpleName, "Night mode detected")
+                window.decorView.systemUiVisibility =
+                    (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                window.statusBarColor = resources.getColor(R.color.colorBackground, null)
+
+            }
+        }
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 

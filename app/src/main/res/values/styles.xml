@@ -6,9 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:fontFamily">@font/circularstd</item>
         <item name="preferenceTheme">@style/AppTheme.PreferenceThemeOverlay</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="md_font_title">@font/circularstd_bold</item>
+        <item name="md_font_body">@font/circularstd</item>
+        <item name="md_font_button">@font/circularstd_medium</item>
+        <item name="md_color_button_text">@color/colorAccent</item>
     </style>
 
     <style name="Widget.BottomNavigationView"

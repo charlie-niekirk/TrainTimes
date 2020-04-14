@@ -38,8 +38,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:itemBackground="@color/bottom_nav_color"
         app:menu="@menu/navigation_menu"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@color/colorAccent"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        app:itemTextColor="@color/bottom_nav_item_color"
         android:theme="@style/Widget.BottomNavigationView"
         android:background="@color/bottom_nav_color"
         android:backgroundTint="@color/bottom_nav_color"/>

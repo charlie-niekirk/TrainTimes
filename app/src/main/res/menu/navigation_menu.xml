@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_train"
         android:title="@string/trains"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/nearbyFragment"
+    <item android:id="@+id/journeyPlannerFragment"
         android:icon="@drawable/ic_map"
         android:title="@string/planner"
         app:showAsAction="ifRoom"/>

@@ -45,7 +45,6 @@
         android:layout_marginTop="16dp"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
-        android:textStyle="bold"
         tools:text="London Waterloo"
         tools:fontFamily="@font/circularstd"/>
 

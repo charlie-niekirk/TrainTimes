@@ -3,12 +3,13 @@
     <color name="colorPrimary">#121212</color>
     <color name="transPrimary">#30000000</color>
     <color name="colorPrimaryDark">#81D4FA</color>
-    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorAccent">#EEEEEE</color>
+    <color name="colorText">#EEEEEE</color>
     <color name="colorBackground">#202020</color>
     <color name="colorPrimaryOff">#2000BCD4</color>
-    <color name="colorFragSearch">#81D4FA</color>
     <color name="colorRed">#ef9a9a</color>
     <color name="colorGreen">#A5D6A7</color>
     <color name="colorPillText">#FFFFFF</color>
+    <color name="colorUnselected">#757575</color>
     <color name="colorSidelineTrans">#60FFFFFF</color>
 </resources>

@@ -44,7 +44,6 @@
         android:layout_marginTop="16dp"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
-        android:textStyle="bold"
         tools:text="London Waterloo"
         tools:fontFamily="@font/circularstd"/>
 
@@ -60,6 +59,17 @@
         android:layout_marginBottom="16dp"
         android:textColor="@color/colorGreen"
         tools:text="On Time"
+        tools:fontFamily="@font/circularstd"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/stop_delay_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/stop_status"
+        app:layout_constraintStart_toEndOf="@id/stop_status"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/colorRed"
+        tools:text="16:44"
         tools:fontFamily="@font/circularstd"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
