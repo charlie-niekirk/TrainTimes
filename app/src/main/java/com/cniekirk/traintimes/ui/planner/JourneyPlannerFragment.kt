@@ -1,18 +1,14 @@
-package com.cniekirk.traintimes.view.planner
+package com.cniekirk.traintimes.ui.planner
 
-import android.graphics.Typeface
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.fonts.FontFamily
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,16 +26,14 @@ import com.cniekirk.traintimes.databinding.FragmentJourneyPlannerBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.utils.viewBinding
-import com.cniekirk.traintimes.view.adapter.PassengerAdapter
-import com.cniekirk.traintimes.view.adapter.RailcardAdapter
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModel
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModelFactory
-import com.cniekirk.traintimes.view.viewmodel.JourneyPlannerViewModel
-import com.cniekirk.traintimes.view.viewmodel.JourneyPlannerViewModelFactory
+import com.cniekirk.traintimes.ui.adapter.PassengerAdapter
+import com.cniekirk.traintimes.ui.adapter.RailcardAdapter
+import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModel
+import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModelFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
-import kotlinx.android.synthetic.main.fragment_home.*
+import com.google.android.material.transition.MaterialSharedAxis
 import java.util.*
 import javax.inject.Inject
 
@@ -62,7 +56,13 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
-        exitTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
+        returnTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        enterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
+        returnTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
     }
 
     override fun onCreateView(
@@ -84,22 +84,31 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
             }
         }
 
+        binding.returnDatetimeChip.setOnClickListener {
+            MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                dateTimePicker(requireFutureDateTime = true) { _, dateTime ->
+                    viewModel.saveReturnDatetime(dateTime)
+                }
+            }
+        }
+
         binding.railcardChip.setOnClickListener {
+            viewModel.clearRailcards()
             val dlg = MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT))
                 .customView(R.layout.custom_railcard_selection)
 
             val railcardView = dlg.getCustomView()
 
             railcardView.findViewById<MaterialButton>(R.id.btn_railcard_ok).setOnClickListener {
-                if (viewModel.railcards.size > 0) {
-                    binding.railcardChip.text = String.format(getString(R.string.railcards_chip_text), viewModel.railcards.size)
+                if (viewModel.railcards.value!!.isNotEmpty()) {
+                    binding.railcardChip.text = String.format(getString(R.string.railcards_chip_text), viewModel.railcards.value!!.size)
                 }
                 dlg.dismiss()
             }
 
             railcardView.findViewById<MaterialButton>(R.id.btn_railcard_cancel).setOnClickListener {
                 // Clear the LiveData field in the ViewModel
-                viewModel.railcards.clear()
+                viewModel.railcards.postValue(emptyList())
                 binding.railcardChip.text = getString(R.string.default_railcard)
                 dlg.dismiss()
             }
@@ -115,6 +124,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
         }
 
         binding.passengersChip.setOnClickListener {
+            viewModel.clearPassengers()
             MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).show {
                 val passengerAdapter = PassengerAdapter(passengerTypes, this@JourneyPlannerFragment)
                 customListAdapter(passengerAdapter)
@@ -153,9 +163,21 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
                 bundleOf("isDeparture" to false), null, extras)
         }
 
+        binding.checkboxAddReturn.setOnCheckedChangeListener { _, isChecked ->
+            binding.returnDatetimeChip.visibility = if (isChecked) View.VISIBLE else View.GONE
+            binding.returnTitle.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+
+        binding.checkboxDirectTrains.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.directTrainsOnly.postValue(isChecked)
+        }
+
         binding.btnJourneyPlan.setOnClickListener {
-            startLoadingAnim()
             viewModel.getJourneyPlan()
+            reenterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
+            exitTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+            view.findNavController().navigate(R.id.journeyPlannerResultsFragment,
+                null, null, null)
         }
     }
 
@@ -181,6 +203,10 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
             binding.datetimeChip.text = it
         })
 
+        viewModel.returnChipDateTime.observe(viewLifecycleOwner, Observer {
+            binding.returnDatetimeChip.text = it
+        })
+
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
             if (it == null) {
                 binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
@@ -198,12 +224,14 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
         })
 
         viewModel.destStation.observe(viewLifecycleOwner, Observer {
+            Log.e("FRAG", "What is it: $it")
             if (it == null) {
+                Log.e("FRAG", "Dest is null")
                 binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
-                binding.searchDestText.text = getString(R.string.arriving_at)
+                binding.searchDestText.text = getString(R.string.arriving_at_planner)
                 binding.searchArrowDest.setOnClickListener(null)
             } else {
-                if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at), false)) {
+                if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at_planner), false)) {
                     binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
                     binding.searchDestText.text = it.crs
                     binding.searchArrowDest.setOnClickListener {
@@ -232,27 +260,25 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
             binding.searchArrowDep.setOnClickListener(null)
         }
 
+        viewModel.saveDatetime(Calendar.getInstance(Locale.ENGLISH))
+
         val date: String? = viewModel.handle[getString(R.string.date_key)]
         date?.let { binding.datetimeChip.text = it }
     }
 
-    /**
-     * Start the loading animation, looping it with the listeners
-     */
-    private fun startLoadingAnim() {
-        if (loading_indicator.drawable is AnimatedVectorDrawable) {
-            val avd = binding.loadingIndicator.drawable as AnimatedVectorDrawable
-            avd.start()
+    // Update the railcard status in the ViewModel
+    override fun onClick(position: Int, isDecrement: Boolean) {
+        if (isDecrement) {
+            Log.e("Journey", "DECREMENT")
+            viewModel.updateRailcards(railcardCodes[position], -1)
+        } else {
+            Log.e("Journey", "INCREMENT")
+            viewModel.updateRailcards(railcardCodes[position], 1)
         }
     }
 
-    // Update the railcard status in the ViewModel
-    override fun onClick(position: Int) {
-        viewModel.updateRailcards(railcardCodes[position], 1)
-    }
-
-    override fun onPassengerClick(position: Int) {
-        viewModel.updatePassengers(passengerTypes[position])
+    override fun onPassengerClick(position: Int, isDecrement: Boolean) {
+        viewModel.updatePassengers(passengerTypes[position], isDecrement)
     }
 
 }

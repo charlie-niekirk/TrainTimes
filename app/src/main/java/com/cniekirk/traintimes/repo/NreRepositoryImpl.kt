@@ -11,6 +11,7 @@ import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
+import com.cniekirk.traintimes.model.journeyplanner.res.OutwardJourney
 import com.cniekirk.traintimes.model.servicedetails.req.GetServiceDetailsRequest
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
@@ -105,7 +106,17 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,
-                request.destination, request.journeyPlanRequest, header)) { it }
+                request.destination, request.journeyPlanRequest, header)) {
+                val newJourneys = ArrayList<OutwardJourney>()
+                val cheapestJourney = it.outwardJourney?.minBy { journey ->
+                    val cheapest = journey.fare?.minBy { fare -> fare.totalPrice?.toInt()!! }
+                    cheapest?.totalPrice?.toInt()!!
+                }
+                newJourneys.add(cheapestJourney!!)
+                val uiResp = it.copy(generatedTime = it.generatedTime, nrsStatus = it.nrsStatus,
+                    outwardJourney = newJourneys, response = it.response)
+                uiResp
+            }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 

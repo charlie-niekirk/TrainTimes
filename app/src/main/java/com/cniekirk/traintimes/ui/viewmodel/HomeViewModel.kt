@@ -1,6 +1,5 @@
-package com.cniekirk.traintimes.view.viewmodel
+package com.cniekirk.traintimes.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.cniekirk.traintimes.data.local.model.CRS

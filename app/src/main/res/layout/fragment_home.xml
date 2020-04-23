@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context=".view.main.HomeFragment">
+    tools:context=".ui.main.HomeFragment">
 
     <ImageView
         android:id="@+id/loading_indicator"
@@ -132,12 +132,32 @@
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
         android:textSize="16sp"
-        app:backgroundTint="@color/colorAccent"
+        android:backgroundTint="@color/colorAccent"
         app:cornerRadius="6dp"
         app:layout_constraintBottom_toTopOf="@id/home_services_list"
-        app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
+        app:layout_constraintEnd_toStartOf="@id/disruptions_button"
         app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
-        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station" />
+        app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.727"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/disruptions_button"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        style="@style/IconOnlyButton"
+        app:layout_constraintStart_toEndOf="@id/search_button"
+        app:layout_constraintTop_toTopOf="@id/search_button"
+        app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:layout_marginStart="8dp"
+        app:strokeColor="@color/tocLondOverground"
+        app:strokeWidth="3dp"
+        app:cornerRadius="6dp"
+        app:rippleColor="@color/tocLondOverground"
+        app:icon="@drawable/ic_warning"
+        app:iconTint="@color/tocLondOverground"
+        app:layout_constraintWidth_percent="0.178"/>
 
     <ProgressBar
         android:id="@+id/departure_list_loading"

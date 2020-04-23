@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.view.adapter
+package com.cniekirk.traintimes.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View

@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.view.adapter
+package com.cniekirk.traintimes.ui.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Paint

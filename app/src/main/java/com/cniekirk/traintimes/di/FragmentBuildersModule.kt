@@ -1,11 +1,12 @@
 package com.cniekirk.traintimes.di
 
-import com.cniekirk.traintimes.view.favourites.FavouritesFragment
-import com.cniekirk.traintimes.view.main.StationSearchFragment
-import com.cniekirk.traintimes.view.main.HomeFragment
-import com.cniekirk.traintimes.view.main.ServiceDetailFragment
-import com.cniekirk.traintimes.view.planner.JourneyPlannerFragment
-import com.cniekirk.traintimes.view.planner.PlannerStationSearchFragment
+import com.cniekirk.traintimes.ui.favourites.FavouritesFragment
+import com.cniekirk.traintimes.ui.main.StationSearchFragment
+import com.cniekirk.traintimes.ui.main.HomeFragment
+import com.cniekirk.traintimes.ui.main.ServiceDetailFragment
+import com.cniekirk.traintimes.ui.planner.JourneyPlannerFragment
+import com.cniekirk.traintimes.ui.planner.JourneyPlannerResultsFragment
+import com.cniekirk.traintimes.ui.planner.PlannerStationSearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -26,6 +27,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributePlannerDepStationSearchFragment(): PlannerStationSearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributesJourneyPlannerResultsFragment(): JourneyPlannerResultsFragment
 
     @ContributesAndroidInjector
     abstract fun contributesServiceDetailFragment(): ServiceDetailFragment

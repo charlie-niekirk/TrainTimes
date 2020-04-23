@@ -21,6 +21,17 @@
         tools:text="16-25"/>
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/decrement_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/railcard_count"
+        app:layout_constraintTop_toTopOf="@id/railcard_name"
+        android:layout_marginEnd="24dp"
+        android:textColor="@color/colorRed"
+        android:text="@string/decrement"
+        android:visibility="gone"/>
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/railcard_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

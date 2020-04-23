@@ -1,38 +1,35 @@
-package com.cniekirk.traintimes.view.main
+package com.cniekirk.traintimes.ui.main
 
+import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
-import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
-import com.cniekirk.traintimes.view.adapter.DepartureListAdapter
+import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModel
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModelFactory
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
-import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -46,6 +43,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
+
+    private val avd by lazy(LazyThreadSafetyMode.NONE) { binding.loadingIndicator.drawable as AnimatedVectorDrawable }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +68,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
                 startPostponedEnterTransition()
                 true
             }
-            val avd = binding.loadingIndicator.drawable as AnimatedVectorDrawable
+            avd.clearAnimationCallbacks()
             avd.stop()
         })
 
@@ -127,7 +126,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         viewModel.failure.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Failure.NoCrsFailure -> {
-                    val avd = binding.loadingIndicator.drawable as AnimatedVectorDrawable
+                    avd.clearAnimationCallbacks()
                     avd.stop()
                     Snackbar.make(binding.root, "No station selected!", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(resources.getColor(R.color.colorRed, null))
@@ -137,7 +136,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         })
 
 //        exitTransition = Hold().apply { duration = 270 }
-        enterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
+        reenterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
         exitTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
     }
 
@@ -201,7 +200,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
      */
     private fun startLoadingAnim() {
         if (loading_indicator.drawable is AnimatedVectorDrawable) {
-            val avd = binding.loadingIndicator.drawable as AnimatedVectorDrawable
+            avd.registerAnimationCallback(object: Animatable2.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    avd.start()
+                }
+            })
             avd.start()
         }
     }

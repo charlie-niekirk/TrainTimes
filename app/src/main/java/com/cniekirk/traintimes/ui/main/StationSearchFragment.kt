@@ -1,30 +1,24 @@
-package com.cniekirk.traintimes.view.planner
+package com.cniekirk.traintimes.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.data.local.model.CRS
-import com.cniekirk.traintimes.databinding.FragmentPlannerStationSearchBinding
 import com.cniekirk.traintimes.databinding.FragmentStationSearchBinding
 import com.cniekirk.traintimes.di.Injectable
-import com.cniekirk.traintimes.view.adapter.StationListAdapter
+import com.cniekirk.traintimes.ui.adapter.StationListAdapter
 import com.cniekirk.traintimes.utils.extensions.hideKeyboard
-import com.cniekirk.traintimes.utils.extensions.onFocusChange
 import com.cniekirk.traintimes.utils.viewBinding
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModel
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModelFactory
-import com.cniekirk.traintimes.view.viewmodel.JourneyPlannerViewModel
-import com.cniekirk.traintimes.view.viewmodel.JourneyPlannerViewModelFactory
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
+import com.cniekirk.traintimes.utils.extensions.onFocusChange
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -34,13 +28,13 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class PlannerStationSearchFragment: Fragment(R.layout.fragment_planner_station_search), Injectable, StationListAdapter.OnStationItemSelected {
+class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injectable, StationListAdapter.OnStationItemSelected {
 
     @Inject
-    lateinit var viewModelFactory: JourneyPlannerViewModelFactory
+    lateinit var viewModelFactory: HomeViewModelFactory
 
-    private val binding by viewBinding(FragmentPlannerStationSearchBinding::bind)
-    private val viewModel: JourneyPlannerViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
+    private val binding by viewBinding(FragmentStationSearchBinding::bind)
+    private val viewModel: HomeViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
 
     private var isDeparture: Boolean = false
 
@@ -110,11 +104,9 @@ class PlannerStationSearchFragment: Fragment(R.layout.fragment_planner_station_s
         hideKeyboard()
         if (isDeparture) {
             //viewModel.depStation.value = crs
-            Log.d("FR", "ACTUALLY SAVED")
             viewModel.saveDepStation(crs)
         } else {
             //viewModel.destStation.value = crs
-            Log.d("FR", "ACTUALLY SAVED")
             viewModel.saveDestStation(crs)
         }
         binding.root.findNavController().popBackStack()

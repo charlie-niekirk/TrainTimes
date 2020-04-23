@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.view.custom
+package com.cniekirk.traintimes.ui.custom
 
 import android.content.Context
 import android.util.AttributeSet

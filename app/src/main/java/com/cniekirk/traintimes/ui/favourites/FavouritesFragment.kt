@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.view.favourites
+package com.cniekirk.traintimes.ui.favourites
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,11 +9,10 @@ import androidx.fragment.app.activityViewModels
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentFavouritesBinding
-import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.utils.viewBinding
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModel
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModelFactory
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import javax.inject.Inject
 
 class FavouritesFragment: Fragment(R.layout.fragment_favourites), Injectable {

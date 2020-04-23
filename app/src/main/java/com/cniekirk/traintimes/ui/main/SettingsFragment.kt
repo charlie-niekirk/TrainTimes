@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.view.main
+package com.cniekirk.traintimes.ui.main
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

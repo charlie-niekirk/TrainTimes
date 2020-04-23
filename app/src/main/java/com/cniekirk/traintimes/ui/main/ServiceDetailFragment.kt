@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes.view.main
+package com.cniekirk.traintimes.ui.main
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
@@ -7,10 +7,8 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
@@ -18,13 +16,13 @@ import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
-import com.cniekirk.traintimes.view.adapter.StationTimelineAdapter
+import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModel
-import com.cniekirk.traintimes.view.viewmodel.HomeViewModelFactory
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
+import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
 import javax.inject.Inject

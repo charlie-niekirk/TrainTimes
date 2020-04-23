@@ -25,4 +25,9 @@
         <item name="android:layout">@layout/preferences_layout</item>
     </style>
 
+    <style name="IconOnlyButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
 </resources>

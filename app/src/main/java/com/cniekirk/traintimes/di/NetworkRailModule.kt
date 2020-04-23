@@ -3,9 +3,11 @@ package com.cniekirk.traintimes.di
 import android.content.Context
 import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
+import com.cniekirk.traintimes.model.adapter.SingleToArrayAdapter
 import com.cniekirk.traintimes.repo.NreRepository
 import com.cniekirk.traintimes.repo.NreRepositoryImpl
 import com.cniekirk.traintimes.utils.extensions.callFactory
+import com.squareup.moshi.Moshi
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Lazy
@@ -67,12 +69,20 @@ class NetworkRailModule {
 
     @Singleton
     @Provides
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .add(SingleToArrayAdapter.INSTANCE)
+            .build()
+    }
+
+    @Singleton
+    @Provides
     @Named("JourneyPlan")
-    fun provideJourneyRetrofit(@Named("NREOk") okHttpClient: Lazy<OkHttpClient>): Retrofit {
+    fun provideJourneyRetrofit(@Named("NREOk") okHttpClient: Lazy<OkHttpClient>, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://livetracktimes.co.uk/")
             .callFactory { okHttpClient.get().newCall(it) }
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 

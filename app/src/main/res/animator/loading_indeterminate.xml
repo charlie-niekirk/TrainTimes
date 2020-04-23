@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<set xmlns:android="http://schemas.android.com/apk/res/android">
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
     <objectAnimator
         android:propertyName="pathData"
-        android:duration="400"
+        android:duration="530"
         android:valueFrom="M 0 0 L 0 0 z"
         android:valueTo="M 0 0 L 300 0 z"
         android:valueType="pathType"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:repeatCount="-1"/>
+        android:interpolator="@anim/fast_out_v_slow_in"/>
     <objectAnimator
         android:propertyName="pathData"
-        android:startOffset="400"
-        android:duration="400"
+        android:duration="530"
         android:valueFrom="M 0 0 L 300 0 z"
         android:valueTo="M 300 0 L 300 0 z"
         android:valueType="pathType"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:repeatCount="-1"/>
+        android:interpolator="@anim/fast_out_v_slow_in"/>
 </set>

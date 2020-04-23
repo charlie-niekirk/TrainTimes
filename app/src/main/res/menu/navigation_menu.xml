@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_bar">
     <item android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_train"
+        android:icon="@drawable/ic_hs_train"
         android:title="@string/trains"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/journeyPlannerFragment"
-        android:icon="@drawable/ic_map"
+        android:icon="@drawable/ic_planner"
         android:title="@string/planner"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/favouritesFragment"

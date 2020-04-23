@@ -1,6 +1,5 @@
-package com.cniekirk.traintimes.view.adapter
+package com.cniekirk.traintimes.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +34,7 @@ class RailcardAdapter(private val railcards: List<String>,
         holder.railcardName.text = railcards[position]
         holder.itemView.setOnClickListener {
             if (holder.railcardCount.text == holder.itemView.context.getString(R.string.increment)) {
+                holder.decrementItem.visibility = View.VISIBLE
                 holder.railcardCount.text = "X 1"
                 railcardClickListener.onClick(position)
             } else {
@@ -43,6 +43,17 @@ class RailcardAdapter(private val railcards: List<String>,
                 holder.railcardCount.text = "X $count"
                 if (count < 8)
                     railcardClickListener.onClick(position)
+            }
+        }
+        holder.decrementItem.setOnClickListener {
+            val lastChar = holder.railcardCount.text[holder.railcardCount.text.lastIndex]
+            val count = Character.getNumericValue(lastChar)
+            railcardClickListener.onClick(position, true)
+            if (count > 1) {
+                holder.railcardCount.text = "X ${count - 1}"
+            } else {
+                holder.railcardCount.text = holder.containerView.context.getString(R.string.increment)
+                holder.decrementItem.visibility = View.GONE
             }
         }
 
@@ -56,12 +67,15 @@ class RailcardAdapter(private val railcards: List<String>,
         val railcardName: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.railcard_name)
         }
+        val decrementItem: MaterialTextView by lazy {
+            itemView.findViewById<MaterialTextView>(R.id.decrement_item)
+        }
         val railcardCount: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.railcard_count)
         }
     }
 
     interface RailcardClickListener {
-        fun onClick(position: Int)
+        fun onClick(position: Int, isDecrement: Boolean = false)
     }
 }
