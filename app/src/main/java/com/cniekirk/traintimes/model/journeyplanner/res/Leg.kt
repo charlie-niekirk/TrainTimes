@@ -18,8 +18,9 @@ data class Leg(
     val destinationInstants: List<DestinationInstants?>,
     @Json(name = "destinationPlatform")
     val destinationPlatform: String?,
+    @SingleToArray
     @Json(name = "destinations")
-    val destinations: String?,
+    val destinations: List<String>?,
     @Json(name = "id")
     val id: String?,
     @Json(name = "iptisTripIdentifier")

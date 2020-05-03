@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.repo
 
+import android.util.Log
 import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
@@ -108,14 +109,12 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             true -> request(trackTimesService.planJourney(request.origin,
                 request.destination, request.journeyPlanRequest, header)) {
                 val newJourneys = ArrayList<OutwardJourney>()
-                val cheapestJourney = it.outwardJourney?.minBy { journey ->
-                    val cheapest = journey.fare?.minBy { fare -> fare.totalPrice?.toInt()!! }
-                    cheapest?.totalPrice?.toInt()!!
+                it.outwardJourney?.forEach { outward ->
+                    val cheapest = outward.fare?.minBy { fare -> fare.totalPrice?.toInt()!! }
+                    cheapest?.let { newJourneys.add(outward.copy(fare = listOf(cheapest))) }
+                        ?: run { newJourneys.add(outward) }
                 }
-                newJourneys.add(cheapestJourney!!)
-                val uiResp = it.copy(generatedTime = it.generatedTime, nrsStatus = it.nrsStatus,
-                    outwardJourney = newJourneys, response = it.response)
-                uiResp
+                it.copy(outwardJourney = newJourneys)
             }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }

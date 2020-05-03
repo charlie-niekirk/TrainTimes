@@ -102,6 +102,6 @@
         android:label="ServiceDetailFragment"/>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.cniekirk.traintimes.ui.main.SettingsFragment"
+        android:name="com.cniekirk.traintimes.ui.settings.SettingsFragment"
         android:label="SettingsFragment"/>
 </navigation>

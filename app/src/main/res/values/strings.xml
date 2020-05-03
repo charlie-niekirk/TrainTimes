@@ -44,7 +44,9 @@
     <string name="title_outbound">Outbound</string>
     <string name="title_return">Return</string>
     <string name="decrement">-</string>
-    <string name="route_desc_template">%s to %s</string>
+    <string name="route_desc_template">%s 🚆 %s</string>
+    <string name="depart_title">Departs</string>
+    <string name="journey_info">Service Info</string>
     <string-array name="railcard_codes">
         <item name="yng">YNG</item>
         <item name="tsu">TSU</item>
@@ -81,4 +83,8 @@
         <item>Adults</item>
         <item>Children (4–14)</item>
     </string-array>
+    <string name="journey_duration_format">%d hrs %d min</string>
+    <string name="journey_changes_format">%d Changes</string>
+    <string name="fastest">Fastest</string>
+    <string name="cheapest">Cheapest</string>
 </resources>

@@ -7,7 +7,7 @@ import androidx.annotation.Keep
 
 data class Timetable(
     @Json(name = "realtime")
-    val realtime: Any?,
+    val realtime: Scheduled?,
     @Json(name = "scheduled")
     val scheduled: Scheduled?
 )

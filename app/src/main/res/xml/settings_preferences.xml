@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreferenceCompat
-        android:key="geek_mode"
-        android:icon="@drawable/ic_directions_railway"
-        android:title="Geek mode"
-        android:summaryOff="Turn on Geek mode"
-        android:summaryOn="Turn off Geek mode" />
+    <PreferenceCategory
+        android:title="General">
+        <SwitchPreferenceCompat
+            android:key="default_page_live"
+            android:icon="@drawable/ic_baseline_dashboard"
+            android:title="Default launch screen"
+            android:summaryOff="Live trains"
+            android:summaryOn="Journey Planner"
+            android:defaultValue="false"/>
+        <SwitchPreferenceCompat
+            android:key="geek_mode"
+            android:icon="@drawable/ic_directions_railway"
+            android:title="Geek mode"
+            android:summaryOff="Turn on Geek mode"
+            android:summaryOn="Turn off Geek mode" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Planner">
+        <SwitchPreferenceCompat
+            android:key="show_prices"
+            android:icon="@drawable/ic_pound"
+            android:title="Show Prices"
+            android:summaryOff="Prices will not be shown in the planner"
+            android:summaryOn="Prices will be shown in the planner"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
 </PreferenceScreen>

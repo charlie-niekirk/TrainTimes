@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:layout_marginBottom="8dp">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/depart_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/circularstd"
+        android:textSize="16sp"
+        android:textColor="@color/colorAccent"
+        tools:text="NXG"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/depart_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/depart_station"
+        app:layout_constraintStart_toStartOf="@id/depart_station"
+        android:layout_marginStart="-4dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/colorGreen"
+        android:textSize="22sp"
+        tools:textSize="24sp"
+        tools:textColor="@color/colorGreen"
+        tools:text="15:37"/>
+
+    <ImageView
+        android:id="@+id/depart_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        app:layout_constraintStart_toEndOf="@id/depart_time"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/depart_station"
+        app:layout_constraintBottom_toBottomOf="@id/depart_time"
+        android:src="@drawable/circular_bg"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/journey_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/dashed_line"
+        app:layout_constraintEnd_toEndOf="@id/dashed_line"
+        app:layout_constraintBottom_toTopOf="@id/dashed_line"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/circularstd"
+        android:textSize="13sp"
+        tools:text="2 hrs 11 min"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/journey_changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/dashed_line"
+        app:layout_constraintEnd_toEndOf="@id/dashed_line"
+        app:layout_constraintTop_toBottomOf="@id/dashed_line"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/circularstd"
+        android:textSize="13sp"
+        tools:text="2 Changes"/>
+
+    <View
+        android:id="@+id/dashed_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/depart_dot"
+        app:layout_constraintEnd_toStartOf="@id/destination_dot"
+        app:layout_constraintTop_toTopOf="@id/depart_dot"
+        app:layout_constraintBottom_toBottomOf="@id/depart_dot"
+        android:background="@drawable/dashed_line"/>
+
+    <ImageView
+        android:id="@+id/destination_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        app:layout_constraintEnd_toStartOf="@id/destination_time"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/destination_station"
+        app:layout_constraintBottom_toBottomOf="@id/destination_time"
+        android:src="@drawable/circular_bg"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/destination_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/depart_station"
+        app:layout_constraintEnd_toEndOf="@id/destination_time"
+        android:fontFamily="@font/circularstd"
+        android:textSize="16sp"
+        android:textColor="@color/colorAccent"
+        tools:text="WMN"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/destination_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/destination_station"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/colorGreen"
+        android:textSize="22sp"
+        tools:textSize="24sp"
+        tools:textColor="@color/colorGreen"
+        tools:text="17:48"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/journey_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/destination_time"
+        app:layout_constraintTop_toBottomOf="@id/destination_time"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/circularstd"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="£32.79"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/ticket_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/journey_price"
+        app:layout_constraintTop_toBottomOf="@id/journey_price"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/circularstd"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@drawable/pill_toc_bg"
+        android:textColor="@color/colorBackground"
+        tools:text="Super Off-Peak Return"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/cheapest_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/ticket_type"
+        app:layout_constraintTop_toTopOf="@id/ticket_type"
+        app:layout_constraintBottom_toBottomOf="@id/ticket_type"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/pill_toc_bg"
+        android:backgroundTint="@color/colorGreen"
+        android:textColor="@color/colorBackground"
+        android:visibility="gone"
+        android:text="@string/cheapest"
+        tools:text="Cheapest"
+        tools:visibility="visible"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/fastest_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/cheapest_indicator"
+        app:layout_constraintTop_toTopOf="@id/ticket_type"
+        app:layout_constraintBottom_toBottomOf="@id/ticket_type"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/pill_toc_bg"
+        android:backgroundTint="@color/colorGreen"
+        android:textColor="@color/colorBackground"
+        android:visibility="gone"
+        android:text="@string/fastest"
+        tools:text="Fastest"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

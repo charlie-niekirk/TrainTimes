@@ -26,7 +26,9 @@ fun <T, R> request(call: Call<T>, transform: (T) -> R): Either<Failure, R> {
             }
         }
     } catch (exception: Throwable) {
-        Log.e("IMGUR", "Error: $exception")
+        exception.stackTrace.forEach {
+            Log.e("IMGUR", "Error: ${it.lineNumber}:${it.methodName}")
+        }
         Either.Left(Failure.ServerError())
     }
 }

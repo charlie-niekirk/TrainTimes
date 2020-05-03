@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.cniekirk.traintimes.base.BaseViewModel
+import com.cniekirk.traintimes.base.SingleLiveEvent
 import com.cniekirk.traintimes.base.ViewModelFactory
 import com.cniekirk.traintimes.data.local.model.CRS
+import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
@@ -27,7 +29,8 @@ class JourneyPlannerViewModel(
     val handle: SavedStateHandle,
     private val getStationsUseCase: GetStationsUseCase,
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
-    private val getJourneyPlanUseCase: GetJourneyPlanUseCase
+    private val getJourneyPlanUseCase: GetJourneyPlanUseCase,
+    private val preferenceProvider: PreferenceProvider
 ): BaseViewModel() {
 
     val crsStationCodes = MutableLiveData<List<CRS>>()
@@ -35,9 +38,9 @@ class JourneyPlannerViewModel(
     val children = MutableLiveData(0)
     val depStation = MutableLiveData<CRS>()
     val destStation = MutableLiveData<CRS>()
-    val journeyPlannerResponse = MutableLiveData<JourneyPlannerResponse>()
+    val journeyPlannerResponse = SingleLiveEvent<JourneyPlannerResponse>()
     val directTrainsOnly = MutableLiveData<Boolean>()
-    val railcards = MutableLiveData<List<Railcard>>()
+    val railcards = MutableLiveData<MutableList<Railcard>>()
 
     val chipDateTime = MutableLiveData<String>()
     val returnChipDateTime = MutableLiveData<String>()
@@ -186,17 +189,20 @@ class JourneyPlannerViewModel(
     }
 
     fun clearRailcards() {
-        railcards.postValue(emptyList())
+        railcards.postValue(mutableListOf())
     }
 
     fun updateRailcards(code: String, count: Int) {
         if (railcards.value!!.isEmpty()) {
             Log.e("VM", "Empty!")
-            railcards.postValue(listOf(Railcard(code, count)))
-        } else {
+            railcards.postValue(mutableListOf(Railcard(code, count)))
+        } else if (railcards.value!!.find{ code.equals(it.code, true) } != null) {
             railcards.value!!.find{ code.equals(it.code, true) }?.count =
                 railcards.value!!.find{ code.equals(it.code, true) }?.count?.plus(count)!!
             Log.e("VM", "Count: ${railcards.value!!.find{ code.equals(it.code, true) }?.count}")
+        } else {
+            // List exists and Railcard does not
+            railcards.value!!.add(Railcard(code, count))
         }
     }
 
@@ -214,16 +220,19 @@ class JourneyPlannerViewModel(
         crsStationCodes.value = list
     }
 
+    fun shouldShowPrice() = preferenceProvider.getShouldShowPrices()
+
 }
 
 @Singleton
 class JourneyPlannerViewModelFactory @Inject constructor(
     private val getStationsUseCase: GetStationsUseCase,
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
-    private val getJourneyPlanUseCase: GetJourneyPlanUseCase
+    private val getJourneyPlanUseCase: GetJourneyPlanUseCase,
+    private val preferenceProvider: PreferenceProvider
 ) : ViewModelFactory<JourneyPlannerViewModel> {
 
     override fun create(handle: SavedStateHandle): JourneyPlannerViewModel {
-        return JourneyPlannerViewModel(handle, getStationsUseCase, getAllStationCodesUseCase, getJourneyPlanUseCase)
+        return JourneyPlannerViewModel(handle, getStationsUseCase, getAllStationCodesUseCase, getJourneyPlanUseCase, preferenceProvider)
     }
 }

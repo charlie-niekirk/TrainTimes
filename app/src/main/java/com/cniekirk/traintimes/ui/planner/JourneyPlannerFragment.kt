@@ -25,6 +25,7 @@ import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentJourneyPlannerBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.model.journeyplanner.req.Railcard
 import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.adapter.PassengerAdapter
 import com.cniekirk.traintimes.ui.adapter.RailcardAdapter
@@ -101,14 +102,15 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
 
             railcardView.findViewById<MaterialButton>(R.id.btn_railcard_ok).setOnClickListener {
                 if (viewModel.railcards.value!!.isNotEmpty()) {
-                    binding.railcardChip.text = String.format(getString(R.string.railcards_chip_text), viewModel.railcards.value!!.size)
+                    val numRailcards = viewModel.railcards.value?.map { railcard -> railcard.count }?.sum()
+                    binding.railcardChip.text = String.format(getString(R.string.railcards_chip_text), numRailcards)
                 }
                 dlg.dismiss()
             }
 
             railcardView.findViewById<MaterialButton>(R.id.btn_railcard_cancel).setOnClickListener {
                 // Clear the LiveData field in the ViewModel
-                viewModel.railcards.postValue(emptyList())
+                viewModel.railcards.postValue(mutableListOf())
                 binding.railcardChip.text = getString(R.string.default_railcard)
                 dlg.dismiss()
             }
@@ -224,9 +226,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
         })
 
         viewModel.destStation.observe(viewLifecycleOwner, Observer {
-            Log.e("FRAG", "What is it: $it")
             if (it == null) {
-                Log.e("FRAG", "Dest is null")
                 binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDestText.text = getString(R.string.arriving_at_planner)
                 binding.searchArrowDest.setOnClickListener(null)
@@ -269,10 +269,8 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
     // Update the railcard status in the ViewModel
     override fun onClick(position: Int, isDecrement: Boolean) {
         if (isDecrement) {
-            Log.e("Journey", "DECREMENT")
             viewModel.updateRailcards(railcardCodes[position], -1)
         } else {
-            Log.e("Journey", "INCREMENT")
             viewModel.updateRailcards(railcardCodes[position], 1)
         }
     }
