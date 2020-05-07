@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.repo
 
-import android.util.Log
 import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
@@ -10,9 +9,8 @@ import com.cniekirk.traintimes.model.getdepboard.req.*
 import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
-import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
-import com.cniekirk.traintimes.model.journeyplanner.res.OutwardJourney
+import com.cniekirk.traintimes.model.journeyplanner.res.Journey
 import com.cniekirk.traintimes.model.servicedetails.req.GetServiceDetailsRequest
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
@@ -21,8 +19,6 @@ import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.request
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
@@ -108,7 +104,19 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,
                 request.destination, request.journeyPlanRequest, header)) {
-                val newJourneys = ArrayList<OutwardJourney>()
+                val newJourneys = ArrayList<Journey>()
+
+                // Has a return Leg
+                it.inwardJourney?.let { _ ->
+                    it.outwardJourney?.let { outboundJourneys ->
+                        outboundJourneys.forEach { journey ->
+                            val returnFares = journey.fare?.filter { fare ->
+                                fare.fareType.equals("RETURN", true) }
+
+                        }
+                    }
+                }
+
                 it.outwardJourney?.forEach { outward ->
                     val cheapest = outward.fare?.minBy { fare -> fare.totalPrice?.toInt()!! }
                     cheapest?.let { newJourneys.add(outward.copy(fare = listOf(cheapest))) }

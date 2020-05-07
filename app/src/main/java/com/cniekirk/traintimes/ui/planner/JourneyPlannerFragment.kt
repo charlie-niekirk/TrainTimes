@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -56,14 +57,8 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
-        returnTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        enterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
-        returnTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
+        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+        exitTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateView(

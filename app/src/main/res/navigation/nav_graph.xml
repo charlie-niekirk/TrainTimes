@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_journeyPlannerFragment_to_journeyPlannerResultsFragment"
             app:destination="@id/journeyPlannerResultsFragment" />
+        <action
+            android:id="@+id/action_journeyPlannerFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/journeyPlannerResultsFragment"

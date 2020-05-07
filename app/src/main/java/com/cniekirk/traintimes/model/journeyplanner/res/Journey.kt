@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 import androidx.annotation.Keep
 import com.cniekirk.traintimes.model.adapter.SingleToArray
 
-data class OutwardJourney(
+data class Journey(
     @Json(name = "destination")
     val destination: String?,
     @SingleToArray

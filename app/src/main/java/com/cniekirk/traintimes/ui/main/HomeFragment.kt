@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -136,8 +137,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         })
 
 //        exitTransition = Hold().apply { duration = 270 }
-        reenterTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
-        exitTransition = MaterialFadeThrough.create(requireContext()).apply { duration = 300 }
+        enterTransition = MaterialFadeThrough.create(requireContext())
+        exitTransition = MaterialFadeThrough.create(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -195,6 +196,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+    }
+
     /**
      * Start the loading animation, looping it with the listeners
      */
@@ -215,7 +222,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         val navigateBundle = bundleOf("backgroundTransName" to bgName)
         viewModel.services.value?.let { services ->
-            viewModel.serviceDetailId.value = services[position].serviceID
+            viewModel.setServiceId(services[position].serviceID)
         }
 
         val extras = FragmentNavigatorExtras(

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
-import com.cniekirk.traintimes.databinding.FragmentJourneyPlannerBinding
 import com.cniekirk.traintimes.databinding.FragmentPlannerResultsBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.ui.adapter.JourneyPlanAdapter
@@ -23,9 +22,7 @@ import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModel
 import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.loading_indicator
 import kotlinx.android.synthetic.main.fragment_planner_results.*
 import javax.inject.Inject

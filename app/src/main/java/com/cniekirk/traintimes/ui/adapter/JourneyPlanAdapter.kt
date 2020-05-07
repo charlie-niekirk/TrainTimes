@@ -7,15 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.JourneyPlanItemBinding
-import com.cniekirk.traintimes.model.journeyplanner.res.OutwardJourney
+import com.cniekirk.traintimes.model.journeyplanner.res.Journey
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.math.absoluteValue
 
-class JourneyPlanAdapter(private val journeys: MutableList<OutwardJourney>,
+class JourneyPlanAdapter(private val journeys: MutableList<Journey>,
                          private val shouldShowPrice: Boolean):
     RecyclerView.Adapter<JourneyPlanAdapter.JourneyViewHolder>() {
 
@@ -37,7 +35,7 @@ class JourneyPlanAdapter(private val journeys: MutableList<OutwardJourney>,
         }
     }
 
-    private fun fastest(journeys: List<OutwardJourney>): Int {
+    private fun fastest(journeys: List<Journey>): Int {
         var timeDifference = 0L
         var fastest = 0
         journeys.forEachIndexed { i, journey ->
@@ -71,11 +69,11 @@ class JourneyPlanAdapter(private val journeys: MutableList<OutwardJourney>,
     open class JourneyViewHolder(private val itemBinding: JourneyPlanItemBinding):
             RecyclerView.ViewHolder(itemBinding.root) {
 
-        fun bindData(outwardJourney: OutwardJourney, shouldShowPrice: Boolean, isCheapest: Boolean, isFastest: Boolean) {
+        fun bindData(journey: Journey, shouldShowPrice: Boolean, isCheapest: Boolean, isFastest: Boolean) {
 
-            itemBinding.departStation.text = outwardJourney.origin
-            itemBinding.destinationStation.text = outwardJourney.destination
-            outwardJourney.timetable?.realtime?.let {
+            itemBinding.departStation.text = journey.origin
+            itemBinding.destinationStation.text = journey.destination
+            journey.timetable?.realtime?.let {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH)
                 val depart = LocalDateTime.parse(it.departure, formatter)
                 val arrive = LocalDateTime.parse(it.arrival, formatter)
@@ -86,7 +84,7 @@ class JourneyPlanAdapter(private val journeys: MutableList<OutwardJourney>,
                 val minutes = journeyDuration.minusHours(hours).toMinutes()
                 itemBinding.journeyDuration.text = itemBinding.root.context.getString(R.string.journey_duration_format, hours, minutes)
             } ?: run {
-                outwardJourney.timetable?.scheduled?.let {
+                journey.timetable?.scheduled?.let {
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH)
                     val depart = LocalDateTime.parse(it.departure, formatter)
                     val arrive = LocalDateTime.parse(it.arrival, formatter)
@@ -98,15 +96,15 @@ class JourneyPlanAdapter(private val journeys: MutableList<OutwardJourney>,
                     itemBinding.journeyDuration.text = itemBinding.root.context.getString(R.string.journey_duration_format, hours, minutes)
                 }
             }
-            itemBinding.journeyChanges.text = itemBinding.root.context.getString(R.string.journey_changes_format, outwardJourney.leg?.size)
-            outwardJourney.fare?.let {
+            itemBinding.journeyChanges.text = itemBinding.root.context.getString(R.string.journey_changes_format, journey.leg?.size)
+            journey.fare?.let {
                 if (shouldShowPrice) {
 
                     itemBinding.journeyPrice.visibility = View.VISIBLE
-                    itemBinding.journeyPrice.text = "£%.2f".format(outwardJourney.fare[0].totalPrice?.toFloat()
+                    itemBinding.journeyPrice.text = "£%.2f".format(journey.fare[0].totalPrice?.toFloat()
                         ?.div(100f))
                 }
-                itemBinding.ticketType.text = outwardJourney.fare[0].description
+                itemBinding.ticketType.text = journey.fare[0].description
             }
             if (isCheapest) {
                 itemBinding.cheapestIndicator.visibility = View.VISIBLE
