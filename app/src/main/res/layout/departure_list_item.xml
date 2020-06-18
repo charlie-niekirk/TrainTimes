@@ -14,10 +14,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/departure_platform_name"
         android:layout_marginStart="16dp"
-        android:paddingTop="16dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/circularstd"
         android:textColor="@color/colorText"
-        android:textSize="15sp"/>
+        android:textSize="15sp"
+        tools:text="London Waterloo"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/departure_platform_name"
@@ -30,7 +31,8 @@
         android:fontFamily="@font/circularstd"
         android:textColor="@color/colorText"
         android:textSize="14sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        tools:text="Platform: 4"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/toc_name"
@@ -48,32 +50,49 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/pill_toc_bg"
         android:textColor="@color/colorBackground"
-        tools:text="Great Western Railway" />
+        tools:text="Great Western Railway"
+        tools:backgroundTint="@color/tocGwr"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/scheduled_departure_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/estimated_departure_time"
+        app:layout_constraintTop_toTopOf="@id/departure_destination_name"
+        app:layout_constraintBottom_toBottomOf="@id/departure_destination_name"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/circularstd"
         android:textColor="@color/colorText"
         android:textSize="15sp"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        tools:text="23:01"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/estimated_departure_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/scheduled_departure_time"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/departure_platform_name"
+        app:layout_constraintBottom_toBottomOf="@id/departure_platform_name"
         app:layout_constraintEnd_toEndOf="@id/scheduled_departure_time"
-        android:layout_marginTop="5dp"
         android:fontFamily="@font/circularstd"
         android:textColor="@color/colorText"
         android:textSize="15sp"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        tools:textColor="@color/colorGreen"
+        tools:text="On Time"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/num_coaches"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/scheduled_departure_time"
+        app:layout_constraintBottom_toBottomOf="@id/toc_name"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@drawable/pill_toc_bg"
+        android:backgroundTint="@color/colorAccent"
+        android:textColor="@color/colorBackground"
+        tools:text="8 Coaches"
+        tools:backgroundTint="@color/colorAccent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

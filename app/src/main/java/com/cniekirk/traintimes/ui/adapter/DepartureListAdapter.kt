@@ -70,6 +70,13 @@ class DepartureListAdapter(private val services: List<Service>,
         }
 
         holder.estimatedDepartureTime.text = services[position].estimatedDeparture
+
+        services[position].length?.let {
+            holder.numCoaches.text = String.format(holder.containerView.resources.getString(R.string.num_coaches_text), it)
+        } ?: run {
+            holder.numCoaches.text = String.format(holder.containerView.resources.getString(R.string.num_coaches_text), holder.containerView.resources.getString(R.string.unknown_coaches))
+        }
+
         holder.itemView.setOnClickListener { clickListener.onClick(position, holder.itemView, holder.departureDestinationName) }
     }
 
@@ -167,7 +174,7 @@ class DepartureListAdapter(private val services: List<Service>,
     open class DepartureListViewHolder(itemView: View):
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
-        override val containerView: View?
+        override val containerView: View
             get() = itemView
 
         val departureDestinationName: MaterialTextView by lazy {
@@ -184,6 +191,9 @@ class DepartureListAdapter(private val services: List<Service>,
         }
         val estimatedDepartureTime: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.estimated_departure_time)
+        }
+        val numCoaches: MaterialTextView by lazy {
+            itemView.findViewById<MaterialTextView>(R.id.num_coaches)
         }
     }
 

@@ -39,8 +39,8 @@ class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

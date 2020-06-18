@@ -5,16 +5,19 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
+import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
@@ -25,9 +28,10 @@ import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
+import com.google.android.material.transition.MaterialSharedAxis
 import javax.inject.Inject
 
-class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injectable {
+class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injectable, StationTimelineAdapter.OnStationItemClickedListener {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
@@ -37,7 +41,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
             fadeMode = FADE_MODE_CROSS
             interpolator = SwooshInterpolator(270f)
             duration = 270
@@ -62,7 +66,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                 ?: subsequentCallingPoints
             val currentIndex = if (previousCallingPoints != null)  previousCallingPoints.size - 1 else 0
 
-            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex)
+            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
             binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
 
             binding.serviceDestination.text = destination.locationName.parseEncoded()
@@ -105,7 +109,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
             .withRemoveDuration(250)
 
         binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
-        binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0)
+        binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0, this)
     }
 
     override fun onPause() {
@@ -204,6 +208,12 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.colorAccent, null))
             }
         }
+    }
+
+    override fun onStationItemClicked(station: CallingPoint) {
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        view?.findNavController()?.navigate(R.id.stationDetailFragment, bundleOf("station" to station.stationCode))
     }
 
 }

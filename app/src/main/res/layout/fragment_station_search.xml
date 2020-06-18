@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/colorAccent"
+    android:background="@color/colorSearchFill"
     android:transitionName="@string/dep_search_transition">
 
     <ImageView
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_arrow_back"
-        android:tint="@color/colorPrimary"
+        android:tint="@color/colorAccent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
@@ -28,8 +28,7 @@
         app:layout_constraintBottom_toBottomOf="@id/btn_back"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:boxBackgroundColor="@color/colorAccent"
-        android:textColorHint="@color/colorPrimary">
+        app:boxBackgroundColor="@color/colorSearchFill">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_dep_stations"
@@ -37,7 +36,7 @@
             android:layout_height="match_parent"
             android:hint="@string/station_search_hint"
             android:inputType="text"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:fontFamily="@font/circularstd"
             tools:text="London Wat"/>
 

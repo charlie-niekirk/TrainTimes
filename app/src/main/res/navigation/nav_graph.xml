@@ -102,9 +102,17 @@
     <fragment
         android:id="@+id/serviceDetailFragment"
         android:name="com.cniekirk.traintimes.ui.main.ServiceDetailFragment"
-        android:label="ServiceDetailFragment"/>
+        android:label="ServiceDetailFragment">
+        <action
+            android:id="@+id/action_serviceDetailFragment_to_stationDetailFragment"
+            app:destination="@id/stationDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.cniekirk.traintimes.ui.settings.SettingsFragment"
         android:label="SettingsFragment"/>
+    <fragment
+        android:id="@+id/stationDetailFragment"
+        android:name="com.cniekirk.traintimes.ui.station.StationDetailFragment"
+        android:label="StationDetailFragment"/>
 </navigation>

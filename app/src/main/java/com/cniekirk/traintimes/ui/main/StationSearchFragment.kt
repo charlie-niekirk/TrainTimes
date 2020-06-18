@@ -20,6 +20,7 @@ import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.extensions.onFocusChange
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -70,10 +71,17 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
-            this.interpolator = interpolator
-            this.duration = 350
-        }
+        val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+        exitTransition = backward
+
+        val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+        enterTransition = forward
+
+//        sharedElementEnterTransition = MaterialContainerTransform().apply {
+//            //this.
+//            this.interpolator = interpolator
+//            this.duration = 350
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

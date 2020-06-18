@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TrainTimes</string>
+    <string name="app_name">TrackTimes</string>
 
     <string name="search">Search</string>
     <string name="nearby">Nearby</string>
@@ -87,4 +87,24 @@
     <string name="journey_changes_format">%d Changes</string>
     <string name="fastest">Fastest</string>
     <string name="cheapest">Cheapest</string>
+    <string name="no_fare_text">No fare information</string>
+    <string name="num_coaches_text">%s Coaches</string>
+    <string name="unknown_coaches">🤷‍</string>
+    <string name="map_parse_error">Map style parsing failed</string>
+    <string name="toilets">🚽 Toilets:</string>
+    <string name="staffing">🕴️ Staff:</string>
+    <string name="seating_areas">💺 Seating:</string>
+    <string name="food">🍜 Food:</string>
+    <string name="showers">🚿 Showers:</string>
+    <string name="baby_change">👶 Baby changing:</string>
+    <string name="full_time">fullTime</string>
+    <string name="full_time_description">Full time staff available</string>
+    <string name="part_time">partTime</string>
+    <string name="part_time_description">Part time staff available</string>
+    <string name="no_time_description">Station is unstaffed</string>
+    <string name="address_header">Address:</string>
+    <string name="no_maps_installed">Maps application not installed</string>
+    <string name="open_in_maps">Open in Maps</string>
+    <string name="details_header">Information</string>
+    <string name="default_notification_channel_id">tracktimes</string>
 </resources>

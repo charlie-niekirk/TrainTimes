@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <include layout="@layout/guidelines"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/map_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/station_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/screen_title_size"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
+        app:layout_constraintTop_toTopOf="@id/header_guide"
+        android:textColor="@color/colorText"
+        android:fontFamily="@font/circularstd"
+        tools:text="Elephant &amp; Castle"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
+        app:layout_constraintEnd_toEndOf="@id/end_guide"
+        app:layout_constraintTop_toBottomOf="@id/station_name"
+        app:layout_constraintBottom_toBottomOf="@id/map_bottom"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_corner_mask"
+        android:outlineProvider="background" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/station_stats_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/station_selector_btn_bg"
+        app:layout_constraintTop_toBottomOf="@id/map_bottom"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
+        app:layout_constraintEnd_toEndOf="@id/end_guide"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/details_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/circularstd"
+            android:textSize="18sp"
+            android:textColor="@color/colorText"
+            android:text="@string/details_header"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/toilets"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:text="@string/toilets"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/details_heading"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/is_toilet_available"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintTop_toTopOf="@id/toilets"
+            app:layout_constraintBottom_toBottomOf="@id/toilets"
+            app:layout_constraintStart_toEndOf="@id/toilets"
+            android:layout_marginStart="4dp"
+            tools:src="@drawable/ic_baseline_check"
+            android:tint="@color/colorGreen"
+            android:background="@drawable/checkmark_background"
+            android:outlineProvider="bounds"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/staffing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:text="@string/staffing"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@id/toilets"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/staffing_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="@id/staffing"
+            app:layout_constraintStart_toEndOf="@id/staffing"
+            tools:text="@string/full_time_description"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/seating_areas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:text="@string/seating_areas"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@id/staffing"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/is_seating_available"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintTop_toTopOf="@id/seating_areas"
+            app:layout_constraintBottom_toBottomOf="@id/seating_areas"
+            app:layout_constraintStart_toEndOf="@id/seating_areas"
+            android:layout_marginStart="4dp"
+            tools:src="@drawable/ic_baseline_check"
+            android:tint="@color/colorGreen"
+            android:background="@drawable/checkmark_background"
+            android:outlineProvider="bounds"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/food"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:text="@string/food"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@id/seating_areas"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/is_food_available"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintTop_toTopOf="@id/food"
+            app:layout_constraintBottom_toBottomOf="@id/food"
+            app:layout_constraintStart_toEndOf="@id/food"
+            android:layout_marginStart="4dp"
+            tools:src="@drawable/ic_baseline_check"
+            android:tint="@color/colorGreen"
+            android:background="@drawable/checkmark_background"
+            android:outlineProvider="bounds"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/showers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:text="@string/showers"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@id/food"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/is_showers_available"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintTop_toTopOf="@id/showers"
+            app:layout_constraintBottom_toBottomOf="@id/showers"
+            app:layout_constraintStart_toEndOf="@id/showers"
+            android:layout_marginStart="4dp"
+            tools:src="@drawable/ic_baseline_check"
+            android:tint="@color/colorGreen"
+            android:background="@drawable/checkmark_background"
+            android:outlineProvider="bounds"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/baby_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            android:textColor="@color/colorAccent"
+            android:text="@string/baby_change"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@id/showers"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/is_baby_change_available"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintTop_toTopOf="@id/baby_change"
+            app:layout_constraintBottom_toBottomOf="@id/baby_change"
+            app:layout_constraintStart_toEndOf="@id/baby_change"
+            android:layout_marginStart="4dp"
+            tools:src="@drawable/ic_baseline_check"
+            android:tint="@color/colorGreen"
+            android:background="@drawable/checkmark_background"
+            android:outlineProvider="bounds"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/address_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            app:layout_constraintTop_toBottomOf="@id/baby_change"
+            app:layout_constraintStart_toStartOf="@id/baby_change"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:text="@string/address_header"
+            android:textColor="@color/colorAccent"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstd"
+            app:layout_constraintTop_toBottomOf="@id/address_header"
+            app:layout_constraintStart_toStartOf="@id/address_header"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_in_maps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/address"
+            app:layout_constraintTop_toBottomOf="@id/address"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="@color/colorText"
+            app:rippleColor="@color/colorText"
+            app:strokeWidth="2dp"
+            app:icon="@drawable/ic_baseline_map"
+            app:iconTint="@color/colorText"
+            android:text="@string/open_in_maps"
+            android:textColor="@color/colorText"
+            android:layout_marginTop="8dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

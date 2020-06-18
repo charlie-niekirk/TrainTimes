@@ -30,6 +30,7 @@ class NetworkRailModule {
 
     @Provides
     @Singleton
+    @Named("NetworkCache")
     fun provideCache(context: Context): Cache {
         return Cache(context.cacheDir, 10 * 1024 * 1024)
     }
@@ -37,7 +38,7 @@ class NetworkRailModule {
     @Singleton
     @Provides
     @Named("NREOk")
-    fun provideOkHttpClient(cache: Cache): OkHttpClient {
+    fun provideOkHttpClient(@Named("NetworkCache") cache: Cache): OkHttpClient {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
@@ -50,7 +51,7 @@ class NetworkRailModule {
     @Singleton
     @Provides
     @Named("NRE")
-    fun provideRetrofit(@Named("NREOk") okHttpClient: Lazy<OkHttpClient>, tikXml: TikXml): Retrofit {
+    fun provideRetrofit(@Named("NREOk") okHttpClient: Lazy<OkHttpClient>, @Named("Network") tikXml: TikXml): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://lite.realtime.nationalrail.co.uk/")
             .callFactory { okHttpClient.get().newCall(it) }
@@ -60,6 +61,7 @@ class NetworkRailModule {
 
     @Singleton
     @Provides
+    @Named("Network")
     fun provideTikXml(): TikXml {
         return TikXml.Builder()
             .writeDefaultXmlDeclaration(true)

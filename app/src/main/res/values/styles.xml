@@ -13,6 +13,7 @@
         <item name="md_font_body">@font/circularstd</item>
         <item name="md_font_button">@font/circularstd_medium</item>
         <item name="md_color_button_text">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorAccent</item>
     </style>
 
     <style name="Widget.BottomNavigationView"

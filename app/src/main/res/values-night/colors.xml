@@ -3,7 +3,8 @@
     <color name="colorPrimary">#121212</color>
     <color name="transPrimary">#30000000</color>
     <color name="colorPrimaryDark">#81D4FA</color>
-    <color name="colorAccent">#EEEEEE</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorSearchFill">#40FFFFFF</color>
     <color name="colorText">#EEEEEE</color>
     <color name="colorBackground">#202020</color>
     <color name="colorPrimaryOff">#2000BCD4</color>

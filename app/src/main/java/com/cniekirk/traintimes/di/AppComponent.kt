@@ -16,7 +16,8 @@ import javax.inject.Singleton
     MainActivityModule::class,
     NetworkRailModule::class,
     CRSModule::class,
-    PreferenceModule::class
+    PreferenceModule::class,
+    StationModule::class
 ])
 interface AppComponent {
 

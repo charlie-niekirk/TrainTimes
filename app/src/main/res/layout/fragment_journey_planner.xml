@@ -4,27 +4,28 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/colorBackground">
+
+    <include layout="@layout/guidelines"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/planner_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:fontFamily="@font/circularstd"
         android:text="@string/planner"
         android:textColor="@color/colorText"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toTopOf="@id/search_select_dep_station"
-        app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/screen_title_size"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
+        app:layout_constraintTop_toTopOf="@id/header_guide"
         tools:text="Plan" />
 
     <ImageView
         android:id="@+id/home_btn_settings"
         android:layout_width="34dp"
         android:layout_height="34dp"
-        app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
+        app:layout_constraintEnd_toEndOf="@id/end_guide"
         app:layout_constraintTop_toTopOf="@id/planner_title"
         app:layout_constraintBottom_toBottomOf="@id/planner_title"
         android:src="@drawable/ic_settings"
@@ -39,14 +40,16 @@
         android:id="@+id/search_select_dep_station"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="35dp"
-        android:background="@drawable/rounded_search_shape"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/station_selector_btn_bg"
         android:transitionName="firstTransition"
-        app:layout_constraintBottom_toTopOf="@id/search_select_dest_station"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/end_guide"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
         app:layout_constraintTop_toBottomOf="@id/planner_title"
-        app:layout_constraintWidth_percent="0.92" />
+        android:clickable="true"
+        android:focusable="true"
+        android:outlineProvider="background"
+        android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/search_dep_text"
@@ -55,7 +58,7 @@
         android:layout_marginStart="20dp"
         android:fontFamily="@font/circularstd"
         android:text="@string/departing_from"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
         app:layout_constraintStart_toStartOf="@id/search_select_dep_station"
@@ -67,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_keyboard_arrow_right"
-        android:tint="@color/colorPrimary"
+        android:tint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
         app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
         app:layout_constraintTop_toTopOf="@id/search_select_dep_station" />
@@ -77,13 +80,15 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_search_shape"
+        android:background="@drawable/station_selector_btn_bg"
         android:transitionName="secondTransition"
-        app:layout_constraintBottom_toTopOf="@id/datetime_chip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/end_guide"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
         app:layout_constraintTop_toBottomOf="@id/search_select_dep_station"
-        app:layout_constraintWidth_percent="0.92" />
+        android:clickable="true"
+        android:focusable="true"
+        android:outlineProvider="background"
+        android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/search_dest_text"
@@ -92,7 +97,7 @@
         android:layout_marginStart="20dp"
         android:fontFamily="@font/circularstd"
         android:text="@string/arriving_at_planner"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
         app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
@@ -104,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_keyboard_arrow_right"
-        android:tint="@color/colorPrimary"
+        android:tint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
         app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
         app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
@@ -117,7 +122,7 @@
         android:text="@string/title_outbound"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/datetime_chip"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
         app:layout_constraintTop_toBottomOf="@id/search_select_dest_station"
         android:layout_marginTop="12dp"/>
 
@@ -125,7 +130,7 @@
         android:id="@+id/datetime_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
         app:layout_constraintTop_toBottomOf="@id/outbound_title"
         android:layout_marginTop="4dp"
         app:chipIcon="@drawable/ic_date_range"
@@ -176,23 +181,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:translationX="-5dp"
-        app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
         app:layout_constraintTop_toBottomOf="@id/passengers_chip"
         android:textColor="@color/colorAccent"
         android:text="@string/direct_trains"
-        android:fontFamily="@font/circularstd"/>
+        android:fontFamily="@font/circularstd"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:layout_marginTop="4dp"/>
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkbox_add_return"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:translationX="-5dp"
         app:layout_constraintStart_toEndOf="@id/checkbox_direct_trains"
         app:layout_constraintTop_toBottomOf="@id/passengers_chip"
         android:layout_marginStart="4dp"
         android:textColor="@color/colorAccent"
         android:text="@string/add_return"
-        android:fontFamily="@font/circularstd"/>
+        android:fontFamily="@font/circularstd"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:layout_marginTop="4dp"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/return_title"

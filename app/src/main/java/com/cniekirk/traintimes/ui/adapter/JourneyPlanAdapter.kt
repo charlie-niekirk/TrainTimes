@@ -26,7 +26,8 @@ class JourneyPlanAdapter(private val journeys: MutableList<Journey>,
     }
 
     override fun onBindViewHolder(holder: JourneyViewHolder, position: Int) {
-        val cheapest = journeys.minBy { outwardJourney -> outwardJourney.fare!![0].totalPrice!!.toInt() }
+        val hasFare = journeys.filter { journey -> !journey.fare.isNullOrEmpty() }
+        val cheapest = hasFare.minBy { outwardJourney -> outwardJourney.fare!![0].totalPrice!!.toInt() }
         val fastest = fastest(journeys)
         if (fastest == position) {
             holder.bindData(journeys[position], shouldShowPrice, (cheapest?.id == journeys[position].id), true)
@@ -105,6 +106,9 @@ class JourneyPlanAdapter(private val journeys: MutableList<Journey>,
                         ?.div(100f))
                 }
                 itemBinding.ticketType.text = journey.fare[0].description
+            } ?: run {
+                // If no fare then inform the user
+                itemBinding.ticketType.text = itemBinding.root.resources.getString(R.string.no_fare_text)
             }
             if (isCheapest) {
                 itemBinding.cheapestIndicator.visibility = View.VISIBLE

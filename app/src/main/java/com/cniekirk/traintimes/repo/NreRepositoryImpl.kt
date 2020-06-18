@@ -104,25 +104,25 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,
                 request.destination, request.journeyPlanRequest, header)) {
-                val newJourneys = ArrayList<Journey>()
-
+                val newOutJourneys = ArrayList<Journey>()
+                val newReturnJourneys = ArrayList<Journey>()
                 // Has a return Leg
-                it.inwardJourney?.let { _ ->
-                    it.outwardJourney?.let { outboundJourneys ->
-                        outboundJourneys.forEach { journey ->
-                            val returnFares = journey.fare?.filter { fare ->
-                                fare.fareType.equals("RETURN", true) }
-
-                        }
+                it.inwardJourney?.let { inward ->
+                    inward.forEach { inwardJourney ->
+                        val returnFares = inwardJourney.fare?.filter { fare ->
+                            fare.direction.equals("RETURN", true) }
+                        val cheapest = returnFares?.minBy { fare -> fare.totalPrice?.toInt()!! }
+                        cheapest?.let { newReturnJourneys.add(inwardJourney.copy(fare = listOf(cheapest))) }
+                            ?: run { newReturnJourneys.add(inwardJourney) }
                     }
                 }
 
                 it.outwardJourney?.forEach { outward ->
                     val cheapest = outward.fare?.minBy { fare -> fare.totalPrice?.toInt()!! }
-                    cheapest?.let { newJourneys.add(outward.copy(fare = listOf(cheapest))) }
-                        ?: run { newJourneys.add(outward) }
+                    cheapest?.let { newOutJourneys.add(outward.copy(fare = listOf(cheapest))) }
+                        ?: run { newOutJourneys.add(outward) }
                 }
-                it.copy(outwardJourney = newJourneys)
+                it.copy(outwardJourney = newOutJourneys, inwardJourney = newReturnJourneys)
             }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }

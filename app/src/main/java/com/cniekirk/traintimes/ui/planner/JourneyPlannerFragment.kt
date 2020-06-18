@@ -57,8 +57,8 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
-        exitTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateView(
@@ -132,7 +132,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
                         viewModel.children.value?.let { children ->
                             numPassengers = adults + children
                         } ?: run { numPassengers = adults }
-                    } ?: run { viewModel.children.value?.let { children -> { numPassengers = children } } }
+                    } ?: run { viewModel.children.value?.let { children -> numPassengers = children } }
 
                     if (numPassengers > 0) {
                         binding.passengersChip.text = String.format(getString(R.string.passenger_text), numPassengers)
@@ -149,6 +149,11 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
         binding.searchSelectDepStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDepStation
                     to getString(R.string.dep_search_transition))
+            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+            enterTransition = backward
+
+            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+            exitTransition = forward
             view.findNavController().navigate(R.id.plannerStationSearchFragment,
                 bundleOf("isDeparture" to true), null, extras)
         }
@@ -156,6 +161,11 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
         binding.searchSelectDestStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDestStation
                     to getString(R.string.dep_search_transition))
+            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+            enterTransition = backward
+
+            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+            exitTransition = forward
             view.findNavController().navigate(R.id.plannerStationSearchFragment,
                 bundleOf("isDeparture" to false), null, extras)
         }
@@ -171,8 +181,8 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
 
         binding.btnJourneyPlan.setOnClickListener {
             viewModel.getJourneyPlan()
-            reenterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
-            exitTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+            reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
             view.findNavController().navigate(R.id.journeyPlannerResultsFragment,
                 null, null, null)
         }

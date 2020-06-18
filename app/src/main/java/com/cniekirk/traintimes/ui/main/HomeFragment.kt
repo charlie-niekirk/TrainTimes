@@ -137,8 +137,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         })
 
 //        exitTransition = Hold().apply { duration = 270 }
-        enterTransition = MaterialFadeThrough.create(requireContext())
-        exitTransition = MaterialFadeThrough.create(requireContext())
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -163,6 +163,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         binding.searchSelectDepStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDepStation
                     to getString(R.string.dep_search_transition))
+            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+            enterTransition = backward
+
+            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+            exitTransition = forward
             view.findNavController().navigate(R.id.stationSearchFragment,
                 bundleOf("isDeparture" to true), null, extras)
         }
@@ -170,6 +175,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         binding.searchSelectDestStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDestStation
                     to getString(R.string.dep_search_transition))
+            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+            enterTransition = backward
+
+            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+            exitTransition = forward
             view.findNavController().navigate(R.id.stationSearchFragment,
                 bundleOf("isDeparture" to false), null, extras)
         }
@@ -187,10 +197,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         }
 
         binding.homeBtnSettings.setOnClickListener {
-            val backward =  MaterialSharedAxis.create(requireContext(),  MaterialSharedAxis.Z,  false)
+            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
             enterTransition = backward
 
-            val forward =  MaterialSharedAxis.create(requireContext(),  MaterialSharedAxis.Z,  true)
+            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
             exitTransition = forward
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
@@ -198,8 +208,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     override fun onResume() {
         super.onResume()
-        enterTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis.create(requireContext(), MaterialSharedAxis.Z, true)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
     }
 
     /**
@@ -231,6 +241,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         view?.findNavController()?.navigate(R.id.serviceDetailFragment,
             navigateBundle, null, extras)
+    }
+
+    override fun onPause() {
+        binding.homeServicesList.adapter = null
+        super.onPause()
     }
 
 }

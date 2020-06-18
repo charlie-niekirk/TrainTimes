@@ -15,7 +15,8 @@ import kotlinx.android.extensions.LayoutContainer
 
 class StationTimelineAdapter(
     private val callingPoints: List<CallingPoint>,
-    private val currentIndex: Int
+    private val currentIndex: Int,
+    private val onStationItemClickedListener: OnStationItemClickedListener
 ): RecyclerView.Adapter<StationTimelineAdapter.StationTimelineViewHolder>() {
 
     // TODO: Replace with sealed class for exhaustive when
@@ -106,6 +107,8 @@ class StationTimelineAdapter(
             holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
             holder.stationIndicator.background.colorFilter = sideColor
         }
+
+        holder.containerView?.setOnClickListener { onStationItemClickedListener.onStationItemClicked(callingPoints[position]) }
     }
 
     open class StationTimelineViewHolder(itemView: View)
@@ -132,5 +135,8 @@ class StationTimelineAdapter(
 
     }
 
+    interface OnStationItemClickedListener {
+        fun onStationItemClicked(station: CallingPoint)
+    }
 
 }

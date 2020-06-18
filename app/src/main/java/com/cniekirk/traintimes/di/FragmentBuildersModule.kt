@@ -7,6 +7,7 @@ import com.cniekirk.traintimes.ui.main.ServiceDetailFragment
 import com.cniekirk.traintimes.ui.planner.JourneyPlannerFragment
 import com.cniekirk.traintimes.ui.planner.JourneyPlannerResultsFragment
 import com.cniekirk.traintimes.ui.planner.PlannerStationSearchFragment
+import com.cniekirk.traintimes.ui.station.StationDetailFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -33,5 +34,8 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributesServiceDetailFragment(): ServiceDetailFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeStationDetailFragment(): StationDetailFragment
 
 }

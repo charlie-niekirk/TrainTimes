@@ -9,10 +9,10 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val backward =  MaterialSharedAxis.create(requireContext(),  MaterialSharedAxis.Z,  false)
+        val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
         exitTransition = backward
 
-        val forward =  MaterialSharedAxis.create(requireContext(),  MaterialSharedAxis.Z,  true)
+        val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
         enterTransition = forward
     }
 

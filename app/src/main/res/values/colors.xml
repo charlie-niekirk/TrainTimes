@@ -6,6 +6,7 @@
 <!--    <color name="colorAccent">#2196F3</color>-->
     <color name="colorAccent">#101010</color>
     <color name="colorText">#101010</color>
+    <color name="colorSearchFill">#40101010</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorPrimaryOff">#2000BCD4</color>
     <color name="colorRed">#ef5350</color>

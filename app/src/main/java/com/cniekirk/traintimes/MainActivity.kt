@@ -34,8 +34,7 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 Log.e(MainActivity::class.java.simpleName, "Night mode detected")
-                window.decorView.systemUiVisibility =
-                    (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
                 window.statusBarColor = resources.getColor(R.color.colorBackground, null)
 
             }
