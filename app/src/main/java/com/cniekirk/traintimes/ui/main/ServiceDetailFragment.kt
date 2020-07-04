@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -26,6 +27,7 @@ import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
 import com.google.android.material.transition.MaterialSharedAxis
@@ -50,34 +52,6 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
-            val destinationIndex = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints?.lastIndex
-            val destination = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints!![destinationIndex ?: 0]
-            val previousCallingPoints = serviceDetailsResult.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints
-            val subsequentCallingPoints = serviceDetailsResult.subsequentCallingPoints.subsequentCallingPoints[0].callingPoints
-
-            //serviceDetailsResult.
-
-//            val current = listOf(CallingPoint(serviceDetailsResult.locationName!!, serviceDetailsResult.stationCode!!,
-//                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
-
-            val allCallingPoints = previousCallingPoints?.plus(subsequentCallingPoints)
-                ?: subsequentCallingPoints
-            val currentIndex = if (previousCallingPoints != null)  previousCallingPoints.size - 1 else 0
-
-            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
-            binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
-
-            binding.serviceDestination.text = destination.locationName.parseEncoded()
-            binding.operatorName.text = serviceDetailsResult.operator
-            binding.operatorName.alpha = 1f
-            changeTocBg()
-            processTimePill(serviceDetailsResult)
-        })
-
-        viewModel.getServiceDetails()
-
         arguments?.let {
             binding.backgroundView.transitionName = it.getString("backgroundTransName")
             //service_destination.transitionName = it.getString("destTransName")
@@ -110,11 +84,43 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 
         binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
         binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0, this)
+
+        binding.btnWatch.setOnClickListener {
+            Snackbar.make(binding.root, R.string.watching_train, Snackbar.LENGTH_SHORT).show()
+        }
+
+        viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
+            val destinationIndex = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints?.lastIndex
+            val destination = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints!![destinationIndex ?: 0]
+            val previousCallingPoints = serviceDetailsResult.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints
+            val subsequentCallingPoints = serviceDetailsResult.subsequentCallingPoints.subsequentCallingPoints[0].callingPoints
+
+            //serviceDetailsResult.
+
+//            val current = listOf(CallingPoint(serviceDetailsResult.locationName!!, serviceDetailsResult.stationCode!!,
+//                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
+
+            val allCallingPoints = previousCallingPoints?.plus(subsequentCallingPoints)
+                ?: subsequentCallingPoints
+            val currentIndex = if (previousCallingPoints != null)  previousCallingPoints.size - 1 else 0
+
+            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
+            binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
+
+            binding.serviceDestination.text = destination.locationName.parseEncoded()
+            binding.operatorName.text = serviceDetailsResult.operator
+            serviceDetailsResult.platform?.let {
+                binding.platformNumber.text = it
+            } ?: run { binding.platformNumber.alpha = 0f }
+            changeTocBg()
+            processTimePill(serviceDetailsResult)
+        })
+
+        viewModel.getServiceDetails()
     }
 
     override fun onPause() {
-        binding.operatorName.alpha = 0f
-        binding.currentRunningTime.alpha = 0f
+        viewModel.serviceDetailsResult.removeObservers(viewLifecycleOwner)
         super.onPause()
     }
 

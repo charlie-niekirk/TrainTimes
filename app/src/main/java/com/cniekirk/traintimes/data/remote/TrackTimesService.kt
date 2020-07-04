@@ -3,6 +3,8 @@ package com.cniekirk.traintimes.data.remote
 import com.cniekirk.traintimes.model.delayrepay.DelayRepay
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
+import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -19,5 +21,10 @@ interface TrackTimesService {
     fun getDelayRepayUrl(@Path("operator") operator: String,
                          @Header("X-Gorgon") authHeader: String)
     : Call<DelayRepay>
+
+    @POST("/api/track")
+    fun trackService(@Header("X-Gorgon") authHeader: String,
+                     @Body trackServiceRequest: TrackServiceRequest)
+    : Call<ResponseBody>
 
 }

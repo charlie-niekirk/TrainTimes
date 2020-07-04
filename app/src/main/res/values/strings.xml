@@ -107,4 +107,7 @@
     <string name="open_in_maps">Open in Maps</string>
     <string name="details_header">Information</string>
     <string name="default_notification_channel_id">tracktimes</string>
+    <string name="watching">Watching</string>
+    <string name="watching_train">"You will be alerted to updates "</string>
+    <string name="watch_train">Set alert</string>
 </resources>
