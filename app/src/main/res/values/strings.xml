@@ -110,4 +110,6 @@
     <string name="watching">Watching</string>
     <string name="watching_train">"You will be alerted to updates "</string>
     <string name="watch_train">Set alert</string>
+    <string name="reconnected">Internet Reconnected</string>
+    <string name="disconnected">Internet not connected!</string>
 </resources>

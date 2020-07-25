@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
@@ -56,6 +58,22 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        viewModel.connectionStateEmitter.observe(viewLifecycleOwner, Observer { connected ->
+            connected?.let {
+                if (connected) {
+                    val sb = Snackbar.make(binding.root, R.string.reconnected, Snackbar.LENGTH_SHORT)
+                    sb.anchorView = binding.snackbarLocation
+                    sb.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorGreen))
+                    sb.show()
+                } else {
+                    val sb = Snackbar.make(binding.root, R.string.disconnected, Snackbar.LENGTH_LONG)
+                    sb.anchorView = binding.snackbarLocation
+                    sb.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorRed))
+                    sb.show()
+                }
+            }
+        })
 
         viewModel.services.observe(viewLifecycleOwner, Observer { service ->
             val depAdapter =

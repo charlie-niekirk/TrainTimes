@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.repo
 
+import android.util.Log
 import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
@@ -17,6 +18,7 @@ import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceId
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.utils.NetworkHandler
+import com.cniekirk.traintimes.utils.Sign
 import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.request
 import javax.inject.Inject
@@ -29,6 +31,9 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                                             private val trackTimesService: TrackTimesService): NreRepository {
 
     override fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult> {
+
+        val signer = Sign()
+        Log.e("TEST_CPP", signer.sign("Hello!"))
 
         val body = Body(GetDepBoardWithDetailsRequest(
             numRows = NumRows(numRows = "10"),
@@ -100,6 +105,9 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         // Do this more securely
         val header = "/api/journeyplan/${request.origin}/to/${request.destination}${request.journeyPlanRequest.departTime}"
             .hmac("/api/journeyplan/${request.origin}/to/${request.destination}")
+
+        val signer = Sign()
+        Log.e("TEST_CPP", signer.sign("Hello!"))
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,
