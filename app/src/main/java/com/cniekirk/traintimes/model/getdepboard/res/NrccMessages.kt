@@ -5,5 +5,5 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "lt4:nrccMessages")
 data class NrccMessages(
-    @Element(name = "lt:services") val messages: List<Message>?
+    @Element(name = "t5:message") val messages: List<Message>?
 )

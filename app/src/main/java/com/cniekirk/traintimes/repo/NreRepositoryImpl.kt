@@ -33,7 +33,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
     override fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetStationBoardResult> {
 
         val signer = Sign()
-        Log.e("TEST_CPP", signer.sign("Hello!"))
+        Log.e("TEST_CPP", signer.sign(ByteArray(0x00)))
 
         val body = Body(GetDepBoardWithDetailsRequest(
             numRows = NumRows(numRows = "10"),
@@ -107,7 +107,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             .hmac("/api/journeyplan/${request.origin}/to/${request.destination}")
 
         val signer = Sign()
-        Log.e("TEST_CPP", signer.sign("Hello!"))
+        Log.e("TEST_CPP", signer.sign(ByteArray(0x00)))
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,

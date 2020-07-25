@@ -31,7 +31,10 @@ extern "C" {
 
     jbyteArray e(JNIEnv *env, jclass, jbyteArray plaintext)
     {
-        return env->NewStringUTF("Hello from native!");
+        jbyte a[] = {1,2,3,4,5,6};
+        jbyteArray ret = env->NewByteArray(6);
+        env->SetByteArrayRegion (ret, 0, 6, a);
+        return ret;
     }
 
     static JNINativeMethod methods[] = {

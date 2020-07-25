@@ -4,12 +4,12 @@ import com.tickaroo.tikxml.annotation.Attribute
 import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.Xml
 
-@Xml(name = "v:Envelope")
+@Xml(name = "soapenv:Envelope")
 data class Envelope(
-    @Attribute(name = "xmlns:i") val xmlnsI: String = "http://www.w3.org/2001/XMLSchema-instance",
-    @Attribute(name = "xmlns:d") val xmlnsD: String = "http://www.w3.org/2001/XMLSchema",
-    @Attribute(name = "xmlns:c") val xmlnsC: String = "http://www.w3.org/2003/05/soap-encoding",
-    @Attribute(name = "xmlns:v") val xmlnsV: String = "http://www.w3.org/2003/05/soap-envelope",
+    @Attribute(name = "xmlns:typ") val xmlnsI: String = "http://thalesgroup.com/RTTI/2013-11-28/Token/types",
+    @Attribute(name = "xmlns:ldb") val xmlnsD: String = "http://thalesgroup.com/RTTI/2017-10-01/ldbsv/",
+//    @Attribute(name = "xmlns:c") val xmlnsC: String = "http://www.w3.org/2003/05/soap-encoding",
+//    @Attribute(name = "xmlns:v") val xmlnsV: String = "http://www.w3.org/2003/05/soap-envelope",
     @Element val header: Header,
     @Element val body: Body
 )

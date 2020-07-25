@@ -4,7 +4,7 @@ import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
 
-@Xml(name = "lt7:service")
+@Xml(name = "t12:service")
 data class Service(
     @PropertyElement(name = "lt4:std") val scheduledDeparture: String?,
     @PropertyElement(name = "lt4:etd") val estimatedDeparture: String?,
