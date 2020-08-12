@@ -12,6 +12,8 @@ import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DepartureListAdapter(private val services: List<Service>,
                            private val clickListener: DepartureItemClickListener
@@ -50,7 +52,7 @@ class DepartureListAdapter(private val services: List<Service>,
 
         holder.itemView.transitionName = "${holder.itemView.context.getString(R.string.departure_background_transition)}-$position"
 
-        holder.departureDestinationName.text = destinations[destinations.size - 1].locationName.parseEncoded()
+        holder.departureDestinationName.text = destinations[destinations.size - 1].locationName?.parseEncoded()
         holder.departureDestinationName.transitionName = "${holder.itemView.context.getString(R.string.departure_text_transition)}-$position"
 
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)
@@ -58,18 +60,29 @@ class DepartureListAdapter(private val services: List<Service>,
         holder.tocName.text = services[position].operator
         setPillColor(holder.tocName.text.toString(), holder)
 
-        val etd = services[position].estimatedDeparture
-        if (!etd.equals("On Time", ignoreCase = true)) {
-            holder.scheduledDepartureTime.paintFlags =
-                (holder.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
-            holder.estimatedDepartureTime
-                .setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
-        } else {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+        val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+        val std = sdf.parse(services[position].scheduledDeparture!!)
+        services[position].estimatedDeparture?.let {
+            val etd = sdf.parse(it)
+            if (etd!!.after(std)) {
+                holder.scheduledDepartureTime.paintFlags =
+                    (holder.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
+                holder.estimatedDepartureTime
+                    .setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                holder.estimatedDepartureTime.text = output.format(etd)
+            } else {
+                holder.estimatedDepartureTime
+                    .setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                holder.estimatedDepartureTime.text = "On Time"
+            }
+        } ?: run {
             holder.estimatedDepartureTime
                 .setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+            holder.estimatedDepartureTime.text = "On Time"
         }
 
-        holder.estimatedDepartureTime.text = services[position].estimatedDeparture
+        holder.scheduledDepartureTime.text = output.format(std)
 
         services[position].length?.let {
             holder.numCoaches.text = String.format(holder.containerView.resources.getString(R.string.num_coaches_text), it)

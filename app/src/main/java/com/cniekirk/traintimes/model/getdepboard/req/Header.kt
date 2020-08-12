@@ -4,7 +4,7 @@ import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
 
-@Xml(name = "soapenv:Header")
+@Xml(name = "soap:Header")
 data class Header(
     @Element val accessToken: AccessToken
 )

@@ -5,5 +5,5 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "t12:destination")
 data class Destination(
-    @Element val locations: List<Location>
+    @Element val locations: List<StartEndLocation>
 )

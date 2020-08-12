@@ -5,6 +5,12 @@ import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.data.remote.CRSService
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.model.crs.req.CRSRequestBody
+import com.cniekirk.traintimes.model.crs.req.CRSRequestEnvelope
+import com.cniekirk.traintimes.model.crs.req.GetStationListRequest
+import com.cniekirk.traintimes.model.crs.res.CRSResponseEnvelope
+import com.cniekirk.traintimes.model.getdepboard.req.AccessToken
+import com.cniekirk.traintimes.model.getdepboard.req.Header
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.request
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -19,29 +25,33 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
 
         return if (crsDao.getCrsCodes().isNotEmpty()) {
-            val codes = crsDao.getCrsCodes()
+            val codes = crsDao.getCrsCodes().sortedBy { it.stationName }
             val matches = if (query.isNotEmpty()) {
                 codes.filter { crs -> crs.crs.contains(query, true)
                     .or(crs.crs.contains(query, true)) }
             } else { codes }
             Either.Right(matches)
         } else {
+
+            val req = GetStationListRequest()
+            val body = CRSRequestBody(req)
+            val env = CRSRequestEnvelope(header = Header(AccessToken()), crsRequestBody = body)
+
             when (networkHandler.isConnected) {
-                true -> request(crsService.getCrsCodes()) { saveCrsCodes(it) }
+                true -> request(crsService.getCrsCodes(env)) { saveCrsCodes(it) }
                 false, null -> Either.Left(Failure.NetworkConnectionError())
             }
         }
 
     }
 
-    private fun saveCrsCodes(responseBody: ResponseBody): List<CRS> {
+    private fun saveCrsCodes(crsResponseEnvelope: CRSResponseEnvelope): List<CRS> {
 
-        val rows: List<Map<String, String>> = csvReader().readAllWithHeader(responseBody.string())
-        crsDao.insertAll(rows.map {
-            CRS(it.getValue("CRS Code"), it.getValue("Station Name"))
+        crsDao.insertAll(crsResponseEnvelope.crsResponseBody.stationListResponse.getStationListResult.stationList.stations.map {
+            CRS(it.stationName, it.crs)
         })
 
-        return crsDao.getCrsCodes()
+        return crsDao.getCrsCodes().sortedBy { it.stationName }
 
     }
 

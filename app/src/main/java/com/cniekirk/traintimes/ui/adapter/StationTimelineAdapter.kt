@@ -3,18 +3,23 @@ package com.cniekirk.traintimes.ui.adapter
 import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
+import com.cniekirk.traintimes.model.getdepboard.res.Location
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
+import java.text.SimpleDateFormat
+import java.util.*
 
 class StationTimelineAdapter(
-    private val callingPoints: List<CallingPoint>,
+    private val callingPoints: List<Location?>,
     private val currentIndex: Int,
     private val onStationItemClickedListener: OnStationItemClickedListener
 ): RecyclerView.Adapter<StationTimelineAdapter.StationTimelineViewHolder>() {
@@ -70,45 +75,64 @@ class StationTimelineAdapter(
         holder: StationTimelineViewHolder,
         position: Int
     ) {
-        holder.stationName.text = callingPoints[position].locationName.parseEncoded()
+        callingPoints[position]?.let {
 
-        if (!callingPoints[position].estimatedTime.isNullOrEmpty()) {
-            holder.stationStatus.text = callingPoints[position].scheduledTime
-            if (callingPoints[position].estimatedTime.equals("On Time", ignoreCase = true) or
-                callingPoints[position].estimatedTime.equals("Departed", ignoreCase = true)) {
-                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+            holder.stationName.text = callingPoints[position]?.locationName?.parseEncoded()
+
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+            val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+
+            val std = if (callingPoints[position]?.std.isNullOrEmpty()) {
+                Log.d("WTF", callingPoints[position].toString())
+                sdf.parse(callingPoints[position]?.sta!!)
             } else {
-                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
-                holder.stationStatus.text = callingPoints[position].estimatedTime
+                sdf.parse(callingPoints[position]?.std!!)
             }
-        } else {
+
+            if (!callingPoints[position]?.etd.isNullOrEmpty()) {
+                val etd = sdf.parse(callingPoints[position]?.etd!!)
+                holder.stationStatus.text = output.format(etd!!)
+                if (!etd.after(std)) {
+                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                } else {
+                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                }
+            } else {
 //            if (callingPoints[position].actualTime.equals(callingPoints[position].scheduledTime, true)) {
 //                Log.e("ADAPT", "ETD: ${callingPoints[position].estimatedTime} STD: ${callingPoints[position].scheduledTime}")
 //                holder.stationStatus.text = callingPoints[position].scheduledTime
 //            } else {
 //                holder.stationStatus.text = "${callingPoints[position].scheduledTime} ${callingPoints[position].actualTime}"
 //            }
-            holder.stationStatus.text = callingPoints[position].scheduledTime
-            if (callingPoints[position].actualTime.equals("On Time", ignoreCase = true) or
-                callingPoints[position].actualTime.equals("Departed", ignoreCase = true)) {
-                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-            } else {
-                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
-                holder.stationStatus.text = callingPoints[position].estimatedTime
+                holder.stationStatus.text = output.format(std!!)
+                callingPoints[position]?.atd?.let {
+                    val atd = sdf.parse(callingPoints[position]?.atd!!)
+                    if (!atd!!.after(std)) {
+                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                    } else {
+                        holder.stationStatus.text = output.format(atd!!)
+                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                    }
+                } ?: run {
+                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                }
+
             }
+
+            if (position <= currentIndex) {
+                // Make green
+                holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                holder.stationIndicator.background.colorFilter = greenColor
+            } else if (position > currentIndex) {
+                // Make grey
+                holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                holder.stationIndicator.background.colorFilter = sideColor
+            }
+
+            holder.containerView?.setOnClickListener { onStationItemClickedListener.onStationItemClicked(callingPoints[position]!!) }
+
         }
 
-        if (position <= currentIndex) {
-            // Make green
-            holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-            holder.stationIndicator.background.colorFilter = greenColor
-        } else if (position > currentIndex) {
-            // Make grey
-            holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
-            holder.stationIndicator.background.colorFilter = sideColor
-        }
-
-        holder.containerView?.setOnClickListener { onStationItemClickedListener.onStationItemClicked(callingPoints[position]) }
     }
 
     open class StationTimelineViewHolder(itemView: View)
@@ -136,7 +160,7 @@ class StationTimelineAdapter(
     }
 
     interface OnStationItemClickedListener {
-        fun onStationItemClicked(station: CallingPoint)
+        fun onStationItemClicked(station: Location)
     }
 
 }

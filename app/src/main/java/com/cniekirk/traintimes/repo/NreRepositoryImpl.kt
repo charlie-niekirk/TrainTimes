@@ -103,9 +103,11 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             true -> request(nreService.getServiceDetails(envelope)) {
                 val serviceDetails = it.body.getServiceDetailsByRIDResponse.getServiceDetailsResult
 
-                val previous = serviceDetails.locations?.filter { location -> location.departureType.equals("actual", true) }
-                val subsequent = serviceDetails.locations?.filter { location -> location.departureType.equals("forecast", true) }
-                val current = serviceDetails.locations?.firstOrNull { location ->
+                Log.d("REPO", serviceDetails.locations.toString())
+
+                val previous = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Actual", true) }
+                val subsequent = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Forecast", true) }
+                val current = serviceDetails.locations?.locations?.firstOrNull { location ->
                     location.arrivalType.equals("actual", true).and(
                         location.departureType.equals("forecast", true)
                     )

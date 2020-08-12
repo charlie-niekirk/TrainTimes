@@ -18,6 +18,7 @@ import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
+import com.cniekirk.traintimes.model.getdepboard.res.Location
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
@@ -71,11 +72,11 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 //                binding.currentRunningTime.alpha = 1f
 //            }
 //        }
-        serviceDetailsResult.subsequentLocations?.let {
-            if (!it[0].sta?.equals(it[0].eta, true)!!) {
-
-            }
-        }
+//        serviceDetailsResult.subsequentLocations?.let {
+//            if (!it[0].sta?.equals(it[0].eta, true)!!) {
+//
+//            }
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,28 +96,47 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         }
 
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
-            val destinationIndex = serviceDetailsResult.subsequentLocations?.locations?.get(0)?.callingPoints?.lastIndex
-            val destination = serviceDetailsResult.subsequentLocations?.locations?.get(0)?.callingPoints!![destinationIndex ?: 0]
-            val previousCallingPoints = serviceDetailsResult.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints
-            val subsequentCallingPoints = serviceDetailsResult.subsequentLocations.locations[0].callingPoints
+            val destinationIndex = serviceDetailsResult.subsequentLocations?.lastIndex ?: 0
+            Log.d("DETAILS", serviceDetailsResult.subsequentLocations.toString())
+            val destination = serviceDetailsResult.subsequentLocations!![destinationIndex]
+            val previousCallingPoints = serviceDetailsResult.previousLocations
+            val subsequentCallingPoints = serviceDetailsResult.subsequentLocations
 
             //serviceDetailsResult.
 
 //            val current = listOf(CallingPoint(serviceDetailsResult.locationName!!, serviceDetailsResult.stationCode!!,
 //                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
 
-            val allCallingPoints = previousCallingPoints?.plus(subsequentCallingPoints)
+            val previousWithCurrent = previousCallingPoints?.plus(serviceDetailsResult.currentLocation)
+                ?: previousCallingPoints
+            var allCallingPoints = previousWithCurrent?.plus(subsequentCallingPoints)
                 ?: subsequentCallingPoints
-            val currentIndex = if (previousCallingPoints != null)  previousCallingPoints.size - 1 else 0
+            val currentIndex = previousCallingPoints?.size ?: 0
+
+            allCallingPoints = allCallingPoints.filter { location ->
+                location?.isPass?.let {
+                    !it
+                } ?: run {
+                    true
+                }
+            }
+
+            allCallingPoints = allCallingPoints.filter { location ->
+                location?.isOperational?.let {
+                    !it
+                } ?: run {
+                    true
+                }
+            }
 
             binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
             binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
 
-            binding.serviceDestination.text = destination.locationName.parseEncoded()
+            binding.serviceDestination.text = destination.locationName?.parseEncoded()
             binding.operatorName.text = serviceDetailsResult.operator
-            serviceDetailsResult.platform?.let {
-                binding.platformNumber.text = it
-            } ?: run { binding.platformNumber.alpha = 0f }
+//            serviceDetailsResult.platform?.let {
+//                binding.platformNumber.text = it
+//            } ?: run { binding.platformNumber.alpha = 0f }
             changeTocBg()
             processTimePill(serviceDetailsResult)
         })
@@ -221,7 +241,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         }
     }
 
-    override fun onStationItemClicked(station: CallingPoint) {
+    override fun onStationItemClicked(station: Location) {
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         view?.findNavController()?.navigate(R.id.stationDetailFragment, bundleOf("station" to station.stationCode))

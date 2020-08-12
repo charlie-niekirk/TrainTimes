@@ -35,8 +35,8 @@ find_library( # Defines the name of the path variable that stores the
         log )
 
 #set(OBFUSCATOR_FLAGS "-fvisibility=hidden -mllvm -bcf -mllvm -bcf_prob=100 -mllvm -bcf_loop=1 -mllvm -sub_loop=3 -mllvm -fla=1 -mllvm -sobf")
-set(OBFUSCATOR_FLAGS "-fvisibility=hidden -mllvm -sub_loop=3 -mllvm -fla=1 -mllvm -sobf")
-#set(OBFUSCATOR_FLAGS "-fvisibility=hidden")
+#set(OBFUSCATOR_FLAGS "-fvisibility=hidden -mllvm -sub_loop=3 -mllvm -fla=1 -mllvm -sobf")
+set(OBFUSCATOR_FLAGS "-fvisibility=hidden")
 string(APPEND CMAKE_CXX_FLAGS " ${OBFUSCATOR_FLAGS}")
 
 include_directories(src/main/jniLibs/armeabi-v7a/include/)

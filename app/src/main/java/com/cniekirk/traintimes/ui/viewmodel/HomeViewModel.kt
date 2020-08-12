@@ -11,6 +11,7 @@ import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.base.BaseViewModel
 import com.cniekirk.traintimes.base.ViewModelFactory
+import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -40,7 +41,7 @@ class HomeViewModel constructor(
         get() = _depStation
     val destStation: LiveData<CRS>
         get() = _destStation
-    val serviceDetailsResult: LiveData<GetServiceDetailsResult>
+    val serviceDetailsResult: LiveData<ServiceDetailsUiModel>
         get() = _serviceDetailsResult
     val serviceDetailId: LiveData<String>
         get() = _serviceDetailId
@@ -51,7 +52,7 @@ class HomeViewModel constructor(
     private val _crsStationCodes = MutableLiveData<List<CRS>>()
     private val _depStation = MutableLiveData<CRS>()
     private val _destStation = MutableLiveData<CRS>()
-    private val _serviceDetailsResult = MutableLiveData<GetServiceDetailsResult>()
+    private val _serviceDetailsResult = MutableLiveData<ServiceDetailsUiModel>()
     private val _serviceDetailId = MutableLiveData<String>()
 
     @ExperimentalCoroutinesApi
@@ -76,18 +77,18 @@ class HomeViewModel constructor(
         _destStation.value?.let { crs ->
             _depStation.value?.let { depCrs ->
                 // Get specific departures
-                getDeparturesUseCase(arrayOf(depCrs.stationName, crs.stationName))
+                getDeparturesUseCase(arrayOf(depCrs.crs, crs.crs))
                 { it.either(::handleFailure, ::handleResponse) }
             } ?: run {
                 // Get all arrivals
-                getArrivalsUseCase(arrayOf(crs.stationName))
+                getArrivalsUseCase(arrayOf(crs.crs))
                 { it.either(::handleFailure, ::handleResponse) }
             }
         } ?: run {
             // Check if empty
             _depStation.value?.let {
                 // Get all departures
-                getDeparturesUseCase(arrayOf(_depStation.value!!.stationName, ""))
+                getDeparturesUseCase(arrayOf(_depStation.value!!.crs, ""))
                 { it.either(::handleFailure, ::handleResponse) }
             } ?: run {
                 // Needed so old value isn't cached and reloaded which looks odd to the user
@@ -109,12 +110,12 @@ class HomeViewModel constructor(
 
     fun saveDepStation(crs: CRS) {
         _depStation.postValue(crs)
-        handle.set("depStation", crs.crs)
+        handle.set("depStation", crs.stationName)
     }
 
     fun saveDestStation(crs: CRS) {
         _destStation.postValue(crs)
-        handle.set("destStation", crs.crs)
+        handle.set("destStation", crs.stationName)
     }
 
     fun clearDepStation() {
@@ -139,7 +140,7 @@ class HomeViewModel constructor(
         }
     }
 
-    private fun handleServiceDetails(serviceDetails: GetServiceDetailsResult) {
+    private fun handleServiceDetails(serviceDetails: ServiceDetailsUiModel) {
         _serviceDetailsResult.value = serviceDetails
     }
 

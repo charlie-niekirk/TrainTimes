@@ -23,8 +23,7 @@ class StationListAdapter(private val stations: List<CRS>,
     }
 
     override fun onBindViewHolder(holder: StationListViewHolder, position: Int) {
-        // TODO: Figure out WTF is going on
-        holder.stationName.text = stations[position].crs
+        holder.stationName.text = stations[position].stationName
         holder.itemView.setOnClickListener { onStationItemSelected.onStationItemClicked(stations[position]) }
     }
 
