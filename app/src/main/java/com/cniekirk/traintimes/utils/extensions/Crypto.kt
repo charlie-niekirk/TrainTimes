@@ -3,7 +3,8 @@ package com.cniekirk.traintimes.utils.extensions
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
+@ExperimentalUnsignedTypes
+fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
 
 fun String.hmac(key: String): String {
 

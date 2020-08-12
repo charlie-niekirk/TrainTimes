@@ -7,5 +7,5 @@ import com.tickaroo.tikxml.annotation.Xml
 @Xml(name = "GetArrBoardWithDetailsResponse")
 data class GetArrBoardWithDetailsResponse(
     @Attribute(name = "xmlns") val xmlns: String,
-    @Element(name = "GetStationBoardResult") val getStationBoardResult: GetStationBoardResult
+    @Element(name = "GetStationBoardResult") val getBoardWithDetailsResult: GetBoardWithDetailsResult
 )

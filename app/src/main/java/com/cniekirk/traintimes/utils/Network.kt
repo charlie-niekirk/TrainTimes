@@ -26,9 +26,7 @@ fun <T, R> request(call: Call<T>, transform: (T) -> R): Either<Failure, R> {
             }
         }
     } catch (exception: Throwable) {
-        exception.stackTrace.forEach {
-            Log.e("REPO", "Error: ${it.lineNumber}:${it.methodName}")
-        }
+        Log.e("REPO", "Error: ${exception.localizedMessage}")
         Either.Left(Failure.ServerError())
     }
 }

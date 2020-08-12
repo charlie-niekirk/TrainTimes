@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -20,6 +19,7 @@ import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
+import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
@@ -58,17 +58,22 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         } ?:run {}
     }
 
-    private fun processTimePill(serviceDetailsResult: GetServiceDetailsResult) {
+    private fun processTimePill(serviceDetailsResult: ServiceDetailsUiModel) {
         Log.e("Detail", "Exec")
-        serviceDetailsResult.etd?.let {
-            if (it.equals(getString(R.string.on_time), true)) {
-                binding.currentRunningTime.text = it
-                binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
-                binding.currentRunningTime.alpha = 1f
-            } else {
-                binding.currentRunningTime.text = it
-                binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
-                binding.currentRunningTime.alpha = 1f
+//        serviceDetailsResult.
+//            if (it.equals(getString(R.string.on_time), true)) {
+//                binding.currentRunningTime.text = it
+//                binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
+//                binding.currentRunningTime.alpha = 1f
+//            } else {
+//                binding.currentRunningTime.text = it
+//                binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
+//                binding.currentRunningTime.alpha = 1f
+//            }
+//        }
+        serviceDetailsResult.subsequentLocations?.let {
+            if (!it[0].sta?.equals(it[0].eta, true)!!) {
+
             }
         }
     }
@@ -90,10 +95,10 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         }
 
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
-            val destinationIndex = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints?.lastIndex
-            val destination = serviceDetailsResult.subsequentCallingPoints?.subsequentCallingPoints?.get(0)?.callingPoints!![destinationIndex ?: 0]
+            val destinationIndex = serviceDetailsResult.subsequentLocations?.locations?.get(0)?.callingPoints?.lastIndex
+            val destination = serviceDetailsResult.subsequentLocations?.locations?.get(0)?.callingPoints!![destinationIndex ?: 0]
             val previousCallingPoints = serviceDetailsResult.previousCallingPoints?.previousCallingPoints?.get(0)?.callingPoints
-            val subsequentCallingPoints = serviceDetailsResult.subsequentCallingPoints.subsequentCallingPoints[0].callingPoints
+            val subsequentCallingPoints = serviceDetailsResult.subsequentLocations.locations[0].callingPoints
 
             //serviceDetailsResult.
 

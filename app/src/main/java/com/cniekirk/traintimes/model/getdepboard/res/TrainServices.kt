@@ -5,5 +5,5 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "t12:trainServices")
 data class TrainServices(
-    @Element val trainServices: List<Service>
+    @Element val trainServices: List<Service>?
 )

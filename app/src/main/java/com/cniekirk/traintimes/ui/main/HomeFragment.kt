@@ -250,7 +250,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         val navigateBundle = bundleOf("backgroundTransName" to bgName)
         viewModel.services.value?.let { services ->
-            viewModel.setServiceId(services[position].serviceID)
+            viewModel.setServiceId(services[position].rid)
         }
 
         val extras = FragmentNavigatorExtras(

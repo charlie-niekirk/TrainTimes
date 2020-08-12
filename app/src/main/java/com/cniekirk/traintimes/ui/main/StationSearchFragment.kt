@@ -101,11 +101,13 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
                 this
             )
         binding.btnBack.setOnClickListener { it.findNavController().popBackStack() }
+        binding.searchDepStations.requestFocus()
         binding.searchDepStations.doAfterTextChanged {
             GlobalScope.launch {
                 viewModel.queryChannel.send(it.toString())
             }
         }
+
     }
 
     override fun onStationItemClicked(crs: CRS) {

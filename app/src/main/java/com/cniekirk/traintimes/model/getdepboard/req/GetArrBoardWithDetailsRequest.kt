@@ -11,10 +11,10 @@ data class GetArrBoardWithDetailsRequest(
     @PropertyElement(name = "ldb:numRows") val numRows: NumRows,
     @PropertyElement(name = "ldb:crs") val crs: String,
     @PropertyElement(name = "ldb:time") val time: String,
-    @PropertyElement(name = "ldb:timeWindow") val timeWindow: Int,
-    @PropertyElement(name = "ldb:filterCrs") val filterCrs: String,
-    @PropertyElement(name = "ldb:filterType") val filterType: String,
-    @PropertyElement(name = "ldb:filterTOC") val filterToc: String,
-    @PropertyElement(name = "ldb:services") val services: String,
-    @PropertyElement(name = "ldb:getNonPassengerServices") val getNonPassengerServices: Boolean
+    @PropertyElement(name = "ldb:timeWindow") val timeWindow: String,
+    @PropertyElement(name = "ldb:filterCrs") val filterCrs: String? = null,
+    @PropertyElement(name = "ldb:filterType") val filterType: String? = null,
+    @PropertyElement(name = "ldb:filterTOC") val filterToc: String? = null,
+    @PropertyElement(name = "ldb:services") val services: String? = null,
+    @PropertyElement(name = "ldb:getNonPassengerServices") val getNonPassengerServices: Boolean? = null
 )

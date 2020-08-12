@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.usecase.*
-import com.cniekirk.traintimes.model.getdepboard.res.GetStationBoardResult
+import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.base.BaseViewModel
@@ -131,7 +131,7 @@ class HomeViewModel constructor(
         _crsStationCodes.value = list
     }
 
-    private fun handleResponse(response: GetStationBoardResult) {
+    private fun handleResponse(response: GetBoardWithDetailsResult) {
         response.trainServices?.let {
             _services.value = it.trainServices
         } ?: run {

@@ -5,5 +5,5 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "soap:Body")
 data class GetServiceDetailsSoapBody(
-    @Element(name = "GetServiceDetailsResponse") val getServiceDetailsResponse: GetServiceDetailsResponse
+    @Element(name = "GetServiceDetailsByRIDResponse") val getServiceDetailsByRIDResponse: GetServiceDetailsByRIDResponse
 )

@@ -29,12 +29,30 @@
 
 extern "C" {
 
-    jbyteArray e(JNIEnv *env, jclass, jbyteArray plaintext)
+    /*
+     * Security logic, makes it harder to reverse engineer
+     */
+    unsigned int rearrange(unsigned int byte) {
+
+        byte |= byte;
+        byte >>= 4;
+        return byte;
+
+    }
+
+    jbyteArray e(JNIEnv *env, jobject classObj, jbyteArray plaintext)
     {
-        jbyte a[] = {1,2,3,4,5,6};
-        jbyteArray ret = env->NewByteArray(6);
-        env->SetByteArrayRegion (ret, 0, 6, a);
-        return ret;
+        int len = env->GetArrayLength(plaintext);
+        auto* buf = new unsigned int[len];
+        env->GetByteArrayRegion(plaintext, 0, len, reinterpret_cast<jbyte*>(buf));
+
+        for (int i = 0; i < len; i++) {
+            buf[i] = rearrange(buf[i]);
+        }
+
+        jbyteArray arr = env->NewByteArray(len);
+        env->SetByteArrayRegion(arr, 0, len, reinterpret_cast<jbyte*>(buf));
+        return arr;
     }
 
     static JNINativeMethod methods[] = {

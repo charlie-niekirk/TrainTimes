@@ -7,7 +7,7 @@ import com.tickaroo.tikxml.annotation.Xml
 import java.util.*
 
 @Xml(name = "GetBoardWithDetailsResult")
-data class GetStationBoardResult(
+data class GetBoardWithDetailsResult(
     @Attribute(name = "xmlns:t6") val t6: String,
     @Attribute(name = "xmlns:t9") val t9: String,
     @Attribute(name = "xmlns:c2") val c2: String,
@@ -32,6 +32,6 @@ data class GetStationBoardResult(
     @PropertyElement(name = "t6:locationName") val locationName: String,
     @PropertyElement(name = "t6:crs") val stationCode: String,
     @Element(name = "t6:nrccMessages") val nrccMessages: NrccMessages?,
-//    @PropertyElement(name = "lt4:platformAvailable") val platformAvailable: Boolean,
+    @PropertyElement(name = "lt10:isTruncated") val isTruncated: Boolean?,
     @Element(name = "t12:trainServices") val trainServices: TrainServices?
 )

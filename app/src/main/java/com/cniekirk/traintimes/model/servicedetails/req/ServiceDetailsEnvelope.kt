@@ -7,10 +7,9 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "v:Envelope")
 data class ServiceDetailsEnvelope(
-    @Attribute(name = "xmlns:i") val xmlnsI: String = "http://www.w3.org/2001/XMLSchema-instance",
-    @Attribute(name = "xmlns:d") val xmlnsD: String = "http://www.w3.org/2001/XMLSchema",
-    @Attribute(name = "xmlns:c") val xmlnsC: String = "http://www.w3.org/2003/05/soap-encoding",
-    @Attribute(name = "xmlns:v") val xmlnsV: String = "http://www.w3.org/2003/05/soap-envelope",
+    @Attribute(name = "xmlns:soapenv") val xmlnsSoap: String = "http://www.w3.org/2003/05/soap-envelope",
+    @Attribute(name = "xmlns:typ") val xmlnsTyp: String = "http://thalesgroup.com/RTTI/2013-11-28/Token/types",
+    @Attribute(name = "xmlns:ldb") val xmlnsLdb: String = "http://thalesgroup.com/RTTI/2016-02-16/ldbsv/",
     @Element val header: Header,
     @Element val serviceDetailsBody: ServiceDetailsBody
 )
