@@ -26,7 +26,7 @@ interface NREService {
     )
     fun getArrivalBoardWithDetails(@Body body: ArrEnvelope): Call<GetArrBoardSoapEnvelope>
 
-    @POST("/OpenLDBSVWS/ldbsv10.asmx")
+    @POST("/OpenLDBSVWS/ldbsv12.asmx")
     @Headers(
         "Content-Type: text/xml"
     )

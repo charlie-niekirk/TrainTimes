@@ -1,6 +1,7 @@
 package com.cniekirk.traintimes.ui.adapter
 
 import android.graphics.ColorFilter
+import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.util.Log
@@ -95,7 +96,10 @@ class StationTimelineAdapter(
                 if (!etd.after(std)) {
                     holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
                 } else {
-                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                    holder.stationDelay.text = output.format(etd)
+                    holder.stationStatus.paintFlags = (holder.stationStatus.paintFlags.or(
+                        Paint.STRIKE_THRU_TEXT_FLAG))
+                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorText, null))
                 }
             } else {
 //            if (callingPoints[position].actualTime.equals(callingPoints[position].scheduledTime, true)) {
@@ -110,8 +114,10 @@ class StationTimelineAdapter(
                     if (!atd!!.after(std)) {
                         holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
                     } else {
-                        holder.stationStatus.text = output.format(atd!!)
-                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                        holder.stationDelay.text = output.format(atd!!)
+                        holder.stationStatus.paintFlags = (holder.stationStatus.paintFlags.or(
+                            Paint.STRIKE_THRU_TEXT_FLAG))
+                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorText, null))
                     }
                 } ?: run {
                     holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
@@ -119,9 +125,26 @@ class StationTimelineAdapter(
 
             }
 
-            if (position <= currentIndex) {
+            it.platform?.let { platform ->
+                holder.stationPlatform.text = "Platform $platform"
+                it.platformIsHidden?.let { isHidden ->
+                    if (isHidden) {
+                        holder.stationPlatform.text = holder.stationPlatform.text as String + " (Predicted)"
+                    }
+                }
+            }
+
+            if (position < currentIndex) {
                 // Make green
                 holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                holder.stationIndicator.background.colorFilter = greenColor
+            } else if (position == currentIndex) {
+                // Make grey
+                if (callingPoints[position]?.departureType.equals("forecast", true)) {
+                    holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                } else {
+                    holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                }
                 holder.stationIndicator.background.colorFilter = greenColor
             } else if (position > currentIndex) {
                 // Make grey
@@ -155,6 +178,14 @@ class StationTimelineAdapter(
 
         val stationStatus: MaterialTextView by lazy {
             itemView.findViewById<MaterialTextView>(R.id.stop_status)
+        }
+
+        val stationDelay: MaterialTextView by lazy {
+            itemView.findViewById<MaterialTextView>(R.id.stop_delay_time)
+        }
+
+        val stationPlatform: MaterialTextView by lazy {
+            itemView.findViewById<MaterialTextView>(R.id.stop_platform)
         }
 
     }

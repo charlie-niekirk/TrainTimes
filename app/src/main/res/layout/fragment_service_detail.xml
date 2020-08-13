@@ -55,23 +55,6 @@
         android:paddingEnd="8dp"
         android:textStyle="bold"/>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/platform_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorBackground"
-        android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@id/current_running_time"
-        app:layout_constraintTop_toTopOf="@id/operator_name"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/pill_toc_bg"
-        android:backgroundTint="@color/colorAccent"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        tools:text="7"/>
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_watch"
         android:layout_width="wrap_content"

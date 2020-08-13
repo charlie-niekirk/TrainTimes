@@ -23,12 +23,11 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     override fun getCrsCodes(query: String): Either<Failure, List<CRS>> {
 
-
         return if (crsDao.getCrsCodes().isNotEmpty()) {
             val codes = crsDao.getCrsCodes().sortedBy { it.stationName }
             val matches = if (query.isNotEmpty()) {
-                codes.filter { crs -> crs.crs.contains(query, true)
-                    .or(crs.crs.contains(query, true)) }
+                codes.filter { location -> location.stationName.contains(query, true)
+                    .or(location.crs.contains(query, true)) }
             } else { codes }
             Either.Right(matches)
         } else {

@@ -25,5 +25,6 @@ data class GetServiceDetailsResult(
     @PropertyElement(name = "t10:serviceType") val serviceType: String?,
     @PropertyElement(name = "t10:delayReason") val delayReason: Int?,
     @PropertyElement(name = "t10:category") val category: String?,
-    @Element val locations: Locations?
+    @Element val locations: Locations?,
+    @Element val formation: Formation?
 )

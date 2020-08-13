@@ -32,6 +32,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
 import com.google.android.material.transition.MaterialSharedAxis
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injectable, StationTimelineAdapter.OnStationItemClickedListener {
@@ -77,6 +79,27 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 //
 //            }
 //        }
+        serviceDetailsResult.subsequentLocations?.let { locations ->
+            val sdf = SimpleDateFormat("YYYY-mm-DD'T'hh:mm:SS", Locale.ENGLISH)
+            val output = SimpleDateFormat("hh:mm", Locale.ENGLISH)
+            locations[0].eta?.let {
+                val estimated = sdf.parse(it)
+                val scheduled = sdf.parse(locations[0].sta!!)
+                if (estimated.after(scheduled)) {
+                    binding.currentRunningTime.text = output.format(estimated)
+                    binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
+                    binding.currentRunningTime.alpha = 1f
+                } else {
+                    binding.currentRunningTime.text = "On Time"
+                    binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
+                    binding.currentRunningTime.alpha = 1f
+                }
+            } ?: run {
+                binding.currentRunningTime.visibility = View.INVISIBLE
+            }
+        } ?: run {
+            binding.currentRunningTime.visibility = View.INVISIBLE
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,19 +130,19 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 //            val current = listOf(CallingPoint(serviceDetailsResult.locationName!!, serviceDetailsResult.stationCode!!,
 //                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
 
-            val previousWithCurrent = previousCallingPoints?.plus(serviceDetailsResult.currentLocation)
-                ?: previousCallingPoints
+            var previousWithCurrent = previousCallingPoints
+            Log.e("FRAG", "PREVIOUS: ${previousWithCurrent.toString()}")
+            serviceDetailsResult.currentLocation?.let {
+                previousWithCurrent?.let { prevCur ->
+                    previousWithCurrent = prevCur.subList(0, prevCur.lastIndex - 1)
+                    previousWithCurrent = previousWithCurrent?.plus(it)
+                }
+            }
+            Log.e("FRAG", "PREVIOUS (with current): ${previousWithCurrent.toString()}")
+
             var allCallingPoints = previousWithCurrent?.plus(subsequentCallingPoints)
                 ?: subsequentCallingPoints
             val currentIndex = previousCallingPoints?.size ?: 0
-
-            allCallingPoints = allCallingPoints.filter { location ->
-                location?.isPass?.let {
-                    !it
-                } ?: run {
-                    true
-                }
-            }
 
             allCallingPoints = allCallingPoints.filter { location ->
                 location?.isOperational?.let {
@@ -134,9 +157,6 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 
             binding.serviceDestination.text = destination.locationName?.parseEncoded()
             binding.operatorName.text = serviceDetailsResult.operator
-//            serviceDetailsResult.platform?.let {
-//                binding.platformNumber.text = it
-//            } ?: run { binding.platformNumber.alpha = 0f }
             changeTocBg()
             processTimePill(serviceDetailsResult)
         })

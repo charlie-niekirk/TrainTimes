@@ -62,4 +62,28 @@
         tools:text="On Time"
         tools:fontFamily="@font/circularstd"/>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/stop_platform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/stop_status"
+        app:layout_constraintBottom_toBottomOf="@id/stop_status"
+        app:layout_constraintStart_toEndOf="@id/stop_delay_time"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginStart="8dp"
+        android:alpha="0.85"
+        tools:text="Platform 4 (Predicted)"
+        tools:fontFamily="@font/circularstd"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/stop_delay_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/stop_status"
+        app:layout_constraintStart_toEndOf="@id/stop_status"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/colorRed"
+        tools:text="16:44"
+        tools:fontFamily="@font/circularstd"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

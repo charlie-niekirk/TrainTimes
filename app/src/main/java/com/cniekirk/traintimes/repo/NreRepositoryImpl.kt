@@ -105,12 +105,19 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
                 Log.d("REPO", serviceDetails.locations.toString())
 
-                val previous = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Actual", true) }
-                val subsequent = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Forecast", true) }
-                val current = serviceDetails.locations?.locations?.firstOrNull { location ->
+                var previous = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Actual", true) }
+                var subsequent = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Forecast", true)
+                    .or(location.arrivalType.equals("forecast", true))}
+                var current = serviceDetails.locations?.locations?.firstOrNull { location ->
                     location.arrivalType.equals("actual", true).and(
                         location.departureType.equals("forecast", true)
                     )
+                }
+
+                val validTiplocs = serviceDetails.formation?.formationPoints?.map { point -> point.tiploc.replace(" ", "") }
+                validTiplocs?.let {
+                    previous = previous?.filter { location -> location.tiploc?.replace(" ", "") in it }
+                    subsequent = subsequent?.filter { location -> location.tiploc?.replace(" ", "") in it }
                 }
 
                 val uiModel = ServiceDetailsUiModel(serviceDetails.rid, serviceDetails.uid, serviceDetails.trainId, serviceDetails.operator, serviceDetails.operatorCode,
