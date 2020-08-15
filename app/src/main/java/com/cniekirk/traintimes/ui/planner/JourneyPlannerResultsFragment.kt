@@ -49,8 +49,8 @@ class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results)
 
         binding.btnBack.setOnClickListener { it.findNavController().navigateUp() }
         binding.routeDescription.text = getString(R.string.route_desc_template,
-            viewModel.depStation.value?.stationName,
-            viewModel.destStation.value?.stationName)
+            viewModel.depStation.value?.crs,
+            viewModel.destStation.value?.crs)
         binding.journeyList.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
             .withAddDuration(250)

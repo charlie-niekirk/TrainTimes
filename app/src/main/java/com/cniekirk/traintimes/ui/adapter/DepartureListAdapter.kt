@@ -56,6 +56,11 @@ class DepartureListAdapter(private val services: List<Service>,
         holder.departureDestinationName.transitionName = "${holder.itemView.context.getString(R.string.departure_text_transition)}-$position"
 
         holder.platformName.text = holder.containerView?.context?.getString(R.string.platform_prefix, platform)
+        services[position].platformIsHidden?.let {
+            if (it) {
+                holder.platformName.text = (holder.platformName.text as String?)?.plus(" (Predicted)")
+            }
+        }
         holder.scheduledDepartureTime.text = services[position].scheduledDeparture
         holder.tocName.text = services[position].operator
         setPillColor(holder.tocName.text.toString(), holder)

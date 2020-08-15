@@ -69,21 +69,21 @@ class JourneyPlannerViewModel(
                     returnDateTimeLiveData.value?.let { returnDatetime ->
                         directTrainsOnly.value?.let { direct ->
                             val request = JourneyPlanRequest(datetime, adults.value, children.value, railcards.value, returnDatetime, direct)
-                            val query = JourneyPlanRepoRequest(depStation.stationName, destStation.stationName, request)
+                            val query = JourneyPlanRepoRequest(depStation.crs, destStation.crs, request)
                             getJourneyPlanUseCase(query) { it.either(::handleFailure, ::handleJourneyPlanResponse) }
                         } ?: run {
                             val request = JourneyPlanRequest(datetime, adults.value, children.value, railcards.value, returnDatetime)
-                            val query = JourneyPlanRepoRequest(depStation.stationName, destStation.stationName, request)
+                            val query = JourneyPlanRepoRequest(depStation.crs, destStation.crs, request)
                             getJourneyPlanUseCase(query) { it.either(::handleFailure, ::handleJourneyPlanResponse) }
                         }
                     } ?: run {
                         directTrainsOnly.value?.let { direct ->
                             val request = JourneyPlanRequest(datetime, adults.value, children.value, railcards.value, directOnly = direct)
-                            val query = JourneyPlanRepoRequest(depStation.stationName, destStation.stationName, request)
+                            val query = JourneyPlanRepoRequest(depStation.crs, destStation.crs, request)
                             getJourneyPlanUseCase(query) { it.either(::handleFailure, ::handleJourneyPlanResponse) }
                         } ?: run {
                             val request = JourneyPlanRequest(datetime, adults.value, children.value, railcards.value)
-                            val query = JourneyPlanRepoRequest(depStation.stationName, destStation.stationName, request)
+                            val query = JourneyPlanRepoRequest(depStation.crs, destStation.crs, request)
                             getJourneyPlanUseCase(query) { it.either(::handleFailure, ::handleJourneyPlanResponse) }
                         }
                     }

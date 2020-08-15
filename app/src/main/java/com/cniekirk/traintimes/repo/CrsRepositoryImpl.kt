@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.repo
 
+import android.util.Log
 import com.cniekirk.traintimes.data.local.CRSDao
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.data.remote.CRSService
@@ -47,6 +48,7 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
     private fun saveCrsCodes(crsResponseEnvelope: CRSResponseEnvelope): List<CRS> {
 
         crsDao.insertAll(crsResponseEnvelope.crsResponseBody.stationListResponse.getStationListResult.stationList.stations.map {
+            Log.d("CRS", "Station Name: ${it.stationName}, CRS: ${it.crs}")
             CRS(it.stationName, it.crs)
         })
 

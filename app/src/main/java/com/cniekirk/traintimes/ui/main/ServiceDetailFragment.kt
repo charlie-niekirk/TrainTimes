@@ -152,7 +152,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                 }
             }
 
-            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
+            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex - 1, this)
             binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
 
             binding.serviceDestination.text = destination.locationName?.parseEncoded()

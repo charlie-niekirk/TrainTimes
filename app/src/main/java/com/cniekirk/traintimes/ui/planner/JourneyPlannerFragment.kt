@@ -222,7 +222,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
             } else {
                 if (binding.searchDepText.text.toString().equals(getString(R.string.departing_from), false)) {
                     binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
-                    binding.searchDepText.text = it.crs
+                    binding.searchDepText.text = it.stationName
                     binding.searchArrowDep.setOnClickListener {
                         viewModel.clearDepStation()
                     }
@@ -238,7 +238,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injec
             } else {
                 if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at_planner), false)) {
                     binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
-                    binding.searchDestText.text = it.crs
+                    binding.searchDestText.text = it.stationName
                     binding.searchArrowDest.setOnClickListener {
                         viewModel.clearDestStation()
                     }
