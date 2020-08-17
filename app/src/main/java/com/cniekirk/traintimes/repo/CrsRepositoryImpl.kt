@@ -13,6 +13,7 @@ import com.cniekirk.traintimes.model.crs.res.CRSResponseEnvelope
 import com.cniekirk.traintimes.model.getdepboard.req.AccessToken
 import com.cniekirk.traintimes.model.getdepboard.req.Header
 import com.cniekirk.traintimes.utils.NetworkHandler
+import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.request
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import okhttp3.ResponseBody
@@ -22,6 +23,12 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                                             private val crsService: CRSService,
                                             private val crsDao: CRSDao): CrsRepository {
 
+    /**
+     * Check if CRS codes are cached locally and only request from network if required
+     *
+     * @param query: optional query [String] to filter results
+     * @return [Either] a [Failure] or [List] of [CRS] objects
+     */
     override fun getCrsCodes(query: String): Either<Failure, List<CRS>> {
 
         return if (crsDao.getCrsCodes().isNotEmpty()) {
@@ -45,11 +52,16 @@ class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     }
 
+    /**
+     * Persist CRS codes mapped to Station names to the DB
+     *
+     * @param crsResponseEnvelope: XML model object from the webservice response
+     * @return [List] of [CRS] objects
+     */
     private fun saveCrsCodes(crsResponseEnvelope: CRSResponseEnvelope): List<CRS> {
 
         crsDao.insertAll(crsResponseEnvelope.crsResponseBody.stationListResponse.getStationListResult.stationList.stations.map {
-            Log.d("CRS", "Station Name: ${it.stationName}, CRS: ${it.crs}")
-            CRS(it.stationName, it.crs)
+            CRS(it.stationName.parseEncoded(), it.crs)
         })
 
         return crsDao.getCrsCodes().sortedBy { it.stationName }

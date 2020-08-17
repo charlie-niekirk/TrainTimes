@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Emits a successful connection when connected to a 3G or better cellular
  * connection, or WiFi.
  *
- * @author Maxa Group (Charles Niekirk)
+ * @author Charles Niekirk
  */
 class ConnectionStateEmitter @Inject constructor(
     private val applicationContext: Context

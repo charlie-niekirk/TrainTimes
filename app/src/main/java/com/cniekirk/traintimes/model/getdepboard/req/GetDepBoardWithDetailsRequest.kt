@@ -13,7 +13,7 @@ data class GetDepBoardWithDetailsRequest(
     @PropertyElement(name = "ldb:crs") val crs: String,
     @PropertyElement(name = "ldb:time") val time: String,
     @PropertyElement(name = "ldb:timeWindow") val timeWindow: String,
-    @PropertyElement(name = "ldb:filterCrs") val filterCrs: String? = null,
+    @PropertyElement(name = "ldb:filtercrs") val filterCrs: String? = null,
     @PropertyElement(name = "ldb:filterType") val filterType: String? = null,
 //    @PropertyElement(name = "ldb:filterTOC") val filterToc: String? = null,
     @PropertyElement(name = "ldb:services") val services: String? = "P",
