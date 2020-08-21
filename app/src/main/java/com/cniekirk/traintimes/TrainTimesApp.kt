@@ -3,6 +3,7 @@ package com.cniekirk.traintimes
 import android.app.Application
 import android.content.res.Configuration
 import android.util.Log
+import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.di.AppInjector
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.iid.FirebaseInstanceId
@@ -22,6 +23,7 @@ class TrainTimesApp: Application(), HasAndroidInjector {
             it?.let { instanceId ->
                 run {
                     Log.e("APP", "Token: ${instanceId.token}")
+                    PreferenceProvider(applicationContext).setFirebaseId(instanceId.token)
                 }
             }
         }

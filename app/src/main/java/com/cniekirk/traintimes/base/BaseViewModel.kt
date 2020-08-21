@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cniekirk.traintimes.domain.Failure
 
+private const val TAG = "BaseViewModel"
+
 /**
  * Base class fro all ViewModel instances to inherit from
  * It handles the failure case for all operations
@@ -18,7 +20,7 @@ abstract class BaseViewModel: ViewModel() {
      * Logs the error to Logcat
      */
     protected fun handleFailure(failure: Failure) {
-        Log.d("FAILURE", "Failure: $failure")
+        Log.e(TAG, "Failure: $failure")
         this.failure.value = failure
     }
 

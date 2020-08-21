@@ -18,6 +18,8 @@ import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
 import com.cniekirk.traintimes.model.servicedetails.req.Rid
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
+import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
+import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.Sign
@@ -30,6 +32,8 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
+
+private const val TAG = "NreRepositoryImpl"
 
 /**
  * Repository implementation for the LDBSVWS web service
@@ -103,7 +107,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             true -> request(nreService.getServiceDetails(envelope)) {
                 val serviceDetails = it.body.getServiceDetailsByRIDResponse.getServiceDetailsResult
 
-                Log.d("REPO", serviceDetails.locations.toString())
+                Log.d(TAG, serviceDetails.locations.toString())
 
                 var previous = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Actual", true) }
                 var subsequent = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Forecast", true)
@@ -138,7 +142,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         // TODO: Finish this JNI implementation for the security header
         val signer = Sign()
-        Log.e("TEST_CPP", signer.sign(ByteArray(0x00)))
+        Log.e(TAG, signer.sign(ByteArray(0x00)))
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,
@@ -175,6 +179,18 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.getDelayRepayUrl(operator, header)) { it }
+            false, null -> Either.Left(Failure.NetworkConnectionError())
+        }
+
+    }
+
+    override fun trackService(trackServiceRequest: TrackServiceRequest): Either<Failure, TrackServiceResponse> {
+
+        val header = "/api/track"
+            .hmac("/api/track")
+
+        return when(networkHandler.isConnected) {
+            true -> request(trackTimesService.trackService(header, trackServiceRequest)) { it }
             false, null -> Either.Left(Failure.NetworkConnectionError())
         }
 

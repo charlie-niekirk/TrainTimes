@@ -4,6 +4,7 @@ import com.cniekirk.traintimes.model.delayrepay.DelayRepay
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
 import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
+import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -25,6 +26,6 @@ interface TrackTimesService {
     @POST("/api/track")
     fun trackService(@Header("X-Gorgon") authHeader: String,
                      @Body trackServiceRequest: TrackServiceRequest)
-    : Call<ResponseBody>
+    : Call<TrackServiceResponse>
 
 }

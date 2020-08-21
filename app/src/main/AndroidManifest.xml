@@ -20,7 +20,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

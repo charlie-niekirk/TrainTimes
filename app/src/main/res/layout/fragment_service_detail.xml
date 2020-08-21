@@ -85,6 +85,14 @@
         android:layout_marginEnd="16dp"
         android:tint="@color/colorAccent"/>
 
+    <View
+        android:id="@+id/snackbar_location"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/station_stops"
         android:layout_width="0dp"

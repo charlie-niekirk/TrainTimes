@@ -7,6 +7,8 @@ import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
+import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
+import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 
 interface NreRepository {
@@ -20,5 +22,7 @@ interface NreRepository {
     fun getJourneyPlan(request: JourneyPlanRepoRequest): Either<Failure, JourneyPlannerResponse>
 
     fun getDelayRepayUrl(operator: String): Either<Failure, DelayRepay>
+
+    fun trackService(trackServiceRequest: TrackServiceRequest): Either<Failure, TrackServiceResponse>
 
 }

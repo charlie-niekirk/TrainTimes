@@ -112,5 +112,7 @@
     <string name="watch_train">Set alert</string>
     <string name="reconnected">Internet Reconnected</string>
     <string name="disconnected">Internet not connected!</string>
+    <string name="tracking">Alert successully added!</string>
+    <string name="tracking_error">Failed to add alert!</string>
     <string name="information_button">Information button</string>
 </resources>

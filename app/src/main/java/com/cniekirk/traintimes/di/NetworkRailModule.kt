@@ -8,6 +8,7 @@ import com.cniekirk.traintimes.repo.NreRepository
 import com.cniekirk.traintimes.repo.NreRepositoryImpl
 import com.cniekirk.traintimes.utils.extensions.callFactory
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Lazy
@@ -73,6 +74,7 @@ class NetworkRailModule {
     @Provides
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
             .add(SingleToArrayAdapter.INSTANCE)
             .build()
     }

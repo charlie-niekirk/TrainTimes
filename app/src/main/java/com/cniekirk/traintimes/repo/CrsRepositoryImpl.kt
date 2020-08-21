@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.repo
 
-import android.util.Log
 import com.cniekirk.traintimes.data.local.CRSDao
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.data.remote.CRSService
@@ -15,8 +14,6 @@ import com.cniekirk.traintimes.model.getdepboard.req.Header
 import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.request
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class CrsRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,

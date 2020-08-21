@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +12,8 @@ import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.base.BaseViewModel
 import com.cniekirk.traintimes.base.ViewModelFactory
+import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
+import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
 import kotlinx.coroutines.*
@@ -30,6 +33,7 @@ class HomeViewModel constructor(
     private val getDeparturesUseCase: GetDeparturesUseCase,
     private val getServiceDetailsUseCase: GetServiceDetailsUseCase,
     private val getArrivalsUseCase: GetArrivalsUseCase,
+    private val trackServiceUseCase: TrackServiceUseCase,
     private val connectionState: ConnectionStateEmitter
 ) : BaseViewModel() {
 
@@ -47,6 +51,8 @@ class HomeViewModel constructor(
         get() = _serviceDetailId
     val connectionStateEmitter: LiveData<Boolean>
         get() = connectionState
+    val trackServiceSuccess: LiveData<Boolean>
+        get() = _trackServiceSuccess
 
     private val _services = MutableLiveData<List<Service>>()
     private val _crsStationCodes = MutableLiveData<List<CRS>>()
@@ -54,6 +60,7 @@ class HomeViewModel constructor(
     private val _destStation = MutableLiveData<CRS>()
     private val _serviceDetailsResult = MutableLiveData<ServiceDetailsUiModel>()
     private val _serviceDetailId = MutableLiveData<String>()
+    private val _trackServiceSuccess = MutableLiveData<Boolean>()
 
     @ExperimentalCoroutinesApi
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
@@ -96,6 +103,18 @@ class HomeViewModel constructor(
                 handleFailure(Failure.NoCrsFailure())
             }
         }
+    }
+
+    fun trackService(rid: String, tiploc: String, fbId: String) {
+
+        val request = TrackServiceRequest(rid, tiploc, fbId)
+        trackServiceUseCase(request) { it.either(::handleFailure, ::handleTrackResult) }
+
+    }
+
+    private fun handleTrackResult(trackServiceResponse: TrackServiceResponse) {
+        Log.d("VM", "Tracking? ${trackServiceResponse.tracking}")
+        _trackServiceSuccess.postValue(trackServiceResponse.tracking)
     }
 
     fun getServiceDetails() {
@@ -158,11 +177,13 @@ class HomeViewModelFactory @Inject constructor(
     private val getDeparturesUseCase: GetDeparturesUseCase,
     private val getServiceDetailsUseCase: GetServiceDetailsUseCase,
     private val getArrivalsUseCase: GetArrivalsUseCase,
+    private val trackServiceUseCase: TrackServiceUseCase,
     private val connectionStateEmitter: ConnectionStateEmitter
 ) : ViewModelFactory<HomeViewModel> {
 
     override fun create(handle: SavedStateHandle): HomeViewModel {
         return HomeViewModel(handle, getStationsUseCase, getAllStationCodesUseCase,
-                getDeparturesUseCase, getServiceDetailsUseCase, getArrivalsUseCase, connectionStateEmitter)
+                getDeparturesUseCase, getServiceDetailsUseCase, getArrivalsUseCase,
+                trackServiceUseCase, connectionStateEmitter)
     }
 }

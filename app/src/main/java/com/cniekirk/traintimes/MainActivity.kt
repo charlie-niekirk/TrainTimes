@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cniekirk.traintimes.databinding.ActivityMainBinding
+import com.cniekirk.traintimes.utils.anim.kb.FluidContentResizer
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.DispatchingAndroidInjector
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
         findViewById<BottomNavigationView>(R.id.navigation_bar)
             .setupWithNavController(navController)
+
+        FluidContentResizer.listen(this)
 
     }
 
