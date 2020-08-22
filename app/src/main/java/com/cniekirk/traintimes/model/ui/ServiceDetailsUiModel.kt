@@ -12,5 +12,7 @@ data class ServiceDetailsUiModel(
     val category: String?,
     val previousLocations: List<Location>?,
     var currentLocation: Location? = null,
-    val subsequentLocations: List<Location>?
+    val subsequentLocations: List<Location>?,
+    var isCancelled: Boolean = false,
+    var cancelledCallingPoints: List<Location>? = null
 )

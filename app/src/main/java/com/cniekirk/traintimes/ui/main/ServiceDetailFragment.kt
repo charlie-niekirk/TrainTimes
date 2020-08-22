@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -30,6 +31,7 @@ import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
@@ -37,6 +39,8 @@ import com.google.android.material.transition.MaterialSharedAxis
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+
+private const val TAG = "ServiceDetailFragment"
 
 class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injectable, StationTimelineAdapter.OnStationItemClickedListener {
 
@@ -64,7 +68,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
     }
 
     private fun processTimePill(serviceDetailsResult: ServiceDetailsUiModel) {
-        Log.e("Detail", "Exec")
+        Log.e(TAG, "Exec")
 //        serviceDetailsResult.
 //            if (it.equals(getString(R.string.on_time), true)) {
 //                binding.currentRunningTime.text = it
@@ -116,66 +120,92 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
         binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0, this)
 
-        binding.btnWatch.setOnClickListener {
-            Snackbar.make(binding.root, R.string.watching_train, Snackbar.LENGTH_SHORT).show()
-        }
-
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
-            val destinationIndex = serviceDetailsResult.subsequentLocations?.lastIndex ?: 0
-            Log.d("DETAILS", serviceDetailsResult.subsequentLocations.toString())
-            val destination = serviceDetailsResult.subsequentLocations!![destinationIndex]
-            val previousCallingPoints = serviceDetailsResult.previousLocations
-            val subsequentCallingPoints = serviceDetailsResult.subsequentLocations
 
-            //serviceDetailsResult.
+            if (serviceDetailsResult.isCancelled) {
+
+                serviceDetailsResult.cancelledCallingPoints?.let {
+                    binding.stationStops.adapter = StationTimelineAdapter(it, 0, this)
+
+                    val destination = it[it.lastIndex]
+                    binding.serviceDestination.text = destination.locationName?.parseEncoded()
+                    binding.operatorName.text = serviceDetailsResult.operator
+                    changeTocBg()
+                    processTimePill(serviceDetailsResult)
+                }
+
+            } else {
+
+                val destinationIndex = serviceDetailsResult.subsequentLocations?.lastIndex ?: 0
+                Log.d(TAG, serviceDetailsResult.subsequentLocations.toString())
+                val destination = serviceDetailsResult.subsequentLocations!![destinationIndex]
+                val previousCallingPoints = serviceDetailsResult.previousLocations
+                val subsequentCallingPoints = serviceDetailsResult.subsequentLocations
+
+                //serviceDetailsResult.
 
 //            val current = listOf(CallingPoint(serviceDetailsResult.locationName!!, serviceDetailsResult.stationCode!!,
 //                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
 
-            var previousWithCurrent = previousCallingPoints
-            Log.e("FRAG", "PREVIOUS: ${previousWithCurrent.toString()}")
-            serviceDetailsResult.currentLocation?.let {
-                previousWithCurrent?.let { prevCur ->
-                    previousWithCurrent = prevCur.subList(0, prevCur.lastIndex - 1)
-                    previousWithCurrent = previousWithCurrent?.plus(it)
-                }
-            }
-            Log.e("FRAG", "PREVIOUS (with current): ${previousWithCurrent.toString()}")
-
-            var allCallingPoints = previousWithCurrent?.plus(subsequentCallingPoints)
-                ?: subsequentCallingPoints
-            val currentIndex = previousCallingPoints?.size ?: 0
-
-            allCallingPoints = allCallingPoints.filter { location ->
-                location?.isOperational?.let {
-                    !it
-                } ?: run {
-                    true
-                }
-            }
-
-            binding.btnWatch.setOnClickListener {
-                val searchTiploc = allCallingPoints.find { location ->
-                    location.stationCode!!.equals(viewModel.depStation.value?.crs, true)
-                }
-                searchTiploc?.let { location ->
-                    location.tiploc?.let { tiploc ->
-                        viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""), PreferenceProvider(requireContext()).getFirebaseId())
+                var previousWithCurrent = previousCallingPoints
+                Log.e(TAG, "PREVIOUS: ${previousWithCurrent.toString()}")
+                serviceDetailsResult.currentLocation?.let {
+                    previousWithCurrent?.let { prevCur ->
+                        previousWithCurrent = prevCur.subList(0, prevCur.lastIndex - 1)
+                        previousWithCurrent = previousWithCurrent?.plus(it)
                     }
                 }
+                Log.e(TAG, "PREVIOUS (with current): ${previousWithCurrent.toString()}")
+
+                var allCallingPoints = previousWithCurrent?.plus(subsequentCallingPoints)
+                    ?: subsequentCallingPoints
+                val currentIndex = previousCallingPoints?.size ?: 0
+
+                allCallingPoints = allCallingPoints.filter { location ->
+                    location?.isOperational?.let {
+                        !it
+                    } ?: run {
+                        true
+                    }
+                }
+
+                binding.btnWatch.setOnClickListener {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.live_updates_title)
+                        .setMultiChoiceItems(R.array.live_update_values, booleanArrayOf(true, true, true, false)) { dialog, which, isChecked ->
+
+                        }
+                        .setPositiveButton(R.string.live_updates_positive) { dialogInterface, _ ->
+                            val searchTiploc = allCallingPoints.find { location ->
+                                location.stationCode!!.equals(viewModel.depStation.value?.crs, true)
+                            }
+                            searchTiploc?.let { location ->
+                                location.tiploc?.let { tiploc ->
+                                    viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""), PreferenceProvider(requireContext()).getFirebaseId())
+                                }
+                            }
+                            dialogInterface.dismiss()
+                        }
+                        .setNegativeButton(R.string.live_updates_negative) { dialogInterface, _ ->
+                            dialogInterface.dismiss()
+                        }
+                        .show()
+                }
+
+                binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
+                binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
+
+                binding.serviceDestination.text = destination.locationName?.parseEncoded()
+                binding.operatorName.text = serviceDetailsResult.operator
+                changeTocBg()
+                processTimePill(serviceDetailsResult)
+
             }
 
-            binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
-            binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
-
-            binding.serviceDestination.text = destination.locationName?.parseEncoded()
-            binding.operatorName.text = serviceDetailsResult.operator
-            changeTocBg()
-            processTimePill(serviceDetailsResult)
         })
 
         viewModel.trackServiceSuccess.observe(viewLifecycleOwner, Observer {
-            Log.e("SERV_DET", "Got to here? $it")
+            Log.e(TAG, "Got to here? $it")
             if (it) {
                 val sb = Snackbar.make(binding.root, R.string.tracking, Snackbar.LENGTH_SHORT)
                 sb.anchorView = binding.snackbarLocation
@@ -200,7 +230,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
     private fun changeTocBg() {
         binding.operatorName.setTextColor(resources.getColor(android.R.color.white, null))
 
-        Log.e("Details", "TOC: ${binding.operatorName.text}")
+        Log.e(TAG, "TOC: ${binding.operatorName.text}")
 
         when (binding.operatorName.text.toString().toLowerCase()) {
             "tfl rail" -> binding.operatorName.apply {

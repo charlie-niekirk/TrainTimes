@@ -92,7 +92,7 @@ class DepartureListAdapter(private val services: List<Service>,
         services[position].length?.let {
             holder.numCoaches.text = String.format(holder.containerView.resources.getString(R.string.num_coaches_text), it)
         } ?: run {
-            holder.numCoaches.text = String.format(holder.containerView.resources.getString(R.string.num_coaches_text), holder.containerView.resources.getString(R.string.unknown_coaches))
+            holder.numCoaches.visibility = View.INVISIBLE
         }
 
         holder.itemView.setOnClickListener { clickListener.onClick(position, holder.itemView, holder.departureDestinationName) }

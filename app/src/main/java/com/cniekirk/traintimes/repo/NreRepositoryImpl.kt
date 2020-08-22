@@ -126,6 +126,12 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
                 val uiModel = ServiceDetailsUiModel(serviceDetails.rid, serviceDetails.uid, serviceDetails.trainId, serviceDetails.operator, serviceDetails.operatorCode,
                 serviceDetails.serviceType, serviceDetails.category, previous, subsequentLocations = subsequent)
+
+                serviceDetails.locations?.locations?.get(0)?.isCancelled?.let { cancelled ->
+                    uiModel.isCancelled = cancelled
+                    uiModel.cancelledCallingPoints = serviceDetails.locations.locations
+                }
+
                 current?.let { cur -> uiModel.currentLocation = cur }
                 uiModel
             }

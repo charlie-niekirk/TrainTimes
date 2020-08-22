@@ -22,7 +22,8 @@ import java.util.*
 class StationTimelineAdapter(
     private val callingPoints: List<Location?>,
     private val currentIndex: Int,
-    private val onStationItemClickedListener: OnStationItemClickedListener
+    private val onStationItemClickedListener: OnStationItemClickedListener,
+    private val isCancelled: Boolean = false
 ): RecyclerView.Adapter<StationTimelineAdapter.StationTimelineViewHolder>() {
 
     // TODO: Replace with sealed class for exhaustive when
@@ -34,6 +35,7 @@ class StationTimelineAdapter(
 
     private lateinit var greenColor: ColorFilter
     private lateinit var sideColor: ColorFilter
+    private lateinit var redColor: ColorFilter
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -45,6 +47,9 @@ class StationTimelineAdapter(
         )
         sideColor = PorterDuffColorFilter(
             parent.resources.getColor(R.color.colorUnselected, null), PorterDuff.Mode.SRC_IN
+        )
+        redColor = PorterDuffColorFilter(
+            parent.resources.getColor(R.color.colorRed, null), PorterDuff.Mode.SRC_IN
         )
 
         val stationTimelineLayout = when (viewType) {
@@ -90,36 +95,27 @@ class StationTimelineAdapter(
                 sdf.parse(callingPoints[position]?.std!!)
             }
 
-            if (!callingPoints[position]?.etd.isNullOrEmpty()) {
-                val etd = sdf.parse(callingPoints[position]?.etd!!)
-                holder.stationStatus.text = output.format(etd!!)
-                if (!etd.after(std)) {
-                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+            if (isCancelled) {
+
+                if (getItemViewType(position) == STATION_MIDDLE) {
+                    holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                    holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorRed, null))
                 } else {
-                    if (!output.format(etd).equals(output.format(std), true)) {
-                        holder.stationDelay.text = output.format(etd)
-                        holder.stationStatus.paintFlags = (holder.stationStatus.paintFlags.or(
-                            Paint.STRIKE_THRU_TEXT_FLAG))
-                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorText, null))
-                    } else {
-                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                    }
+                    holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorRed, null))
                 }
+                holder.stationIndicator.background.colorFilter = redColor
+                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorRed, null))
+                holder.stationStatus.text = holder.containerView?.context?.getString(R.string.status_cancelled)
             } else {
-//            if (callingPoints[position].actualTime.equals(callingPoints[position].scheduledTime, true)) {
-//                Log.e("ADAPT", "ETD: ${callingPoints[position].estimatedTime} STD: ${callingPoints[position].scheduledTime}")
-//                holder.stationStatus.text = callingPoints[position].scheduledTime
-//            } else {
-//                holder.stationStatus.text = "${callingPoints[position].scheduledTime} ${callingPoints[position].actualTime}"
-//            }
-                holder.stationStatus.text = output.format(std!!)
-                callingPoints[position]?.atd?.let {
-                    val atd = sdf.parse(callingPoints[position]?.atd!!)
-                    if (!atd!!.after(std)) {
+
+                if (!callingPoints[position]?.etd.isNullOrEmpty()) {
+                    val etd = sdf.parse(callingPoints[position]?.etd!!)
+                    holder.stationStatus.text = output.format(etd!!)
+                    if (!etd.after(std)) {
                         holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
                     } else {
-                        if (!output.format(atd).equals(output.format(std), true)) {
-                            holder.stationDelay.text = output.format(atd)
+                        if (!output.format(etd).equals(output.format(std), true)) {
+                            holder.stationDelay.text = output.format(etd)
                             holder.stationStatus.paintFlags = (holder.stationStatus.paintFlags.or(
                                 Paint.STRIKE_THRU_TEXT_FLAG))
                             holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorText, null))
@@ -127,8 +123,80 @@ class StationTimelineAdapter(
                             holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
                         }
                     }
-                } ?: run {
-                    holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                } else {
+//            if (callingPoints[position].actualTime.equals(callingPoints[position].scheduledTime, true)) {
+//                Log.e("ADAPT", "ETD: ${callingPoints[position].estimatedTime} STD: ${callingPoints[position].scheduledTime}")
+//                holder.stationStatus.text = callingPoints[position].scheduledTime
+//            } else {
+//                holder.stationStatus.text = "${callingPoints[position].scheduledTime} ${callingPoints[position].actualTime}"
+//            }
+                    holder.stationStatus.text = output.format(std!!)
+                    callingPoints[position]?.atd?.let {
+                        val atd = sdf.parse(callingPoints[position]?.atd!!)
+                        if (!atd!!.after(std)) {
+                            holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                        } else {
+                            if (!output.format(atd).equals(output.format(std), true)) {
+                                holder.stationDelay.text = output.format(atd)
+                                holder.stationStatus.paintFlags = (holder.stationStatus.paintFlags.or(
+                                    Paint.STRIKE_THRU_TEXT_FLAG))
+                                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorText, null))
+                            } else {
+                                holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                            }
+                        }
+                    } ?: run {
+                        holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                    }
+
+                }
+
+                when {
+                    position < currentIndex -> {
+                        // Make green
+                        if (getItemViewType(position) == STATION_MIDDLE) {
+                            holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                            holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                        } else {
+                            holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                        }
+                        holder.stationIndicator.background.colorFilter = greenColor
+                    }
+                    position == currentIndex -> {
+                        // Make grey
+                        if (callingPoints[position]?.departureType.equals("forecast", true)) {
+                            if (getItemViewType(position) == STATION_MIDDLE) {
+                                holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                                holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                            } else {
+                                holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                            }
+                        } else {
+                            if (getItemViewType(position) == STATION_MIDDLE) {
+                                holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                                holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                            } else {
+                                holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
+                            }
+                        }
+                        holder.stationIndicator.background.colorFilter = greenColor
+
+                        if (callingPoints[position]?.arrivalType.equals("forecast", true)) {
+                            holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                            holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                            holder.stationIndicator.background.colorFilter = sideColor
+                        }
+                    }
+                    position > currentIndex -> {
+                        // Make grey
+                        if (getItemViewType(position) == STATION_MIDDLE) {
+                            holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                            holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                        } else {
+                            holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
+                        }
+                        holder.stationIndicator.background.colorFilter = sideColor
+                    }
                 }
 
             }
@@ -139,48 +207,6 @@ class StationTimelineAdapter(
                     if (isHidden) {
                         holder.stationPlatform.text = holder.stationPlatform.text as String + " (Predicted)"
                     }
-                }
-            }
-
-            when {
-                position < currentIndex -> {
-                    // Make green
-                    if (getItemViewType(position) == STATION_MIDDLE) {
-                        holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                        holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                    } else {
-                        holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                    }
-                    holder.stationIndicator.background.colorFilter = greenColor
-                }
-                position == currentIndex -> {
-                    // Make grey
-                    if (callingPoints[position]?.departureType.equals("forecast", true)) {
-                        if (getItemViewType(position) == STATION_MIDDLE) {
-                            holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                            holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
-                        } else {
-                            holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
-                        }
-                    } else {
-                        if (getItemViewType(position) == STATION_MIDDLE) {
-                            holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                            holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                        } else {
-                            holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
-                        }
-                    }
-                    holder.stationIndicator.background.colorFilter = greenColor
-                }
-                position > currentIndex -> {
-                    // Make grey
-                    if (getItemViewType(position) == STATION_MIDDLE) {
-                        holder.sideLineTop.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
-                        holder.sideLineBottom.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
-                    } else {
-                        holder.sideLine.setBackgroundColor(holder.itemView.resources.getColor(R.color.colorUnselected, null))
-                    }
-                    holder.stationIndicator.background.colorFilter = sideColor
                 }
             }
 

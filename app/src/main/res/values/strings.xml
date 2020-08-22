@@ -83,6 +83,12 @@
         <item>Adults</item>
         <item>Children (4–14)</item>
     </string-array>
+    <string-array name="live_update_values">
+        <item>Delays</item>
+        <item>Platform Updates</item>
+        <item>Train Arrivals</item>
+        <item>Train Departures</item>
+    </string-array>
     <string name="journey_duration_format">%d hrs %d min</string>
     <string name="journey_changes_format">%d Changes</string>
     <string name="fastest">Fastest</string>
@@ -115,4 +121,8 @@
     <string name="tracking">Alert successully added!</string>
     <string name="tracking_error">Failed to add alert!</string>
     <string name="information_button">Information button</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="live_updates_title">Set an alert</string>
+    <string name="live_updates_positive">Set</string>
+    <string name="live_updates_negative">Cancel</string>
 </resources>
