@@ -1,6 +1,7 @@
 package com.cniekirk.traintimes.repo
 
 import android.util.Log
+import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
 import com.cniekirk.traintimes.domain.Either
@@ -43,7 +44,8 @@ private const val TAG = "NreRepositoryImpl"
 @Singleton
 class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,
                                             private val nreService: NREService,
-                                            private val trackTimesService: TrackTimesService): NreRepository {
+                                            private val trackTimesService: TrackTimesService,
+                                            private val preferencesProvider: PreferenceProvider): NreRepository {
 
     /**
      * Gets the departing trains along with details about each service from a station
@@ -194,6 +196,8 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         val header = "/api/track"
             .hmac("/api/track")
+
+        preferencesProvider.saveTrackedServiceDetails(trackServiceRequest.serviceDetailsUiModel)
 
         return when(networkHandler.isConnected) {
             true -> request(trackTimesService.trackService(header, trackServiceRequest)) { it }

@@ -181,7 +181,8 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                             }
                             searchTiploc?.let { location ->
                                 location.tiploc?.let { tiploc ->
-                                    viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""), PreferenceProvider(requireContext()).getFirebaseId())
+                                    viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""),
+                                        PreferenceProvider(requireContext()).getFirebaseId(), serviceDetailsResult)
                                 }
                             }
                             dialogInterface.dismiss()

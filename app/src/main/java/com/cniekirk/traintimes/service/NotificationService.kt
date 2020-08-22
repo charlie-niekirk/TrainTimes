@@ -57,10 +57,38 @@ class NotificationService : FirebaseMessagingService() {
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        val listMyData = Types.newParameterizedType(List::class.java, PushPortMessageItem::class.java)
-        val pushPortAdapter: JsonAdapter<List<PushPortMessageItem>> = moshi.adapter(listMyData)
+        val pushPortList = Types.newParameterizedType(List::class.java, PushPortMessageItem::class.java)
+        val pushPortAdapter: JsonAdapter<List<PushPortMessageItem>> = moshi.adapter(pushPortList)
+
         pushPortMessage?.let {
             val msg = pushPortAdapter.fromJson(pushPortMessage)
+
+            val trackedServices = PreferenceProvider(this).retrieveTrackedService()
+            trackedServices?.let { services ->
+                val relevantService =
+                    services.find { service ->
+                        service.rid?.equals(msg?.get(0)?.tS?.get(0)?.tsAttrs?.rid, true) ?: false
+                    }
+
+                // Compare to cached details
+                relevantService?.let { relevant ->
+                    msg?.get(0)?.tS?.get(0)?.location?.forEach { msgLocation ->
+                        val allCachedLocations = if (relevant.currentLocation == null) {
+                            relevant.subsequentLocations
+                        } else {
+                            relevant.subsequentLocations?.let { it1 ->
+                                listOf(relevant.currentLocation).plus(
+                                    it1
+                                )
+                            }
+                        }
+
+                        
+                    }
+                }
+
+            }
+
             println(msg)
         }
 

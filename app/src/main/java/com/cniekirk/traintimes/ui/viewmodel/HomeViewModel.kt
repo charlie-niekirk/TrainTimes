@@ -105,9 +105,9 @@ class HomeViewModel constructor(
         }
     }
 
-    fun trackService(rid: String, tiploc: String, fbId: String) {
+    fun trackService(rid: String, tiploc: String, fbId: String, serviceDetailsUiModel: ServiceDetailsUiModel) {
 
-        val request = TrackServiceRequest(rid, tiploc, fbId)
+        val request = TrackServiceRequest(rid, tiploc, fbId, serviceDetailsUiModel)
         trackServiceUseCase(request) { it.either(::handleFailure, ::handleTrackResult) }
 
     }

@@ -6,6 +6,6 @@ import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "numRows")
 data class NumRows(
-    @Attribute(name = "i:type") val type: String = "d:int",
-    @TextContent val numRows: String
+  @Attribute(name = "i:type") val type: String = "d:int",
+  @TextContent val numRows: String
 )
