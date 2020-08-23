@@ -7,5 +7,5 @@ data class TrackServiceRequest(
     @Json(name = "rid") val rid: String,
     @Json(name = "tploc") val tploc: String,
     @Json(name = "fbid") val fbid: String,
-    @Transient val serviceDetailsUiModel: ServiceDetailsUiModel
+    @Transient val serviceDetailsUiModel: ServiceDetailsUiModel? = null
 )

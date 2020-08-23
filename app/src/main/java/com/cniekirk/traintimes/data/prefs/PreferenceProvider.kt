@@ -8,6 +8,7 @@ import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 private const val SHOW_PRICES = "show_prices"
 private const val DEFAULT_PAGE = "default_page_live"
@@ -39,6 +40,7 @@ class PreferenceProvider(context: Context) {
 
     fun saveTrackedServiceDetails(serviceDetailsUiModel: ServiceDetailsUiModel) {
         val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
             .build()
         val serviceDetailsList = Types.newParameterizedType(List::class.java, ServiceDetailsUiModel::class.java)
         val adapter: JsonAdapter<List<ServiceDetailsUiModel>> = moshi.adapter(serviceDetailsList)
@@ -55,6 +57,7 @@ class PreferenceProvider(context: Context) {
 
     fun retrieveTrackedService(): List<ServiceDetailsUiModel>? {
         val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
             .build()
         val serviceDetailsList = Types.newParameterizedType(List::class.java, ServiceDetailsUiModel::class.java)
         val adapter: JsonAdapter<List<ServiceDetailsUiModel>> = moshi.adapter(serviceDetailsList)

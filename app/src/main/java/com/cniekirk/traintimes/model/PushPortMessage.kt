@@ -46,7 +46,7 @@ data class TSAttrs(
 
 data class Arr(
     @Json(name = "$")
-    val arrPassAttrs: List<ArrPassAttrs>?
+    val arrPassAttrs: ArrPassAttrs?
 )
 
 data class Dep(
@@ -61,7 +61,7 @@ data class Pass(
 
 data class Plat(
     @Json(name = "_")
-    val platform: Int?,
+    val platform: String?,
     @Json(name = "$")
     val platAttrs: PlatAttrs?
 )

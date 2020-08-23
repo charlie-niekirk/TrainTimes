@@ -20,6 +20,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "NotificationService"
 
@@ -72,18 +74,50 @@ class NotificationService : FirebaseMessagingService() {
 
                 // Compare to cached details
                 relevantService?.let { relevant ->
+
+                    val allCachedLocations = if (relevant.currentLocation == null) {
+                        relevant.subsequentLocations
+                    } else {
+                        relevant.subsequentLocations?.let { subsequent ->
+                            listOf(relevant.currentLocation).plus(
+                                subsequent
+                            )
+                        }
+                    }
+
+                    // For each location in the message, do a check for any changes
                     msg?.get(0)?.tS?.get(0)?.location?.forEach { msgLocation ->
-                        val allCachedLocations = if (relevant.currentLocation == null) {
-                            relevant.subsequentLocations
-                        } else {
-                            relevant.subsequentLocations?.let { it1 ->
-                                listOf(relevant.currentLocation).plus(
-                                    it1
-                                )
+
+                        val matchingLocation = allCachedLocations?.find { loc ->
+                            loc?.tiploc.equals(msgLocation.stationAttrs?.tpl, true)
+                        }
+
+                        Log.e(TAG, allCachedLocations?.toTypedArray().toString())
+
+                        if (msgLocation.plat?.get(0)?.platform.equals(matchingLocation?.platform, true)) {
+                            if (msgLocation.plat?.get(0)?.platAttrs?.platsup.isNullOrEmpty().and(
+                                    matchingLocation?.platformIsHidden == true
+                                )) {
+                                // Platform confirmed, post notification
+                                sendNotification("Platform confirmed (${matchingLocation?.locationName}): " +
+                                            "${matchingLocation?.platform}")
+                            }
+                        } else if (!msgLocation.plat?.get(0)?.platform.equals(matchingLocation?.platform, true)) {
+                            sendNotification("Platform changed (${matchingLocation?.locationName}): " +
+                                            "${matchingLocation?.platform}")
+                        }
+
+                        val sdf = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+                        matchingLocation?.std?.let { stdStr ->
+                            msgLocation.dep?.get(0)?.depAttrs?.et?.let {
+                                val std = sdf.parse(stdStr)
+                                val etd = sdf.parse(it)
+                                if (etd.after(std)) {
+                                    sendNotification("$stdStr at ${matchingLocation.locationName} delayed, now: $it")
+                                }
                             }
                         }
 
-                        
                     }
                 }
 
@@ -92,29 +126,29 @@ class NotificationService : FirebaseMessagingService() {
             println(msg)
         }
 
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_info)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_speed))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(data["body"])
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+//        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+//            .setSmallIcon(R.drawable.ic_info)
+//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_speed))
+//            .setPriority(NotificationCompat.PRIORITY_HIGH)
+//            .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
+//            .setContentTitle(getString(R.string.app_name))
+//            .setContentText(data["body"])
+//            .setAutoCancel(true)
+//            .setContentIntent(pendingIntent)
+//
+//        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//        // Since android Oreo notification channel is needed.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val channel = NotificationChannel(
+//                channelId,
+//                getString(R.string.app_name),
+//                NotificationManager.IMPORTANCE_DEFAULT
+//            )
+//            notificationManager.createNotificationChannel(channel)
+//        }
+//
+//        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
 
     /**

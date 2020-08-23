@@ -69,7 +69,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         return when (networkHandler.isConnected) {
             true -> request(nreService.getDepartureBoardWithDetails(envelope)) { it.body.getDepBoardWithDetailsResponse.getBoardWithDetailsResult }
-            false, null -> Either.Left(Failure.NetworkConnectionError())
+            else -> Either.Left(Failure.NetworkConnectionError())
         }
 
     }
@@ -94,7 +94,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         return when (networkHandler.isConnected) {
             true -> request(nreService.getArrivalBoardWithDetails(envelope)) { it.body.getArrBoardWithDetailsResponse.getBoardWithDetailsResult }
-            false, null -> Either.Left(Failure.NetworkConnectionError())
+            else -> Either.Left(Failure.NetworkConnectionError())
         }
     }
 
@@ -137,7 +137,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                 current?.let { cur -> uiModel.currentLocation = cur }
                 uiModel
             }
-            false, null -> Either.Left(Failure.NetworkConnectionError())
+            else -> Either.Left(Failure.NetworkConnectionError())
         }
 
     }
@@ -175,7 +175,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                 }
                 it.copy(outwardJourney = newOutJourneys, inwardJourney = newReturnJourneys)
             }
-            false, null -> Either.Left(Failure.NetworkConnectionError())
+            else -> Either.Left(Failure.NetworkConnectionError())
         }
 
     }
@@ -187,7 +187,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.getDelayRepayUrl(operator, header)) { it }
-            false, null -> Either.Left(Failure.NetworkConnectionError())
+            else -> Either.Left(Failure.NetworkConnectionError())
         }
 
     }
@@ -197,11 +197,13 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         val header = "/api/track"
             .hmac("/api/track")
 
-        preferencesProvider.saveTrackedServiceDetails(trackServiceRequest.serviceDetailsUiModel)
+        trackServiceRequest.serviceDetailsUiModel?.let {
+            preferencesProvider.saveTrackedServiceDetails(it)
+        }
 
         return when(networkHandler.isConnected) {
             true -> request(trackTimesService.trackService(header, trackServiceRequest)) { it }
-            false, null -> Either.Left(Failure.NetworkConnectionError())
+            else -> Either.Left(Failure.NetworkConnectionError())
         }
 
     }
