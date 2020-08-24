@@ -222,6 +222,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             exitTransition = forward
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
+
+        binding.favouriteSelector.setOnClickListener {
+            // Fire off request here
+            it.isSelected = !it.isSelected
+        }
     }
 
     override fun onResume() {

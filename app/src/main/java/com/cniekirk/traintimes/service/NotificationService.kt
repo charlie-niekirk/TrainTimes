@@ -92,7 +92,7 @@ class NotificationService : FirebaseMessagingService() {
                             loc?.tiploc.equals(msgLocation.stationAttrs?.tpl, true)
                         }
 
-                        Log.e(TAG, allCachedLocations?.toTypedArray().toString())
+                        Log.e(TAG, allCachedLocations?.toString()!!)
 
                         if (msgLocation.plat?.get(0)?.platform.equals(matchingLocation?.platform, true)) {
                             if (msgLocation.plat?.get(0)?.platAttrs?.platsup.isNullOrEmpty().and(

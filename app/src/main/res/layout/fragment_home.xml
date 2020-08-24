@@ -45,12 +45,26 @@
             app:layout_constraintTop_toTopOf="@id/home_title"
             app:layout_constraintBottom_toBottomOf="@id/home_title"
             android:src="@drawable/ic_settings"
-            android:tint="@color/colorPrimary"
+            app:tint="@color/colorPrimary"
             android:background="@drawable/circular_bg"
             android:backgroundTint="@color/colorAccent"
             android:padding="5dp"
             android:contentDescription="@string/settings_button_content_description"
             android:transitionName="sharedElementContainer"/>
+
+        <LinearLayout
+            android:id="@+id/favourite_selector"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            app:layout_constraintEnd_toStartOf="@id/home_btn_settings"
+            app:layout_constraintTop_toTopOf="@id/home_btn_settings"
+            app:layout_constraintBottom_toBottomOf="@id/home_btn_settings"
+            android:layout_marginEnd="12dp"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@drawable/ic_star_selector"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/search_select_dep_station"
@@ -86,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_keyboard_arrow_right"
-            android:tint="@color/colorAccent"
+            app:tint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
             app:layout_constraintEnd_toEndOf="@id/search_select_dep_station"
             app:layout_constraintTop_toTopOf="@id/search_select_dep_station" />
@@ -125,7 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_keyboard_arrow_right"
-            android:tint="@color/colorAccent"
+            app:tint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
             app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
             app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
