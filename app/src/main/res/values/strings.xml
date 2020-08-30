@@ -125,4 +125,6 @@
     <string name="live_updates_title">Set an alert</string>
     <string name="live_updates_positive">Set</string>
     <string name="live_updates_negative">Cancel</string>
+    <string name="dep_board_template">%s</string>
+    <string name="recent_search_title">Recent queries</string>
 </resources>

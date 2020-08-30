@@ -1,8 +1,10 @@
 package com.cniekirk.traintimes.repo
 
+import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.delayrepay.DelayRepay
+import com.cniekirk.traintimes.model.getdepboard.local.Query
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
 import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
@@ -13,7 +15,11 @@ import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 
 interface NreRepository {
 
-    fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetBoardWithDetailsResult>
+    fun getDeparturesAtStation(station: CRS, destination: CRS): Either<Failure, GetBoardWithDetailsResult>
+
+    fun getRecentQueries(): Either<Failure, List<Query>>
+
+    fun saveFavouriteQuery(origin: CRS, destination: CRS): Either<Failure, Boolean>
 
     fun getArrivalsAtStation(target: String, destination: String): Either<Failure, GetBoardWithDetailsResult>
 

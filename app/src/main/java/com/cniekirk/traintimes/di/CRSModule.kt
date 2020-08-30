@@ -55,13 +55,14 @@ class CRSModule {
 
     @Singleton
     @Provides
+    @Named("CrsDb")
     fun provideAppDb(context: Context): AppDb {
         return AppDb.getInstance(context)
     }
 
     @Singleton
     @Provides
-    fun provideCrsDao(db: AppDb) = db.crsDao()
+    fun provideCrsDao(@Named("CrsDb") db: AppDb) = db.crsDao()
 
     @Singleton
     @Provides

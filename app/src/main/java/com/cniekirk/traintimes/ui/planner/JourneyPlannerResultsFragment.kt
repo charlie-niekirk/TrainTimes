@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.ui.planner
 
+import android.content.Intent
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
@@ -23,11 +24,12 @@ import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.android.synthetic.main.fragment_home.loading_indicator
 import kotlinx.android.synthetic.main.fragment_planner_results.*
+import java.net.URI
 import javax.inject.Inject
 
-class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results), Injectable {
+class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results), Injectable,
+    JourneyPlanAdapter.JourneyPlanClickListener {
 
     @Inject
     lateinit var viewModelFactory: JourneyPlannerViewModelFactory
@@ -98,6 +100,11 @@ class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results)
     override fun onPause() {
         viewModel.journeyPlannerResponse.call()
         super.onPause()
+    }
+
+    override fun onClick(position: Int) {
+//        val ojpIntent = Intent(Intent.ACTION_VIEW)
+//        ojpIntent.data = URI()
     }
 
 }

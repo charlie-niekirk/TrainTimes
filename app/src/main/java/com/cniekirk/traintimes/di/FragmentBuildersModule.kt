@@ -1,6 +1,7 @@
 package com.cniekirk.traintimes.di
 
 import com.cniekirk.traintimes.ui.favourites.FavouritesFragment
+import com.cniekirk.traintimes.ui.main.DepBoardResultsFragment
 import com.cniekirk.traintimes.ui.main.StationSearchFragment
 import com.cniekirk.traintimes.ui.main.HomeFragment
 import com.cniekirk.traintimes.ui.main.ServiceDetailFragment
@@ -16,6 +17,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeHomeFragment(): HomeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeDepBoardResultsFragment(): DepBoardResultsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeNearbyFragment(): JourneyPlannerFragment

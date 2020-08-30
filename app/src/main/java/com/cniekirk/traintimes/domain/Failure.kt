@@ -10,6 +10,8 @@ sealed class Failure {
     class NoCrsFailure(): Failure()
     class NoDestinationFailure(): Failure()
     class MoreRailcardsThanPassengersError: Failure()
+    class NoRecentQueriesFailure(): Failure()
+    class FavouriteNotSavedFailure : Failure()
 
     abstract class FeatureFailure: Failure()
 

@@ -1,10 +1,8 @@
 package com.cniekirk.traintimes.model.journeyplanner.res
 
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import androidx.annotation.Keep
 import com.cniekirk.traintimes.model.adapter.SingleToArray
+import com.squareup.moshi.Json
 
 data class Leg(
     @Json(name = "alight")
@@ -15,7 +13,7 @@ data class Leg(
     val cateringCodes: String?,
     @SingleToArray
     @Json(name = "destinationInstants")
-    val destinationInstants: List<DestinationInstants?>,
+    val destinationInstants: List<DestinationInstants>?,
     @Json(name = "destinationPlatform")
     val destinationPlatform: String?,
     @SingleToArray
@@ -31,9 +29,9 @@ data class Leg(
     val mode: String?,
     @Json(name = "operator")
     val `operator`: Operator?,
-    @SingleToArray
+    @field:SingleToArray
     @Json(name = "originInstants")
-    val originInstants: List<OriginInstants?>,
+    val originInstants: List<OriginInstants>?,
     @Json(name = "originPlatform")
     val originPlatform: String?,
     @Json(name = "origins")

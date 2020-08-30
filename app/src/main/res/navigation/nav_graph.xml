@@ -14,6 +14,9 @@
             android:id="@+id/action_homeFragment_to_journeyPlannerFragment"
             app:destination="@id/journeyPlannerFragment"/>
         <action
+            android:id="@+id/action_homeFragment_to_depBoardResultsFragment"
+            app:destination="@id/depBoardResultsFragment"/>
+        <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"/>
         <action
@@ -30,6 +33,15 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:destination="@id/favouritesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/depBoardResultsFragment"
+        android:name="com.cniekirk.traintimes.ui.main.DepBoardResultsFragment"
+        android:label="DepBoardResultsFragment"
+        tools:layout="@layout/fragment_dep_board_results">
+        <action
+            android:id="@+id/action_depBoardResultsFragment_to_serviceDetailFragment"
+            app:destination="@id/serviceDetailFragment"/>
     </fragment>
     <fragment
         android:id="@+id/journeyPlannerFragment"

@@ -1,24 +1,27 @@
 package com.cniekirk.traintimes.repo
 
 import android.util.Log
+import com.cniekirk.traintimes.data.local.FavouritesDao
+import com.cniekirk.traintimes.data.local.RecentQueriesDao
+import com.cniekirk.traintimes.data.local.model.CRS
+import com.cniekirk.traintimes.data.local.model.Favourite
+import com.cniekirk.traintimes.data.local.model.RecentQuery
 import com.cniekirk.traintimes.data.prefs.PreferenceProvider
-import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.data.remote.NREService
+import com.cniekirk.traintimes.data.remote.TrackTimesService
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.delayrepay.DelayRepay
+import com.cniekirk.traintimes.model.getdepboard.local.Query
 import com.cniekirk.traintimes.model.getdepboard.req.*
-import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
-import com.cniekirk.traintimes.model.getdepboard.res.Location
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
-import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
 import com.cniekirk.traintimes.model.journeyplanner.res.Journey
+import com.cniekirk.traintimes.model.journeyplanner.res.JourneyPlannerResponse
 import com.cniekirk.traintimes.model.servicedetails.req.GetServiceDetailsByRIDRequest
+import com.cniekirk.traintimes.model.servicedetails.req.Rid
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsBody
 import com.cniekirk.traintimes.model.servicedetails.req.ServiceDetailsEnvelope
-import com.cniekirk.traintimes.model.servicedetails.req.Rid
-import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
@@ -27,8 +30,10 @@ import com.cniekirk.traintimes.utils.Sign
 import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.extensions.now
 import com.cniekirk.traintimes.utils.request
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,7 +50,10 @@ private const val TAG = "NreRepositoryImpl"
 class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkHandler,
                                             private val nreService: NREService,
                                             private val trackTimesService: TrackTimesService,
-                                            private val preferencesProvider: PreferenceProvider): NreRepository {
+                                            private val preferencesProvider: PreferenceProvider,
+                                            private val recentQueriesDao: RecentQueriesDao,
+                                            private val favouritesDao: FavouritesDao,
+                                            private val adapter: JsonAdapter<Query>): NreRepository {
 
     /**
      * Gets the departing trains along with details about each service from a station
@@ -55,17 +63,37 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
      *
      * @return An [Either] that exposes a [Failure] or [GetBoardWithDetailsResult]
      */
-    override fun getDeparturesAtStation(station: String, destination: String): Either<Failure, GetBoardWithDetailsResult> {
+    override fun getDeparturesAtStation(station: CRS, destination: CRS): Either<Failure, GetBoardWithDetailsResult> {
 
         val body = Body(GetDepBoardWithDetailsRequest(
             numRows = "20",
-            crs = station,
-            filterCrs = destination,
+            crs = station.crs,
+            filterCrs = destination.crs,
             filterType = "to",
             time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).now(),
             timeWindow = "120",
             getNonPassengerServices = false))
+
+        Log.e(TAG, "getDeparturesAtStation: $body")
+
         val envelope = Envelope(header = Header(AccessToken()), body = body)
+
+        val query = if (destination.stationName.isEmpty()) {
+            Query(station.crs, station.stationName)
+        } else {
+            Query(station.crs, station.stationName, destination.crs, destination.stationName)
+        }
+
+        val dbValue = adapter.toJson(query)
+        val current = recentQueriesDao.getRecentQueries()
+        val isAlready = current.filter { q ->
+            Log.e(TAG, "New: $q, DB: $dbValue")
+            q.query.equals(dbValue, true)
+        }
+        if (isAlready.isNullOrEmpty()) {
+            recentQueriesDao.insertRecentQuery(RecentQuery(query = dbValue))
+            recentQueriesDao.cleanQueries()
+        }
 
         return when (networkHandler.isConnected) {
             true -> request(nreService.getDepartureBoardWithDetails(envelope)) { it.body.getDepBoardWithDetailsResponse.getBoardWithDetailsResult }
@@ -96,6 +124,20 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             true -> request(nreService.getArrivalBoardWithDetails(envelope)) { it.body.getArrBoardWithDetailsResponse.getBoardWithDetailsResult }
             else -> Either.Left(Failure.NetworkConnectionError())
         }
+    }
+
+    override fun getRecentQueries(): Either<Failure, List<Query>> {
+
+        return if (recentQueriesDao.getRecentQueries().isNotEmpty()) {
+
+            Either.Right(recentQueriesDao.getRecentQueries().map {
+                adapter.fromJson(it.query)!!
+            })
+
+        } else {
+            Either.Left(Failure.NoRecentQueriesFailure())
+        }
+
     }
 
     override fun getServiceDetails(rid: String): Either<Failure, ServiceDetailsUiModel> {
@@ -140,6 +182,25 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             else -> Either.Left(Failure.NetworkConnectionError())
         }
 
+    }
+
+    override fun saveFavouriteQuery(origin: CRS, destination: CRS): Either<Failure, Boolean> {
+
+        val query = if (destination.stationName.isEmpty()) {
+            Query(origin.crs, origin.stationName)
+        } else {
+            Query(origin.crs, origin.stationName, destination.crs, destination.stationName)
+        }
+
+        val dbValue = adapter.toJson(query)
+        val current = favouritesDao.getFavourites()
+        val isAlready = current.filter { q -> q.query.equals(dbValue, true) }
+        return if (isAlready.isNullOrEmpty()) {
+            favouritesDao.insertFavourite(Favourite(query = dbValue))
+            Either.Right(true)
+        } else {
+            Either.Left(Failure.FavouriteNotSavedFailure())
+        }
     }
 
     override fun getJourneyPlan(request: JourneyPlanRepoRequest): Either<Failure, JourneyPlannerResponse> {

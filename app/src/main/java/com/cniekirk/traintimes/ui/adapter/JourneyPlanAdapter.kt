@@ -124,4 +124,8 @@ class JourneyPlanAdapter(private val journeys: MutableList<Journey>,
 
     }
 
+    interface JourneyPlanClickListener {
+        fun onClick(position: Int)
+    }
+
 }

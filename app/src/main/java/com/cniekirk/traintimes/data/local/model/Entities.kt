@@ -9,3 +9,15 @@ data class CRS(
     val stationName: String,
     val crs: String
 )
+
+@Entity(tableName = "recentqueries")
+data class RecentQuery(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val query: String
+)
+
+@Entity(tableName = "favourites")
+data class Favourite(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val query: String
+)

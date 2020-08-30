@@ -27,6 +27,7 @@ import com.cniekirk.traintimes.databinding.FragmentHomeBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
+import com.cniekirk.traintimes.ui.adapter.RecentQueriesAdapter
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
@@ -35,19 +36,21 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
+import kotlinx.android.synthetic.main.fragment_dep_board_results.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
+private const val TAG = "HomeFragment"
+
 class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
-    DepartureListAdapter.DepartureItemClickListener {
+    DepartureListAdapter.DepartureItemClickListener,
+    RecentQueriesAdapter.RecentQueryClickListener {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
-
-    private val avd by lazy(LazyThreadSafetyMode.NONE) { binding.loadingIndicator.drawable as AnimatedVectorDrawable }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,21 +78,21 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             }
         })
 
-        viewModel.services.observe(viewLifecycleOwner, Observer { service ->
-            val depAdapter =
-                DepartureListAdapter(
-                    service,
-                    this
-                )
-            binding.homeServicesList.adapter = depAdapter
-            postponeEnterTransition()
-            binding.homeServicesList.viewTreeObserver.addOnPreDrawListener {
-                startPostponedEnterTransition()
-                true
-            }
-            avd.clearAnimationCallbacks()
-            avd.stop()
-        })
+//        viewModel.services.observe(viewLifecycleOwner, Observer { service ->
+//            val depAdapter =
+//                DepartureListAdapter(
+//                    service,
+//                    this
+//                )
+//            binding.homeServicesList.adapter = depAdapter
+//            postponeEnterTransition()
+//            binding.homeServicesList.viewTreeObserver.addOnPreDrawListener {
+//                startPostponedEnterTransition()
+//                true
+//            }
+//            avd.clearAnimationCallbacks()
+//            avd.stop()
+//        })
 
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
             if (it == null) {
@@ -142,17 +145,22 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             binding.searchArrowDep.setOnClickListener(null)
         }
 
-        viewModel.failure.observe(viewLifecycleOwner, Observer {
+        viewModel.recentQueries.observe(viewLifecycleOwner, {
+            // Create adapter etc.
+            binding.recentSearchList.layoutManager = LinearLayoutManager(requireContext())
+            binding.recentSearchList.adapter = RecentQueriesAdapter(it, this)
+        })
+
+        viewModel.failure.observe(viewLifecycleOwner, {
             when (it) {
-                is Failure.NoCrsFailure -> {
-                    avd.clearAnimationCallbacks()
-                    avd.stop()
-                    Snackbar.make(binding.root, "No station selected!", Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(resources.getColor(R.color.colorRed, null))
-                        .show()
+                is Failure.NoRecentQueriesFailure -> {
+                    // Log maybe?
+                    Log.e(TAG, "No recent queries")
                 }
             }
         })
+
+        viewModel.getRecentSearches()
 
 //        exitTransition = Hold().apply { duration = 270 }
         enterTransition = MaterialFadeThrough()
@@ -164,19 +172,19 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         Log.e("HOME", "Keys: ${viewModel.handle.keys()}")
 
-        binding.homeServicesList.itemAnimator = DepartureListItemAnimtor(0)
-            .withInterpolator(FastOutSlowInInterpolator())
-            .withAddDuration(250)
-            .withRemoveDuration(250)
+//        binding.homeServicesList.itemAnimator = DepartureListItemAnimtor(0)
+//            .withInterpolator(FastOutSlowInInterpolator())
+//            .withAddDuration(250)
+//            .withRemoveDuration(250)
 
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.homeServicesList.layoutManager = layoutManager
-        binding.homeServicesList.adapter =
-            DepartureListAdapter(
-                emptyList(),
-                this
-            )
-        binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
+//        val layoutManager = LinearLayoutManager(requireContext())
+//        binding.homeServicesList.layoutManager = layoutManager
+//        binding.homeServicesList.adapter =
+//            DepartureListAdapter(
+//                emptyList(),
+//                this
+//            )
+//        binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
 
         binding.searchSelectDepStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDepStation
@@ -203,15 +211,15 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         }
 
         binding.searchButton.setOnClickListener {
-            startLoadingAnim()
+//            startLoadingAnim()
             // Remove old items to make the UX more seamless
-            binding.homeServicesList.adapter =
-                DepartureListAdapter(
-                    emptyList(),
-                    this
-                )
-            viewModel.getTrains()
-            //viewModel.getJourneyPlan()
+//            binding.homeServicesList.adapter =
+//                DepartureListAdapter(
+//                    emptyList(),
+//                    this
+//                )
+            view.findNavController().navigate(R.id.depBoardResultsFragment,
+                bundleOf("isFromSearch" to true))
         }
 
         binding.homeBtnSettings.setOnClickListener {
@@ -223,30 +231,18 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
 
-        binding.favouriteSelector.setOnClickListener {
-            // Fire off request here
-            it.isSelected = !it.isSelected
-        }
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recentSearchList.layoutManager = layoutManager
+        binding.recentSearchList.adapter = RecentQueriesAdapter(emptyList(), this)
+        binding.recentSearchList.addItemDecoration(DividerItemDecoration(recent_search_list.context, layoutManager.orientation))
+
+
     }
 
     override fun onResume() {
         super.onResume()
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-    }
-
-    /**
-     * Start the loading animation, looping it with the listeners
-     */
-    private fun startLoadingAnim() {
-        if (loading_indicator.drawable is AnimatedVectorDrawable) {
-            avd.registerAnimationCallback(object: Animatable2.AnimationCallback() {
-                override fun onAnimationEnd(drawable: Drawable?) {
-                    avd.start()
-                }
-            })
-            avd.start()
-        }
     }
 
     override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
@@ -266,9 +262,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             navigateBundle, null, extras)
     }
 
-    override fun onPause() {
-        binding.homeServicesList.adapter = null
-        super.onPause()
+    // Recent queries
+    override fun onClick(position: Int) {
+        binding.root.findNavController().navigate(R.id.depBoardResultsFragment,
+            bundleOf("recentQueries" to position, "isFromSearch" to true))
     }
 
 }

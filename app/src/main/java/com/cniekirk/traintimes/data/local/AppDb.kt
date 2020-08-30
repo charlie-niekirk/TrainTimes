@@ -5,13 +5,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.cniekirk.traintimes.data.local.model.CRS
+import com.cniekirk.traintimes.data.local.model.Favourite
+import com.cniekirk.traintimes.data.local.model.RecentQuery
 
-@Database(entities = [CRS::class],
+@Database(entities = [CRS::class, RecentQuery::class, Favourite::class],
     version = 2,
     exportSchema = false)
 abstract class AppDb: RoomDatabase() {
 
     abstract fun crsDao(): CRSDao
+    abstract fun recentQueriesDao(): RecentQueriesDao
+    abstract fun favouritesDao(): FavouritesDao
 
     companion object {
 
@@ -28,7 +32,7 @@ abstract class AppDb: RoomDatabase() {
         // Create and pre-populate the database. See this article for more details:
         // https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
         private fun buildDatabase(context: Context): AppDb {
-            return Room.databaseBuilder(context, AppDb::class.java, "crs-codes")
+            return Room.databaseBuilder(context, AppDb::class.java, "app-db")
                 .fallbackToDestructiveMigration()
                 .build()
         }

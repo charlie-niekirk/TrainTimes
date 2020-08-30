@@ -19,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -214,6 +215,15 @@ class JourneyPlannerViewModel(
     fun clearDestStation() {
         destStation.postValue(null)
         handle.remove<String>("destStation")
+    }
+
+    fun createURIFromPlannerResult(position: Int) {
+        journeyPlannerResponse.value?.outwardJourney?.let {
+            val journey = it[position]
+            //journey.timetable.scheduled.departure
+            val uri = URI("https://m.nationalrail.co.uk/pj/plan/" +
+                    "${journey.origin}/${journey.destination}/270820/1625/dep")
+        }
     }
 
     private fun handleCrs(list: List<CRS>) {
