@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes
+package com.cniekirk.traintimes.core.functional
 
 import com.cniekirk.traintimes.utils.Sign
 import com.cniekirk.traintimes.utils.extensions.toHexString

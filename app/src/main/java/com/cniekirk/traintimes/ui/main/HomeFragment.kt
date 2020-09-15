@@ -131,6 +131,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         viewModel.recentQueries.observe(viewLifecycleOwner, {
             // Create adapter etc.
+            binding.homeRecentSearches.visibility = View.VISIBLE
             binding.recentSearchList.layoutManager = LinearLayoutManager(requireContext())
             binding.recentSearchList.adapter = RecentQueriesAdapter(it, this)
         })

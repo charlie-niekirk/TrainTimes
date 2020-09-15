@@ -13,4 +13,6 @@
     <color name="colorPillText">#FFFFFF</color>
     <color name="colorUnselected">#757575</color>
     <color name="colorSidelineTrans">#60FFFFFF</color>
+
+    <color name="widgetBg">#60000000</color>
 </resources>

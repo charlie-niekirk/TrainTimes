@@ -1,4 +1,4 @@
-package com.cniekirk.traintimes
+package com.cniekirk.traintimes.feature.vm
 
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.usecase.GetStationsUseCase

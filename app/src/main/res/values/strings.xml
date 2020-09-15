@@ -128,4 +128,5 @@
     <string name="dep_board_template">%s</string>
     <string name="recent_search_title">Recent queries</string>
     <string name="no_stations_selected">Please select 1 or more stations</string>
+    <string name="services_header">Services</string>
 </resources>

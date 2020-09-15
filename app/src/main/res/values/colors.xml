@@ -46,4 +46,6 @@
     <color name="tocGrandCentral">#E57D01</color>
     <color name="tocHeathrow">#43274D</color>
     <color name="tocHullTrains">#000033</color>
+
+    <color name="widgetBg">#80ffffff</color>
 </resources>

@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackground"
-        tools:context=".ui.main.HomeFragment">
+        tools:context=".ui.main.HomeFragment"
+        android:animateLayoutChanges="true">
 
         <include layout="@layout/guidelines" />
 
@@ -191,7 +192,8 @@
             android:textSize="@dimen/screen_title_size"
             app:layout_constraintStart_toStartOf="@id/start_guide"
             app:layout_constraintTop_toBottomOf="@id/search_button"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recent_search_list"

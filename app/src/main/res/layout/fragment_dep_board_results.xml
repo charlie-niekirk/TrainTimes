@@ -53,7 +53,7 @@
         android:textStyle="bold"
         android:textSize="14sp"
         android:textColor="@color/colorAccent"
-        android:text="Services"/>
+        android:text="@string/services_header"/>
 
     <com.google.android.material.chip.Chip
         android:id="@+id/dep_arr_chip"
