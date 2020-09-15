@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.model.getdepboard.res
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
 

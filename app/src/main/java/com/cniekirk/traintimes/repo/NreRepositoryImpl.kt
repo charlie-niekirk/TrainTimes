@@ -29,6 +29,7 @@ import com.cniekirk.traintimes.utils.NetworkHandler
 import com.cniekirk.traintimes.utils.Sign
 import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.extensions.now
+import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.request
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -96,7 +97,15 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         }
 
         return when (networkHandler.isConnected) {
-            true -> request(nreService.getDepartureBoardWithDetails(envelope)) { it.body.getDepBoardWithDetailsResponse.getBoardWithDetailsResult }
+            true -> request(nreService.getDepartureBoardWithDetails(envelope)) { env ->
+                env.body.getDepBoardWithDetailsResponse.getBoardWithDetailsResult.nrccMessages?.let { nrccMessages ->
+                    nrccMessages.messages?.let { messages ->
+                        val trimmed = messages.map { message -> message.copy(message = message.message?.parseEncoded()?.parseEncoded()?.replace("\n", "")?.trim()) }
+                        val nrcc = nrccMessages.copy(messages = trimmed)
+                        return@request env.body.getDepBoardWithDetailsResponse.getBoardWithDetailsResult.copy(nrccMessages = nrcc)
+                    }
+                } ?: run { return@request env.body.getDepBoardWithDetailsResponse.getBoardWithDetailsResult }
+            }
             else -> Either.Left(Failure.NetworkConnectionError())
         }
 

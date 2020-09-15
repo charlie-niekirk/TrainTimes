@@ -78,22 +78,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             }
         })
 
-//        viewModel.services.observe(viewLifecycleOwner, Observer { service ->
-//            val depAdapter =
-//                DepartureListAdapter(
-//                    service,
-//                    this
-//                )
-//            binding.homeServicesList.adapter = depAdapter
-//            postponeEnterTransition()
-//            binding.homeServicesList.viewTreeObserver.addOnPreDrawListener {
-//                startPostponedEnterTransition()
-//                true
-//            }
-//            avd.clearAnimationCallbacks()
-//            avd.stop()
-//        })
-
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
             if (it == null) {
                 binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
@@ -151,6 +135,19 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             binding.recentSearchList.adapter = RecentQueriesAdapter(it, this)
         })
 
+        viewModel.canProceedToSearch.observe(viewLifecycleOwner, { canSearch ->
+            if (canSearch) {
+                binding.root.findNavController().navigate(R.id.depBoardResultsFragment,
+                    bundleOf("isFromSearch" to true))
+            } else {
+                // Snackbar error
+                Snackbar.make(binding.rootMotion, R.string.no_stations_selected, Snackbar.LENGTH_SHORT).apply {
+                    anchorView = binding.snackbarLocation
+                    setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorRed))
+                }.show()
+            }
+        })
+
         viewModel.failure.observe(viewLifecycleOwner, {
             when (it) {
                 is Failure.NoRecentQueriesFailure -> {
@@ -169,22 +166,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.e("HOME", "Keys: ${viewModel.handle.keys()}")
-
-//        binding.homeServicesList.itemAnimator = DepartureListItemAnimtor(0)
-//            .withInterpolator(FastOutSlowInInterpolator())
-//            .withAddDuration(250)
-//            .withRemoveDuration(250)
-
-//        val layoutManager = LinearLayoutManager(requireContext())
-//        binding.homeServicesList.layoutManager = layoutManager
-//        binding.homeServicesList.adapter =
-//            DepartureListAdapter(
-//                emptyList(),
-//                this
-//            )
-//        binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
 
         binding.searchSelectDepStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDepStation
@@ -211,15 +192,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         }
 
         binding.searchButton.setOnClickListener {
-//            startLoadingAnim()
-            // Remove old items to make the UX more seamless
-//            binding.homeServicesList.adapter =
-//                DepartureListAdapter(
-//                    emptyList(),
-//                    this
-//                )
-            view.findNavController().navigate(R.id.depBoardResultsFragment,
-                bundleOf("isFromSearch" to true))
+            // Only if it's possible
+            viewModel.attemptServiceSearch()
         }
 
         binding.homeBtnSettings.setOnClickListener {

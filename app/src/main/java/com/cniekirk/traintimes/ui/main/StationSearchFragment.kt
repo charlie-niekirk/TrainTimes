@@ -48,7 +48,9 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
         super.onActivityCreated(savedInstanceState)
 
         viewModel.listenForNewSearch()
-        viewModel.crsStationCodes.observe(viewLifecycleOwner, Observer {
+        viewModel.crsStationCodes.observe(viewLifecycleOwner, {
+            // Hide animation
+            binding.loadingAnimation.visibility = View.GONE
             it?.let {
                 val adapter =
                     StationListAdapter(
@@ -77,22 +79,10 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
         val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
         enterTransition = forward
 
-//        sharedElementEnterTransition = MaterialContainerTransform().apply {
-//            //this.
-//            this.interpolator = interpolator
-//            this.duration = 350
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.searchDepStations.onFocusChange { hasFocus ->
-//            if (hasFocus)
-//                binding.searchDepStations.setHint(R.string.search_hint_focused)
-////            else
-////                binding.searchDepStations.setHint(R.string.station_search_hint)
-        }
 
         binding.stationList.layoutManager = LinearLayoutManager(requireContext())
         binding.stationList.adapter =

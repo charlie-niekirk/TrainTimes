@@ -6,7 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:background="@color/colorUnselected">
+    android:background="@drawable/rounded_rv_item"
+    style="selec"
+    android:layout_marginBottom="4dp">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/from_text"

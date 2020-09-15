@@ -10,6 +10,7 @@
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorPrimaryOff">#2000BCD4</color>
     <color name="colorRed">#ef5350</color>
+    <color name="colorRedTrans">#20ef5350</color>
     <color name="colorGreen">#66BB6A</color>
     <color name="colorPillText">#FFFFFF</color>
     <color name="colorUnselected">#757575</color>

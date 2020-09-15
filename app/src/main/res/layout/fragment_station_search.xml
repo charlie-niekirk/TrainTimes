@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_arrow_back"
-        android:tint="@color/colorAccent"
+        app:tint="@color/colorAccent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
@@ -42,14 +42,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <EditText-->
-<!--        -->
-<!--        android:backgroundTint="@color/colorPrimary"-->
-<!--        android:hint="@string/station_search_hint"-->
-<!--        android:inputType="text"-->
-<!--        android:fontFamily="@font/circularstd"-->
-<!--        android:textColorHint="@color/colorPrimary"/>-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/station_list"
         android:layout_width="0dp"
@@ -59,5 +51,16 @@
         app:layout_constraintTop_toBottomOf="@id/input_layout_search"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="16dp"/>
+
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/loading_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
+        app:layout_constraintTop_toTopOf="@id/station_list"
+        app:layout_constraintBottom_toBottomOf="@id/station_list"
+        app:layout_constraintStart_toStartOf="@id/station_list"
+        app:layout_constraintEnd_toEndOf="@id/station_list"
+        app:layout_constraintVertical_bias="0.45"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

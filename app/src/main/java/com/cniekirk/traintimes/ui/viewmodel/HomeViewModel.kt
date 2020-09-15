@@ -13,6 +13,8 @@ import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.getdepboard.local.Query
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
+import com.cniekirk.traintimes.model.getdepboard.res.Message
+import com.cniekirk.traintimes.model.getdepboard.res.NrccMessages
 import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
@@ -61,8 +63,12 @@ class HomeViewModel constructor(
         get() = connectionState
     val trackServiceSuccess: LiveData<Boolean>
         get() = _trackServiceSuccess
+    val canProceedToSearch: LiveData<Boolean>
+        get() = _canProceedToSearch
     val recentQueries: LiveData<List<Query>>
         get() = _recentQueries
+    val nrccMessages: LiveData<List<Message>>
+        get() = _nrccMessages
 
     private val _services = MutableLiveData<List<Service>>()
     private val _crsStationCodes = MutableLiveData<List<CRS>>()
@@ -72,6 +78,8 @@ class HomeViewModel constructor(
     private val _serviceDetailId = MutableLiveData<String>()
     private val _trackServiceSuccess = SingleLiveEvent<Boolean>()
     private val _recentQueries = MutableLiveData<List<Query>>()
+    private val _canProceedToSearch = SingleLiveEvent<Boolean>()
+    private val _nrccMessages = MutableLiveData<List<Message>>()
 
     @ExperimentalCoroutinesApi
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
@@ -124,13 +132,30 @@ class HomeViewModel constructor(
         _recentQueries.postValue(queries)
     }
 
+    // Checks that there are valid search parameters
+    fun attemptServiceSearch() {
+        _depStation.value?.let {
+            _canProceedToSearch.postValue(true)
+        } ?: run {
+            // Check for dest
+            _destStation.value?.let {
+                _canProceedToSearch.postValue(true)
+            } ?: run {
+                // If both are null then emit failure
+                _canProceedToSearch.postValue(false)
+            }
+        }
+    }
+
     private fun handleInsert(msg: String) {
         //
     }
 
     fun performRecentQuery(position: Int) {
-        clearDepStation()
-        clearDestStation()
+        _depStation.value = null
+        handle.remove<String>("depStation")
+        _destStation.value = null
+        handle.remove<String>("destStation")
         val from = CRS(_recentQueries.value?.get(position)?.fromName!!, _recentQueries.value?.get(position)?.fromCrs!!)
         val to = _recentQueries.value?.get(position)?.toCrs
         to?.let {
@@ -188,6 +213,10 @@ class HomeViewModel constructor(
         handle.remove<String>("destStation")
     }
 
+    fun clearNrcc() {
+        _nrccMessages.postValue(emptyList())
+    }
+
     fun saveFavouriteRoute() {
         val dest = _destStation.value ?: CRS("", "")
         saveFavouriteUseCase(arrayOf(_depStation.value!!, dest)) {
@@ -210,6 +239,11 @@ class HomeViewModel constructor(
             _services.value = it.trainServices
         } ?: run {
             _services.value = emptyList()
+        }
+        response.nrccMessages?.let { nrcc ->
+            nrcc.messages?.let {
+                _nrccMessages.postValue(it)
+            }
         }
     }
 

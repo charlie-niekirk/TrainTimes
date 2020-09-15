@@ -1,9 +1,13 @@
 package com.cniekirk.traintimes.utils.extensions
 
 import android.content.res.Resources
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 
@@ -48,7 +52,27 @@ fun View.resourceName(): String {
     return name
 }
 
+fun AnimatedVectorDrawable.loop(imageView: ImageView) {
+    if (imageView.drawable is AnimatedVectorDrawable) {
+        this.registerAnimationCallback(object: Animatable2.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                this@loop.start()
+            }
+        })
+        this.start()
+    }
+}
+
+fun AnimatedVectorDrawable.cancel() {
+    this.apply {
+        clearAnimationCallbacks()
+        stop()
+        reset()
+    }
+}
+
 val View.keyboardIsVisible: Boolean
     get() = WindowInsetsCompat
         .toWindowInsetsCompat(rootWindowInsets)
         .isVisible(WindowInsetsCompat.Type.ime())
+
