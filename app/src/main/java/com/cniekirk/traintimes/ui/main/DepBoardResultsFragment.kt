@@ -35,6 +35,8 @@ import com.cniekirk.traintimes.utils.extensions.cancel
 import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.extensions.loop
 import com.cniekirk.traintimes.utils.viewBinding
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialSharedAxis

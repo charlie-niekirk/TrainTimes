@@ -75,7 +75,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             timeWindow = "120",
             getNonPassengerServices = false))
 
-        Log.e(TAG, "getDeparturesAtStation: $body")
+//        Log.e(TAG, "getDeparturesAtStation: $body")
 
         val envelope = Envelope(header = Header(AccessToken()), body = body)
 
@@ -88,7 +88,6 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
         val dbValue = adapter.toJson(query)
         val current = recentQueriesDao.getRecentQueries()
         val isAlready = current.filter { q ->
-            Log.e(TAG, "New: $q, DB: $dbValue")
             q.query.equals(dbValue, true)
         }
         if (isAlready.isNullOrEmpty()) {
@@ -220,7 +219,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         // TODO: Finish this JNI implementation for the security header
         val signer = Sign()
-        Log.e(TAG, signer.sign(ByteArray(0x00)))
+//        Log.e(TAG, signer.sign(ByteArray(0x00)))
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,

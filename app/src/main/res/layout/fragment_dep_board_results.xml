@@ -72,6 +72,17 @@
         android:text="Departures"
         tools:text="Departures"/>
 
+    <ImageView
+        android:id="@+id/btn_show_nrcc"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toTopOf="@id/route_description"
+        app:layout_constraintBottom_toBottomOf="@id/route_description"
+        app:layout_constraintEnd_toStartOf="@id/favourite_selector"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_baseline_warning"
+        app:tint="@color/colorAccent"/>
+
     <LinearLayout
         android:id="@+id/favourite_selector"
         android:layout_width="30dp"
