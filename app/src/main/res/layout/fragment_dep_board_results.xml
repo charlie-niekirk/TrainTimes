@@ -81,7 +81,25 @@
         app:layout_constraintEnd_toStartOf="@id/favourite_selector"
         android:layout_marginEnd="12dp"
         android:src="@drawable/ic_baseline_warning"
-        app:tint="@color/colorAccent"/>
+        app:tint="@color/colorAccent"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/nrcc_badge"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        app:layout_constraintStart_toStartOf="@id/btn_show_nrcc"
+        app:layout_constraintBottom_toBottomOf="@id/btn_show_nrcc"
+        android:background="@drawable/badge_drawable"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/colorNrccBadge"
+        android:gravity="center"
+        tools:text="1"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/favourite_selector"

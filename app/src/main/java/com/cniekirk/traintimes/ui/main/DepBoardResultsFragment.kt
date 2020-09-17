@@ -56,7 +56,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
     private val viewModel: HomeViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
 
     private val animatedLoadingIndicator by lazy(LazyThreadSafetyMode.NONE) { binding.loadingIndicator.drawable as AnimatedVectorDrawable }
-    private val idList = ArrayList<Int>()
+    private val nrccList = ArrayList<View>()
+    private var originalLayout: ConstraintSet? = null
     private var isFirst = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,35 +135,10 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
         viewModel.nrccMessages.observe(viewLifecycleOwner, { messages ->
 
-            messages.forEachIndexed { i, message ->
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val set = ConstraintSet()
-                    val inflater = LayoutInflater.from(requireContext())
-                    val messageView: View =
-                        inflater.inflate(R.layout.dynamic_nrcc_message, binding.root, false)
-                    messageView.id = View.generateViewId()
-                    idList.add(messageView.id)
-                    binding.root.addView(messageView, 0)
+            binding.btnShowNrcc.visibility = View.VISIBLE
+            binding.nrccBadge.text = "${messages.size}"
+            binding.nrccBadge.visibility = View.VISIBLE
 
-                    val messageBody: MaterialTextView = messageView.findViewById(R.id.message_body)
-                    messageBody.text = message.message
-
-                    set.clone(binding.root)
-                    if (i > 0) {
-                        set.connect(messageView.id, ConstraintSet.TOP, idList[idList.lastIndex - 1], ConstraintSet.BOTTOM, 50.dp)
-                        set.connect(idList[idList.lastIndex - 1], ConstraintSet.BOTTOM, messageView.id, ConstraintSet.TOP, 0.dp)
-                    } else {
-                        set.connect(messageView.id, ConstraintSet.TOP, binding.depArrChip.id, ConstraintSet.BOTTOM, 8.dp)
-                    }
-                    if (i == messages.lastIndex) {
-                        set.connect(messageView.id, ConstraintSet.BOTTOM, binding.homeServicesList.id, ConstraintSet.TOP, 0.dp)
-                        set.connect(binding.homeServicesList.id, ConstraintSet.TOP, messageView.id, ConstraintSet.BOTTOM, 80.dp)
-                    }
-                    set.connect(messageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 80.dp)
-                    set.connect(messageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 80.dp)
-                    set.applyTo(binding.root)
-                }, 200)
-            }
         })
 
         viewModel.failure.observe(viewLifecycleOwner, Observer {
@@ -216,6 +192,45 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                 this
             )
         binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
+
+        binding.btnShowNrcc.setOnClickListener {
+            val messages = viewModel.nrccMessages.value
+
+            if (nrccList.isEmpty()) {
+                messages?.forEachIndexed { i, message ->
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val inflater = LayoutInflater.from(requireContext())
+                        val messageView: View =
+                            inflater.inflate(R.layout.dynamic_nrcc_message, binding.root, false)
+                        messageView.id = View.generateViewId()
+                        nrccList.add(messageView)
+                        binding.root.addView(messageView, 0)
+
+                        val messageBody: MaterialTextView = messageView.findViewById(R.id.message_body)
+                        messageBody.text = message.message
+
+                        val set = ConstraintSet().apply { clone(binding.root) }
+                        if (i > 0) {
+                            set.connect(messageView.id, ConstraintSet.TOP, nrccList[nrccList.lastIndex - 1].id, ConstraintSet.BOTTOM, 50.dp)
+                            set.connect(nrccList[nrccList.lastIndex - 1].id, ConstraintSet.BOTTOM, messageView.id, ConstraintSet.TOP, 0.dp)
+                        } else {
+                            set.connect(messageView.id, ConstraintSet.TOP, binding.depArrChip.id, ConstraintSet.BOTTOM, 8.dp)
+                        }
+                        if (i == messages.lastIndex) {
+                            set.connect(messageView.id, ConstraintSet.BOTTOM, binding.homeServicesList.id, ConstraintSet.TOP, 0.dp)
+                            set.connect(binding.homeServicesList.id, ConstraintSet.TOP, messageView.id, ConstraintSet.BOTTOM, 80.dp)
+                        }
+                        set.connect(messageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 80.dp)
+                        set.connect(messageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 80.dp)
+                        set.applyTo(binding.root)
+                    }, 200)
+                }
+            } else {
+                originalLayout?.applyTo(binding.root)
+                nrccList.forEach { (it.parent as ViewGroup).removeView(it) }
+            }
+
+        }
 
     }
 

@@ -73,16 +73,16 @@ class NreRepositoryTest: UnitTest() {
 
     }
 
-    @Test fun `national rail service should return server error if no successful response`() {
-        `when`(adapter.toJson(any())).thenReturn("{}")
-        `when`(networkHandler.isConnected).thenReturn(true)
-
-        val depBoard = nreRepository.getDeparturesAtStation(CRS("London Waterloo", "WAT"), CRS("Salisbury", "SAL"))
-
-        depBoard shouldBeInstanceOf Either::class.java
-        depBoard.isLeft shouldBeEqualTo true
-        depBoard.fold({ failure -> failure shouldBeInstanceOf Failure.ServerError::class.java }, {})
-    }
+//    @Test fun `national rail service should return server error if no successful response`() {
+//        `when`(adapter.toJson(any())).thenReturn("{}")
+//        `when`(networkHandler.isConnected).thenReturn(true)
+//
+//        val depBoard = nreRepository.getDeparturesAtStation(CRS("London Waterloo", "WAT"), CRS("Salisbury", "SAL"))
+//
+//        depBoard shouldBeInstanceOf Either::class.java
+//        depBoard.isLeft shouldBeEqualTo true
+//        depBoard.fold({ failure -> failure shouldBeInstanceOf Failure.ServerError::class.java }, {})
+//    }
 
 
 }

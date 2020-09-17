@@ -18,6 +18,7 @@
     <color name="colorAmber">#FFC107</color>
     <color name="nreOrange">#E24E25</color>
     <color name="transparent">#00000000</color>
+    <color name="colorNrccBadge">#ef5350</color>
 
     <color name="tocTflRail">#000CA6</color>
     <color name="tocGwr">#0A493E</color>
