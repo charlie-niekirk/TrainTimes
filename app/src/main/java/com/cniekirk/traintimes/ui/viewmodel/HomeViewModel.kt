@@ -1,6 +1,7 @@
 package com.cniekirk.traintimes.ui.viewmodel
 
 import android.util.Log
+import androidx.datastore.DataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +12,7 @@ import com.cniekirk.traintimes.base.ViewModelFactory
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.usecase.*
+import com.cniekirk.traintimes.model.Favourites
 import com.cniekirk.traintimes.model.getdepboard.local.Query
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.getdepboard.res.Message
@@ -22,12 +24,12 @@ import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -44,7 +46,8 @@ class HomeViewModel constructor(
     private val trackServiceUseCase: TrackServiceUseCase,
     private val getRecentQueriesUseCase: GetRecentQueriesUseCase,
     private val saveFavouriteUseCase: SaveFavouriteUseCase,
-    private val connectionState: ConnectionStateEmitter
+    private val connectionState: ConnectionStateEmitter,
+    private val favouritesDataStore: DataStore<Favourites>
 ) : BaseViewModel() {
 
     val services: LiveData<List<Service>>
@@ -80,6 +83,17 @@ class HomeViewModel constructor(
     private val _recentQueries = MutableLiveData<List<Query>>()
     private val _canProceedToSearch = SingleLiveEvent<Boolean>()
     private val _nrccMessages = MutableLiveData<List<Message>>()
+
+    private val favouritesFlow: Flow<Favourites> = favouritesDataStore.data
+        .catch { exception ->
+            // dataStore.data throws an IOException when an error is encountered when reading data
+            if (exception is IOException) {
+                Log.e(TAG, "Error reading sort order preferences.", exception)
+                emit(Favourites.getDefaultInstance())
+            } else {
+                throw exception
+            }
+        }
 
     @ExperimentalCoroutinesApi
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
@@ -218,10 +232,13 @@ class HomeViewModel constructor(
     }
 
     fun saveFavouriteRoute() {
-        val dest = _destStation.value ?: CRS("", "")
-        saveFavouriteUseCase(arrayOf(_depStation.value!!, dest)) {
-            it.either(::handleFailure, ::handleFavouritesSuccess)
+
+        viewModelScope.launch {
+            favouritesFlow.collect {
+
+            }
         }
+
     }
 
     private fun handleFavouritesSuccess(success: Boolean) {
@@ -253,6 +270,7 @@ class HomeViewModel constructor(
 
     @ExperimentalCoroutinesApi
     override fun onCleared() {
+        viewModelScope.cancel()
         queryChannel.cancel()
         super.onCleared()
     }
@@ -268,12 +286,14 @@ class HomeViewModelFactory @Inject constructor(
     private val trackServiceUseCase: TrackServiceUseCase,
     private val getRecentQueriesUseCase: GetRecentQueriesUseCase,
     private val saveFavouriteUseCase: SaveFavouriteUseCase,
-    private val connectionStateEmitter: ConnectionStateEmitter
+    private val connectionStateEmitter: ConnectionStateEmitter,
+    private val favouritesDataStore: DataStore<Favourites>
 ) : ViewModelFactory<HomeViewModel> {
 
     override fun create(handle: SavedStateHandle): HomeViewModel {
         return HomeViewModel(handle, getStationsUseCase, getAllStationCodesUseCase,
                 getDeparturesUseCase, getServiceDetailsUseCase, getArrivalsUseCase,
-                trackServiceUseCase, getRecentQueriesUseCase, saveFavouriteUseCase, connectionStateEmitter)
+                trackServiceUseCase, getRecentQueriesUseCase, saveFavouriteUseCase,
+                connectionStateEmitter, favouritesDataStore)
     }
 }

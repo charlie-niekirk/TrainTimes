@@ -230,8 +230,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                 set.applyTo(binding.root)
                 nrccList.forEach {
                     (it.parent as ViewGroup).removeView(it)
-                    nrccList.remove(it)
                 }
+                nrccList.clear()
             }
 
         }
