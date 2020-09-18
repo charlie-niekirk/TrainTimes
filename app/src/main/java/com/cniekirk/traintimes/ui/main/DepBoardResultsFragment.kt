@@ -57,7 +57,6 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
     private val animatedLoadingIndicator by lazy(LazyThreadSafetyMode.NONE) { binding.loadingIndicator.drawable as AnimatedVectorDrawable }
     private val nrccList = ArrayList<View>()
-    private var originalLayout: ConstraintSet? = null
     private var isFirst = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -226,8 +225,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                     }, 200)
                 }
             } else {
-                originalLayout?.applyTo(binding.root)
-                nrccList.forEach { (it.parent as ViewGroup).removeView(it) }
+                val set = ConstraintSet().apply { clone(binding.root) }
+                set.connect(binding.homeServicesList.id, ConstraintSet.TOP, binding.servicesHeader.id, ConstraintSet.BOTTOM, 80.dp)
+                set.applyTo(binding.root)
+                nrccList.forEach {
+                    (it.parent as ViewGroup).removeView(it)
+                    nrccList.remove(it)
+                }
             }
 
         }
