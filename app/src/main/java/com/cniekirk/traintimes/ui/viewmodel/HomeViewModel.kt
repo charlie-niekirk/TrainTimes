@@ -22,13 +22,10 @@ import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,8 +43,9 @@ class HomeViewModel constructor(
     private val trackServiceUseCase: TrackServiceUseCase,
     private val getRecentQueriesUseCase: GetRecentQueriesUseCase,
     private val saveFavouriteUseCase: SaveFavouriteUseCase,
-    private val connectionState: ConnectionStateEmitter,
-    private val favouritesDataStore: DataStore<Favourites>
+    private val getFavouritesUseCase: GetFavouritesUseCase,
+    private val removeFavouriteUseCase: RemoveFavouriteUseCase,
+    private val connectionState: ConnectionStateEmitter
 ) : BaseViewModel() {
 
     val services: LiveData<List<Service>>
@@ -72,6 +70,10 @@ class HomeViewModel constructor(
         get() = _recentQueries
     val nrccMessages: LiveData<List<Message>>
         get() = _nrccMessages
+    val saveFavouriteSuccess: LiveData<Boolean>
+        get() = _saveFavouriteSuccess
+    val favourites: LiveData<List<Query>>
+        get() = _favourites
 
     private val _services = MutableLiveData<List<Service>>()
     private val _crsStationCodes = MutableLiveData<List<CRS>>()
@@ -83,17 +85,10 @@ class HomeViewModel constructor(
     private val _recentQueries = MutableLiveData<List<Query>>()
     private val _canProceedToSearch = SingleLiveEvent<Boolean>()
     private val _nrccMessages = MutableLiveData<List<Message>>()
+    private val _saveFavouriteSuccess = SingleLiveEvent<Boolean>()
+    private val _favourites = MutableLiveData<List<Query>>()
 
-    private val favouritesFlow: Flow<Favourites> = favouritesDataStore.data
-        .catch { exception ->
-            // dataStore.data throws an IOException when an error is encountered when reading data
-            if (exception is IOException) {
-                Log.e(TAG, "Error reading sort order preferences.", exception)
-                emit(Favourites.getDefaultInstance())
-            } else {
-                throw exception
-            }
-        }
+    private val scopedIOContext = viewModelScope + Dispatchers.IO
 
     @ExperimentalCoroutinesApi
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
@@ -159,10 +154,6 @@ class HomeViewModel constructor(
                 _canProceedToSearch.postValue(false)
             }
         }
-    }
-
-    private fun handleInsert(msg: String) {
-        //
     }
 
     fun performRecentQuery(position: Int) {
@@ -233,19 +224,66 @@ class HomeViewModel constructor(
 
     fun saveFavouriteRoute() {
 
-        viewModelScope.launch {
-            favouritesFlow.collect {
+        _depStation.value?.let { dep ->
+            _destStation.value?.let { dest ->
+                saveFavouriteUseCase(arrayOf(dep, dest)) {
+                    it.either(::handleFailure, ::handleFavouritesSuccess)
+                }
+            }
+        } ?: run {
+            _saveFavouriteSuccess.postValue(false)
+        }
 
+    }
+
+    fun getFavourites() {
+
+        getFavouritesUseCase(null) {
+            it.either(::handleFailure, ::handleFavouritesFlow)
+        }
+
+    }
+
+    fun removeFavourite() {
+
+        val favs = _favourites.value
+        val match = favs?.filter { query ->
+            query.toCrs?.let {
+                (query.fromCrs.equals(_depStation.value?.crs, true))
+                    .and(it.equals(_destStation.value?.crs, true))
+            } ?: run {
+                query.fromCrs.equals(_depStation.value?.crs, true)
+            }
+        }?.get(0)
+
+        favs?.let { favourites ->
+            removeFavouriteUseCase(favourites.indexOf(match)) {
+                it.either(::handleFailure, ::handleFavouriteRemoved)
             }
         }
 
     }
 
-    private fun handleFavouritesSuccess(success: Boolean) {
-        if (success) {
-
-        }
+    private fun handleFavouriteRemoved(success: Boolean) {
+        Log.i(TAG, "Favourite removed successfully: $success")
     }
+
+    private fun handleFavouritesFlow(favourites: Flow<Favourites>) {
+
+        scopedIOContext.launch {
+            favourites.collect {
+                // Post to LiveData
+                val queryList = it.favouriteList.map { fav ->
+                    Query(fav.fromCrs, fav.fromStationName, fav.toCrs, fav.toStationName)
+                }
+                _favourites.postValue(queryList)
+            }
+        }
+
+    }
+
+    private fun handleFavouritesSuccess(success: Boolean) =
+        _saveFavouriteSuccess.postValue(success)
 
     private fun handleCrs(list: List<CRS>) {
         _crsStationCodes.value = list
@@ -286,14 +324,15 @@ class HomeViewModelFactory @Inject constructor(
     private val trackServiceUseCase: TrackServiceUseCase,
     private val getRecentQueriesUseCase: GetRecentQueriesUseCase,
     private val saveFavouriteUseCase: SaveFavouriteUseCase,
-    private val connectionStateEmitter: ConnectionStateEmitter,
-    private val favouritesDataStore: DataStore<Favourites>
+    private val getFavouritesUseCase: GetFavouritesUseCase,
+    private val removeFavouriteUseCase: RemoveFavouriteUseCase,
+    private val connectionStateEmitter: ConnectionStateEmitter
 ) : ViewModelFactory<HomeViewModel> {
 
     override fun create(handle: SavedStateHandle): HomeViewModel {
         return HomeViewModel(handle, getStationsUseCase, getAllStationCodesUseCase,
                 getDeparturesUseCase, getServiceDetailsUseCase, getArrivalsUseCase,
                 trackServiceUseCase, getRecentQueriesUseCase, saveFavouriteUseCase,
-                connectionStateEmitter, favouritesDataStore)
+                getFavouritesUseCase, removeFavouriteUseCase, connectionStateEmitter)
     }
 }

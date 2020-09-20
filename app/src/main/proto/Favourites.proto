@@ -4,5 +4,12 @@ option java_package = "com.cniekirk.traintimes.model";
 option java_multiple_files = true;
 
 message Favourites {
-  repeated string query = 1;
+  repeated Favourite favourite = 1;
+}
+
+message Favourite {
+  string fromCrs = 1;
+  string fromStationName = 2;
+  string toCrs = 3;
+  string toStationName = 4;
 }

@@ -50,7 +50,6 @@ class NotificationService : FirebaseMessagingService() {
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
         )
-        val channelId = getString(R.string.default_notification_channel_id)
 
         Log.d(TAG, data["body"].toString())
 

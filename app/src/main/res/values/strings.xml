@@ -130,4 +130,5 @@
     <string name="no_stations_selected">Please select 1 or more stations</string>
     <string name="services_header">Services</string>
     <string name="empty_home_prompt">No favourite or recent queries,\ntry adding some…</string>
+    <string name="empty_favourites_prompt">No favourites set, try adding some!</string>
 </resources>

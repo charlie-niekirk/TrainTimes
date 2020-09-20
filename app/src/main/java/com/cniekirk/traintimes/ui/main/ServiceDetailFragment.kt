@@ -69,22 +69,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 
     private fun processTimePill(serviceDetailsResult: ServiceDetailsUiModel) {
         Log.e(TAG, "Exec")
-//        serviceDetailsResult.
-//            if (it.equals(getString(R.string.on_time), true)) {
-//                binding.currentRunningTime.text = it
-//                binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
-//                binding.currentRunningTime.alpha = 1f
-//            } else {
-//                binding.currentRunningTime.text = it
-//                binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
-//                binding.currentRunningTime.alpha = 1f
-//            }
-//        }
-//        serviceDetailsResult.subsequentLocations?.let {
-//            if (!it[0].sta?.equals(it[0].eta, true)!!) {
-//
-//            }
-//        }
+
         serviceDetailsResult.subsequentLocations?.let { locations ->
             val sdf = SimpleDateFormat("YYYY-mm-DD'T'hh:mm:SS", Locale.ENGLISH)
             val output = SimpleDateFormat("hh:mm", Locale.ENGLISH)

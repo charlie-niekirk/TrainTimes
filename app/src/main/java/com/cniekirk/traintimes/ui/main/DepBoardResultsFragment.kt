@@ -111,7 +111,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                 }
             } ?: run {
                 dep?.let {
-                    binding.routeDescription.text = "${it.stationName}"
+                    binding.routeDescription.text = it.stationName
                 }
             }
         })
@@ -178,6 +178,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                 )
             binding.root.findNavController().navigateUp()
         }
+
         binding.homeServicesList.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
             .withAddDuration(250)
@@ -236,13 +237,18 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
         }
 
+        binding.favouriteSelector.setOnClickListener {
+            binding.favouriteSelector.isSelected = !binding.favouriteSelector.isSelected
+            if (binding.favouriteSelector.isSelected) {
+                viewModel.saveFavouriteRoute()
+            } else {
+                viewModel.removeFavourite()
+            }
+        }
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_dep_board_results, container, false)
     }
 
