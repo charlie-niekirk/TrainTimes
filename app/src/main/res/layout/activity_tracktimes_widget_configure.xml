@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include layout="@layout/guidelines" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/widget_config_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/start_guide"
+        app:layout_constraintTop_toTopOf="@id/header_guide"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/circularstd"
+        android:textSize="@dimen/screen_title_size"
+        android:textColor="@color/colorText"
+        android:text="@string/configure_widget_title"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

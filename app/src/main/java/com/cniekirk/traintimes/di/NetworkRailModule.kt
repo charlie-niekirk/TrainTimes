@@ -121,10 +121,6 @@ class NetworkRailModule {
 
     @Singleton
     @Provides
-    fun provideFavouritesDao(@Named("Net") db: AppDb) = db.favouritesDao()
-
-    @Singleton
-    @Provides
     fun provideAdapter(@Named("cache") moshi: Moshi): JsonAdapter<Query> {
         return moshi.adapter(Query::class.java)
     }

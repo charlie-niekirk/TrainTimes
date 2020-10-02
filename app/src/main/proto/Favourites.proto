@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option java_package = "com.cniekirk.traintimes.model";
-option java_multiple_files = true;
+//option java_multiple_files = true;
 
 message Favourites {
   repeated Favourite favourite = 1;

@@ -5,17 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.cniekirk.traintimes.data.local.model.CRS
-import com.cniekirk.traintimes.data.local.model.Favourite
 import com.cniekirk.traintimes.data.local.model.RecentQuery
 
-@Database(entities = [CRS::class, RecentQuery::class, Favourite::class],
-    version = 2,
+@Database(entities = [CRS::class, RecentQuery::class],
+    version = 3,
     exportSchema = false)
 abstract class AppDb: RoomDatabase() {
 
     abstract fun crsDao(): CRSDao
     abstract fun recentQueriesDao(): RecentQueriesDao
-    abstract fun favouritesDao(): FavouritesDao
 
     companion object {
 

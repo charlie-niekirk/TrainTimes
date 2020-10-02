@@ -74,7 +74,7 @@ class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injecta
         super.onCreate(savedInstanceState)
 
         val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
-        exitTransition = backward
+        returnTransition = backward
 
         val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
         enterTransition = forward

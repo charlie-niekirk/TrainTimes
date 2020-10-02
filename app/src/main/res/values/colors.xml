@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
     <color name="transPrimary">#30FFFFFF</color>
+    <color name="transSubText">#40000000</color>
     <color name="colorPrimaryDark">#2196F3</color>
 <!--    <color name="colorAccent">#2196F3</color>-->
     <color name="colorAccent">#101010</color>
@@ -19,6 +20,8 @@
     <color name="nreOrange">#E24E25</color>
     <color name="transparent">#00000000</color>
     <color name="colorNrccBadge">#ef5350</color>
+    <color name="colorFab">#1976D2</color>
+    <color name="colorFabText">#FFFFFF</color>
 
     <color name="tocTflRail">#000CA6</color>
     <color name="tocGwr">#0A493E</color>

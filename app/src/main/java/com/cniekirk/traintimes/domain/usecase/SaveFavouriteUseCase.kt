@@ -1,7 +1,6 @@
 package com.cniekirk.traintimes.domain.usecase
 
 import com.cniekirk.traintimes.data.local.model.CRS
-import com.cniekirk.traintimes.repo.NreRepository
 import com.cniekirk.traintimes.repo.ProtoRepository
 import javax.inject.Inject
 

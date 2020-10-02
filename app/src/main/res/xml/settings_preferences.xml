@@ -10,17 +10,17 @@
             android:summaryOn="Journey Planner"
             android:defaultValue="false"/>
         <SwitchPreferenceCompat
-            android:key="geek_mode"
-            android:icon="@drawable/ic_directions_railway"
-            android:title="Geek mode"
-            android:summaryOff="Turn on Geek mode"
-            android:summaryOn="Turn off Geek mode" />
+            android:key="@string/key_dark_mode"
+            android:icon="@drawable/ic_baseline_darkmode"
+            android:title="Dark mode"
+            android:summaryOff="Turn on dark mode"
+            android:summaryOn="Turn off dark mode" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Planner">
         <SwitchPreferenceCompat
             android:key="show_prices"
-            android:icon="@drawable/ic_pound"
+            android:icon="@drawable/ic_baseline_money"
             android:title="Show Prices"
             android:summaryOff="Prices will not be shown in the planner"
             android:summaryOn="Prices will be shown in the planner"

@@ -1,6 +1,6 @@
 package com.cniekirk.traintimes.di
 
-import com.cniekirk.traintimes.MainActivity
+import com.cniekirk.traintimes.ui.activity.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

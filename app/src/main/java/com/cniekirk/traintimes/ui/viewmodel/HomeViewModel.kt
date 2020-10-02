@@ -13,6 +13,7 @@ import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.Favourites
+//import com.cniekirk.traintimes.model.Favourites
 import com.cniekirk.traintimes.model.getdepboard.local.Query
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.getdepboard.res.Message
@@ -176,6 +177,32 @@ class HomeViewModel constructor(
         }
     }
 
+    fun performFavouriteQuery(position: Int) {
+        _depStation.value = null
+        handle.remove<String>("depStation")
+        _destStation.value = null
+        handle.remove<String>("destStation")
+        val from = CRS(_favourites.value?.get(position)?.fromName!!, _favourites.value?.get(position)?.fromCrs!!)
+        val to = _favourites.value?.get(position)?.toCrs
+        to?.let {
+            if (to.isEmpty()) {
+                Log.e(TAG, "StationName: ${from.stationName}")
+                _depStation.value = from
+                handle.set("depStation", from.stationName)
+            } else {
+                _depStation.value = from
+                handle.set("depStation", from.stationName)
+                val toCrs = CRS(_favourites.value?.get(position)?.toName!!, it)
+                _destStation.value = toCrs
+                handle.set("destStation", toCrs.stationName)
+            }
+        } ?: run {
+            Log.e(TAG, "StationName: ${from.stationName}")
+            _depStation.value = from
+            handle.set("depStation", from.stationName)
+        }
+    }
+
     fun trackService(rid: String, tiploc: String, fbId: String, serviceDetailsUiModel: ServiceDetailsUiModel) {
 
         val request = TrackServiceRequest(rid, tiploc, fbId, serviceDetailsUiModel)
@@ -224,9 +251,19 @@ class HomeViewModel constructor(
 
     fun saveFavouriteRoute() {
 
+        Log.e(TAG, "Saving!")
+
         _depStation.value?.let { dep ->
+            Log.e(TAG, "Saving 1")
             _destStation.value?.let { dest ->
+                Log.e(TAG, "Saving 2")
                 saveFavouriteUseCase(arrayOf(dep, dest)) {
+                    Log.e(TAG, "Saving 3")
+                    it.either(::handleFailure, ::handleFavouritesSuccess)
+                }
+            } ?: run {
+                saveFavouriteUseCase(arrayOf(dep, CRS("", ""))) {
+                    Log.e(TAG, "Saving 3")
                     it.either(::handleFailure, ::handleFavouritesSuccess)
                 }
             }
@@ -273,7 +310,7 @@ class HomeViewModel constructor(
         scopedIOContext.launch {
             favourites.collect {
                 // Post to LiveData
-                val queryList = it.favouriteList.map { fav ->
+                val queryList = it.favourite.map { fav ->
                     Query(fav.fromCrs, fav.fromStationName, fav.toCrs, fav.toStationName)
                 }
                 _favourites.postValue(queryList)

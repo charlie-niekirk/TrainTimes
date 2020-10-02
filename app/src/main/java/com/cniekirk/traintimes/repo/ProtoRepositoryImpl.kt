@@ -1,5 +1,6 @@
 package com.cniekirk.traintimes.repo
 
+import android.util.Log
 import androidx.datastore.DataStore
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Either
@@ -8,6 +9,8 @@ import com.cniekirk.traintimes.model.Favourite
 import com.cniekirk.traintimes.model.Favourites
 import javax.inject.Inject
 
+private const val TAG = "ProtoRepositoryImpl"
+
 class ProtoRepositoryImpl @Inject constructor(
     private val favouritesDataStore: DataStore<Favourites>
 ): ProtoRepository {
@@ -15,21 +18,14 @@ class ProtoRepositoryImpl @Inject constructor(
     override suspend fun addFavourite(from: CRS, to: CRS): Either<Failure, Boolean> {
 
         val favourite = if (to.stationName.isEmpty()) {
-            Favourite.newBuilder()
-                .setFromCrs(from.crs)
-                .setFromStationName(from.stationName)
-                .build()
+            Favourite(fromCrs = from.crs, fromStationName = from.stationName)
         } else {
-            Favourite.newBuilder()
-                .setFromCrs(from.crs)
-                .setFromStationName(from.stationName)
-                .setToCrs(to.crs)
-                .setToStationName(to.stationName)
-                .build()
+            Favourite(fromCrs = from.crs, fromStationName = from.stationName, toCrs = to.crs, toStationName = to.stationName)
         }
 
         favouritesDataStore.updateData { favourites ->
-            favourites.toBuilder().addFavourite(favourite).build()
+            Log.i(TAG, "Added favourite!")
+            favourites.copy(favourites.favourite.plus(favourite))
         }
 
         return Either.Right(true)
@@ -38,7 +34,8 @@ class ProtoRepositoryImpl @Inject constructor(
     override suspend fun removeFavourite(index: Int): Either<Failure, Boolean> {
 
         favouritesDataStore.updateData { favourites ->
-            favourites.toBuilder().removeFavourite(index).build()
+            val updated = favourites.favourite.toMutableList().apply { removeAt(index) }
+            Favourites(favourite = updated)
         }
 
         return Either.Right(true)

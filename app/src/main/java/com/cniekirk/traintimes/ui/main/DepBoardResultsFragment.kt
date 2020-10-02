@@ -28,6 +28,7 @@ import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
+import com.cniekirk.traintimes.ui.behaviour.FabShrinkingOnScrollListener
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
@@ -35,8 +36,6 @@ import com.cniekirk.traintimes.utils.extensions.cancel
 import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.extensions.loop
 import com.cniekirk.traintimes.utils.viewBinding
-import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialSharedAxis
@@ -62,10 +61,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
-        exitTransition = backward
+        reenterTransition = backward
 
         val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+        exitTransition = forward
+
         enterTransition = forward
+        returnTransition = backward
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             isEnabled = true
@@ -101,6 +103,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
             val position = bundle.getInt("recentQueries", 999)
             if (position != 999) {
                 viewModel.performRecentQuery(position)
+            }
+        }
+
+        arguments?.let { bundle ->
+            val position = bundle.getInt("favourites", 999)
+            if (position != 999) {
+                viewModel.performFavouriteQuery(position)
             }
         }
 
@@ -170,6 +179,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
         animatedLoadingIndicator.loop(binding.loadingIndicator)
 
+        binding.homeServicesList.addOnScrollListener(FabShrinkingOnScrollListener(binding.btnFavourites))
+
         binding.btnBack.setOnClickListener {
             binding.homeServicesList.adapter =
                 DepartureListAdapter(
@@ -209,7 +220,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                         val messageBody: MaterialTextView = messageView.findViewById(R.id.message_body)
                         messageBody.text = message.message
 
-                        val set = ConstraintSet().apply { clone(binding.root) }
+                        val set = ConstraintSet().apply { clone(binding.rootLayout) }
                         if (i > 0) {
                             set.connect(messageView.id, ConstraintSet.TOP, nrccList[nrccList.lastIndex - 1].id, ConstraintSet.BOTTOM, 50.dp)
                             set.connect(nrccList[nrccList.lastIndex - 1].id, ConstraintSet.BOTTOM, messageView.id, ConstraintSet.TOP, 0.dp)
@@ -222,13 +233,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                         }
                         set.connect(messageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 80.dp)
                         set.connect(messageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 80.dp)
-                        set.applyTo(binding.root)
+                        set.applyTo(binding.rootLayout)
                     }, 200)
                 }
             } else {
-                val set = ConstraintSet().apply { clone(binding.root) }
+                val set = ConstraintSet().apply { clone(binding.rootLayout) }
                 set.connect(binding.homeServicesList.id, ConstraintSet.TOP, binding.servicesHeader.id, ConstraintSet.BOTTOM, 80.dp)
-                set.applyTo(binding.root)
+                set.applyTo(binding.rootLayout)
                 nrccList.forEach {
                     (it.parent as ViewGroup).removeView(it)
                 }
@@ -237,13 +248,9 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
         }
 
-        binding.favouriteSelector.setOnClickListener {
-            binding.favouriteSelector.isSelected = !binding.favouriteSelector.isSelected
-            if (binding.favouriteSelector.isSelected) {
-                viewModel.saveFavouriteRoute()
-            } else {
-                viewModel.removeFavourite()
-            }
+        binding.btnFavourites.setOnClickListener {
+            viewModel.saveFavouriteRoute()
+            binding.btnFavourites.hide()
         }
 
     }
@@ -256,19 +263,19 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
         isFirst = false
 
-        val bgName = "${getString(R.string.departure_background_transition)}-$position"
-
-        val navigateBundle = bundleOf("backgroundTransName" to bgName)
+//        val bgName = "${getString(R.string.departure_background_transition)}-$position"
+//
+//        val navigateBundle = bundleOf("backgroundTransName" to bgName)
         viewModel.services.value?.let { services ->
             viewModel.setServiceId(services[position].rid)
         }
 
-        val extras = FragmentNavigatorExtras(
-            (itemBackground as ConstraintLayout) to bgName
-        )
+//        val extras = FragmentNavigatorExtras(
+//            (itemBackground as ConstraintLayout) to bgName
+//        )
 
         binding.root.findNavController().navigate(R.id.serviceDetailFragment,
-            navigateBundle, null, extras)
+            null)
 
     }
 

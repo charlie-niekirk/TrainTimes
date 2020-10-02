@@ -55,7 +55,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/search_select_dep_station"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/station_selector_btn_bg"
             android:transitionName="firstTransition"
@@ -94,8 +94,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/search_select_dest_station"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/station_selector_btn_bg"
             android:transitionName="secondTransition"
             app:layout_constraintEnd_toEndOf="@id/end_guide"

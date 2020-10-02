@@ -1,10 +1,8 @@
 package com.cniekirk.traintimes.repo
 
 import android.util.Log
-import com.cniekirk.traintimes.data.local.FavouritesDao
 import com.cniekirk.traintimes.data.local.RecentQueriesDao
 import com.cniekirk.traintimes.data.local.model.CRS
-import com.cniekirk.traintimes.data.local.model.Favourite
 import com.cniekirk.traintimes.data.local.model.RecentQuery
 import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.data.remote.NREService
@@ -26,14 +24,11 @@ import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.NetworkHandler
-import com.cniekirk.traintimes.utils.Sign
 import com.cniekirk.traintimes.utils.extensions.hmac
 import com.cniekirk.traintimes.utils.extensions.now
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.request
 import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -53,7 +48,6 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                                             private val trackTimesService: TrackTimesService,
                                             private val preferencesProvider: PreferenceProvider,
                                             private val recentQueriesDao: RecentQueriesDao,
-                                            private val favouritesDao: FavouritesDao,
                                             private val adapter: JsonAdapter<Query>): NreRepository {
 
     /**
@@ -192,34 +186,11 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
     }
 
-    override fun saveFavouriteQuery(origin: CRS, destination: CRS): Either<Failure, Boolean> {
-
-        val query = if (destination.stationName.isEmpty()) {
-            Query(origin.crs, origin.stationName)
-        } else {
-            Query(origin.crs, origin.stationName, destination.crs, destination.stationName)
-        }
-
-        val dbValue = adapter.toJson(query)
-        val current = favouritesDao.getFavourites()
-        val isAlready = current.filter { q -> q.query.equals(dbValue, true) }
-        return if (isAlready.isNullOrEmpty()) {
-            favouritesDao.insertFavourite(Favourite(query = dbValue))
-            Either.Right(true)
-        } else {
-            Either.Left(Failure.FavouriteNotSavedFailure())
-        }
-    }
-
     override fun getJourneyPlan(request: JourneyPlanRepoRequest): Either<Failure, JourneyPlannerResponse> {
 
         // Do this more securely
         val header = "/api/journeyplan/${request.origin}/to/${request.destination}${request.journeyPlanRequest.departTime}"
             .hmac("/api/journeyplan/${request.origin}/to/${request.destination}")
-
-        // TODO: Finish this JNI implementation for the security header
-        val signer = Sign()
-//        Log.e(TAG, signer.sign(ByteArray(0x00)))
 
         return when (networkHandler.isConnected) {
             true -> request(trackTimesService.planJourney(request.origin,

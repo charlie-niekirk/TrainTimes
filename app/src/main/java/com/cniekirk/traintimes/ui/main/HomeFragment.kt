@@ -52,6 +52,18 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+        reenterTransition = backward
+
+        val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+        exitTransition = forward
+
+        enterTransition = forward
+        returnTransition = backward
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -80,12 +92,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         viewModel.depStation.observe(viewLifecycleOwner, Observer {
             if (it == null) {
-                binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+                binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDepText.text = getString(R.string.departing_from)
                 binding.searchArrowDep.setOnClickListener(null)
             } else {
                 if (binding.searchDepText.text.toString().equals(getString(R.string.departing_from), false)) {
-                    binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+                    binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
                     binding.searchDepText.text = it.stationName
                     binding.searchArrowDep.setOnClickListener {
                         viewModel.clearDepStation()
@@ -96,12 +108,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
         viewModel.destStation.observe(viewLifecycleOwner, Observer {
             if (it == null) {
-                binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+                binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDestText.text = getString(R.string.arriving_at)
                 binding.searchArrowDest.setOnClickListener(null)
             } else {
                 if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at), false)) {
-                    binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+                    binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
                     binding.searchDestText.text = it.stationName
                     binding.searchArrowDest.setOnClickListener {
                         viewModel.clearDestStation()
@@ -119,12 +131,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
             })
             viewModel.getCrsCodes()
             binding.searchDepText.text = savedDepStation
-            binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+            binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
             binding.searchArrowDep.setOnClickListener {
                 viewModel.clearDepStation()
             }
         } ?: run {
-            binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+            binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
             binding.searchDepText.text = getString(R.string.departing_from)
             binding.searchArrowDep.setOnClickListener(null)
         }
@@ -172,11 +184,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         binding.searchSelectDepStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDepStation
                     to getString(R.string.dep_search_transition))
-            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
-            enterTransition = backward
-
-            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
-            exitTransition = forward
             view.findNavController().navigate(R.id.stationSearchFragment,
                 bundleOf("isDeparture" to true), null, extras)
         }
@@ -184,11 +191,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         binding.searchSelectDestStation.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.searchSelectDestStation
                     to getString(R.string.dep_search_transition))
-            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
-            enterTransition = backward
-
-            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
-            exitTransition = forward
             view.findNavController().navigate(R.id.stationSearchFragment,
                 bundleOf("isDeparture" to false), null, extras)
         }
@@ -199,11 +201,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         }
 
         binding.homeBtnSettings.setOnClickListener {
-            val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
-            enterTransition = backward
-
-            val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
-            exitTransition = forward
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
         }
 
@@ -213,12 +210,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
         binding.recentSearchList.addItemDecoration(DividerItemDecoration(recent_search_list.context, layoutManager.orientation))
 
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
     }
 
     override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
@@ -239,9 +230,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
     }
 
     // Recent queries
-    override fun onClick(position: Int) {
+    override fun onClick(position: Int) =
         binding.root.findNavController().navigate(R.id.depBoardResultsFragment,
             bundleOf("recentQueries" to position, "isFromSearch" to true))
-    }
 
 }

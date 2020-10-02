@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.cniekirk.traintimes.MainActivity
+import com.cniekirk.traintimes.ui.activity.MainActivity
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.model.PushPortMessageItem
@@ -19,7 +19,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 

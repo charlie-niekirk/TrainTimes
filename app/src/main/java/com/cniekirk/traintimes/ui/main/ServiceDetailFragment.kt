@@ -52,11 +52,12 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            fadeMode = FADE_MODE_CROSS
-            interpolator = SwooshInterpolator(270f)
-            duration = 270
-        }
+        val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+        returnTransition = backward
+
+        val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+        enterTransition = forward
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

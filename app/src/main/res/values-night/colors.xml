@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#121212</color>
     <color name="transPrimary">#30000000</color>
+    <color name="transSubText">#40FFFFFF</color>
     <color name="colorPrimaryDark">#81D4FA</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorSearchFill">#40FFFFFF</color>
@@ -14,6 +15,8 @@
     <color name="colorUnselected">#757575</color>
     <color name="colorSidelineTrans">#60FFFFFF</color>
     <color name="colorNrccBadge">#ef5350</color>
+    <color name="colorFab">#1976D2</color>
+    <color name="colorFabText">#FFFFFF</color>
 
     <color name="widgetBg">#60000000</color>
 </resources>

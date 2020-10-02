@@ -131,4 +131,9 @@
     <string name="services_header">Services</string>
     <string name="empty_home_prompt">No favourite or recent queries,\ntry adding some…</string>
     <string name="empty_favourites_prompt">No favourites set, try adding some!</string>
+    <string name="key_dark_mode">dark_mode</string>
+    <string name="configure_widget_title">Configure widget</string>
+    <string name="favourites_button_content_desc">Favourites Button</string>
+    <string name="btn_fav_text">Add Favourite</string>
+    <string name="prefs">basic_preferences</string>
 </resources>

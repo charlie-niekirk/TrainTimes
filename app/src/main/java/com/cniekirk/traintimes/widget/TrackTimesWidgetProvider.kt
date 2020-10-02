@@ -6,7 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.cniekirk.traintimes.MainActivity
+import com.cniekirk.traintimes.ui.activity.MainActivity
 import com.cniekirk.traintimes.R
 
 class TrackTimesWidgetProvider : AppWidgetProvider() {
@@ -23,10 +23,12 @@ class TrackTimesWidgetProvider : AppWidgetProvider() {
                     PendingIntent.getActivity(context, 0, intent, 0)
                 }
 
-            val views: RemoteViews = RemoteViews(
+            val views = RemoteViews(
                 context.packageName,
                 R.layout.widget_layout
-            )
+            ).apply {
+                setOnClickPendingIntent(R.id.home_btn_settings, pendingIntent)
+            }
 
             appWidgetManager.updateAppWidget(widgetId, views)
 

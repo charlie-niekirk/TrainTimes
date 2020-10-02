@@ -1,7 +1,3 @@
-plugins {
-    id "com.google.protobuf" version "0.8.12"
-}
-
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
@@ -9,6 +5,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'com.squareup.wire'
 
 apply plugin: 'com.google.gms.google-services'
 
@@ -28,16 +26,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
-        externalNativeBuild {
-            cmake {
-                arguments "-Wl,-fvisibility=hidden", "-DANDROID_TOOLCHAIN=clang"
-            }
-        }
-    }
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
     }
     buildTypes {
         release {
@@ -60,6 +48,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src/main/java']
+            java.srcDirs += "$buildDir/generated/src/main/java"
         }
         test {
             java.srcDirs = ['src/test/java']
@@ -73,23 +62,13 @@ android {
     }
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.10.0"
+wire {
+
+    kotlin {
+        android = true
+        out "C:\\Users\\cniek\\StudioProjects\\TrainTimes\\app\\src\\main\\java\\com\\cniekirk\\traintimes\\model"
     }
 
-    // Generates the java Protobuf-lite code for the Protobufs in this project. See
-    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
-    // for more information.
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
-    }
 }
 
 dependencies {
@@ -97,7 +76,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.core:core-ktx:1.5.0-alpha02'
+    implementation 'androidx.core:core-ktx:1.5.0-alpha03'
     implementation('com.google.android.material:material:1.3.0-alpha02') {
         because 'This introduces Motion to Material Components'
     }
@@ -121,8 +100,8 @@ dependencies {
 
     // Proto DataStore
     implementation 'androidx.datastore:datastore-core:1.0.0-alpha01'
-    implementation  "androidx.datastore:datastore-core:1.0.0-alpha01"
-    implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+    implementation "androidx.datastore:datastore-core:1.0.0-alpha01"
+    implementation "com.squareup.wire:wire-runtime:3.4.0"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4'

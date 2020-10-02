@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?android:attr/selectableItemBackground">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/from_to_descriptor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/station_name"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/transSubText"
+        android:textStyle="bold"
+        android:text="DEPARTING"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/station_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/from_to_descriptor"
+        app:layout_constraintTop_toBottomOf="@id/from_to_descriptor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
+        tools:text="Highbury &amp; Islington"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/optional_from_to_descriptor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/optional_station_name"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/transSubText"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        android:text="ARRIVING"
+        tools:visibility="visible"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/optional_station_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/optional_from_to_descriptor"
+        app:layout_constraintTop_toBottomOf="@id/optional_from_to_descriptor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        tools:text="London Euston"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

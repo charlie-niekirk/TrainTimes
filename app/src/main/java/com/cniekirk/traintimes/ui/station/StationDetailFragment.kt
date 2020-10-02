@@ -2,6 +2,7 @@ package com.cniekirk.traintimes.ui.station
 
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
@@ -53,8 +55,11 @@ class StationDetailFragment: Fragment(R.layout.fragment_station_detail), Injecta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
+        returnTransition = backward
+
+        val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+        enterTransition = forward
     }
 
     override fun onCreateView(
@@ -160,18 +165,35 @@ class StationDetailFragment: Fragment(R.layout.fragment_station_detail), Injecta
                 startActivity(mapIntent)
             } ?: run { Toast.makeText(requireContext(), R.string.no_maps_installed, Toast.LENGTH_SHORT).show() }
         }
+
+        binding.backUpBtn.setOnClickListener {
+            view?.findNavController()?.popBackStack()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return
         map = googleMap
 
-        try {
-            if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.dark_style))) {
-                Log.e(StationDetailFragment::class.java.simpleName, getString(R.string.map_parse_error))
+        when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                try {
+                    if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.dark_style))) {
+                        Log.e(StationDetailFragment::class.java.simpleName, getString(R.string.map_parse_error))
+                    }
+                } catch (exception: Resources.NotFoundException) {
+                    Log.e(StationDetailFragment::class.java.simpleName, exception.toString())
+                }
             }
-        } catch (exception: Resources.NotFoundException) {
-            Log.e(StationDetailFragment::class.java.simpleName, exception.toString())
+            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                try {
+                    if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.light_style))) {
+                        Log.e(StationDetailFragment::class.java.simpleName, getString(R.string.map_parse_error))
+                    }
+                } catch (exception: Resources.NotFoundException) {
+                    Log.e(StationDetailFragment::class.java.simpleName, exception.toString())
+                }
+            }
         }
 
         //val waterloo = LatLng(51.503518,-0.1132977)

@@ -17,8 +17,7 @@ import java.util.*
 
 class DepartureListAdapter(private val services: List<Service>,
                            private val clickListener: DepartureItemClickListener
-)
-    : RecyclerView.Adapter<DepartureListAdapter.DepartureListViewHolder>() {
+) : RecyclerView.Adapter<DepartureListAdapter.DepartureListViewHolder>() {
 
     init {
         setHasStableIds(true)

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.model.PushPortMessageItem
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.squareup.moshi.JsonAdapter
@@ -25,16 +26,17 @@ class PreferenceProvider(context: Context) {
     private val preferences: SharedPreferences
 
     init {
-        val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-        preferences = EncryptedSharedPreferences.create(
-            appContext,
-            PREFS_NAME,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+//        val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+//            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+//            .build()
+//        preferences = EncryptedSharedPreferences.create(
+//            appContext,
+//            PREFS_NAME,
+//            masterKey,
+//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//        )
+        preferences = appContext.getSharedPreferences(appContext.getString(R.string.prefs), Context.MODE_PRIVATE)
     }
 
     fun getShouldShowPrices(): Boolean {
