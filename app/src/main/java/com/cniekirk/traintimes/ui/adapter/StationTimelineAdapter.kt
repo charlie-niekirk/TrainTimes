@@ -201,13 +201,21 @@ class StationTimelineAdapter(
 
             }
 
+            holder.stationPlatform.visibility = View.VISIBLE
             it.platform?.let { platform ->
-                holder.stationPlatform.text = "Platform $platform"
+                holder.stationPlatform.text = "P$platform"
                 it.platformIsHidden?.let { isHidden ->
                     if (isHidden) {
-                        holder.stationPlatform.text = holder.stationPlatform.text as String + " (Predicted)"
+//                        holder.stationPlatform.text = holder.stationPlatform.text as String + " ?"
+                        holder.stationPlatform.alpha = 0.5f
+                    } else {
+                        holder.stationPlatform.alpha = 1f
                     }
+                } ?: run {
+                    holder.stationPlatform.alpha = 1f
                 }
+            } ?: run {
+                holder.stationPlatform.visibility = View.GONE
             }
 
             holder.containerView?.setOnClickListener { onStationItemClickedListener.onStationItemClicked(callingPoints[position]!!) }
@@ -251,7 +259,7 @@ class StationTimelineAdapter(
         }
 
         val stationPlatform: MaterialTextView by lazy {
-            itemView.findViewById<MaterialTextView>(R.id.stop_platform)
+            itemView.findViewById<MaterialTextView>(R.id.platform_indicator)
         }
 
     }

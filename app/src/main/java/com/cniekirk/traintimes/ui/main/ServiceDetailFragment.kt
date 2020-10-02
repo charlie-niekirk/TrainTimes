@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.ui.main
 
-import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -17,24 +16,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
-import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.di.Injectable
-import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.getdepboard.res.Location
-import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
-import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
-import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
-import com.cniekirk.traintimes.utils.extensions.parseEncoded
-import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
+import com.cniekirk.traintimes.utils.extensions.parseEncoded
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialContainerTransform.FADE_MODE_CROSS
 import com.google.android.material.transition.MaterialSharedAxis
 import java.text.SimpleDateFormat
 import java.util.*
@@ -72,24 +64,46 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         Log.e(TAG, "Exec")
 
         serviceDetailsResult.subsequentLocations?.let { locations ->
-            val sdf = SimpleDateFormat("YYYY-mm-DD'T'hh:mm:SS", Locale.ENGLISH)
-            val output = SimpleDateFormat("hh:mm", Locale.ENGLISH)
+            val sdf = SimpleDateFormat("YYYY-mm-DD'T'hh:mm", Locale.ENGLISH)
+            val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
             locations[0].eta?.let {
                 val estimated = sdf.parse(it)
                 val scheduled = sdf.parse(locations[0].sta!!)
                 if (estimated.after(scheduled)) {
+                    Log.e(TAG, "AFTER")
                     binding.currentRunningTime.text = output.format(estimated)
                     binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
+                    binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                     binding.currentRunningTime.alpha = 1f
                 } else {
-                    binding.currentRunningTime.text = "On Time"
+                    Log.e(TAG, "ON_TIME")
+                    binding.currentRunningTime.text = "Currently On Time"
                     binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
+                    binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
                     binding.currentRunningTime.alpha = 1f
                 }
             } ?: run {
-                binding.currentRunningTime.visibility = View.INVISIBLE
+                Log.e(TAG, "HIDDEN")
+                locations[0].etd?.let {
+                    val estimated = sdf.parse(it)
+                    val scheduled = sdf.parse(locations[0].std!!)
+                    if (estimated.after(scheduled)) {
+                        Log.e(TAG, "AFTER")
+                        binding.currentRunningTime.text = output.format(estimated)
+                        binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
+                        binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
+                        binding.currentRunningTime.alpha = 1f
+                    } else {
+                    Log.e(TAG, "ON_TIME")
+                    binding.currentRunningTime.text = "Currently On Time"
+                    binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
+                    binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
+                    binding.currentRunningTime.alpha = 1f
+                }
+                }
             }
         } ?: run {
+            Log.e(TAG, "HIDDEN")
             binding.currentRunningTime.visibility = View.INVISIBLE
         }
     }
@@ -97,6 +111,8 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.backUpBtn.setOnClickListener { findNavController().popBackStack() }
+
+        binding.serviceDestination.isSelected = true
 
         binding.stationStops.itemAnimator = DepartureListItemAnimtor(0)
             .withInterpolator(FastOutSlowInInterpolator())
@@ -155,29 +171,29 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                     }
                 }
 
-                binding.btnWatch.setOnClickListener {
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(R.string.live_updates_title)
-                        .setMultiChoiceItems(R.array.live_update_values, booleanArrayOf(true, true, true, false)) { dialog, which, isChecked ->
-
-                        }
-                        .setPositiveButton(R.string.live_updates_positive) { dialogInterface, _ ->
-                            val searchTiploc = allCallingPoints.find { location ->
-                                location.stationCode!!.equals(viewModel.depStation.value?.crs, true)
-                            }
-                            searchTiploc?.let { location ->
-                                location.tiploc?.let { tiploc ->
-                                    viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""),
-                                        PreferenceProvider(requireContext()).getFirebaseId(), serviceDetailsResult)
-                                }
-                            }
-                            dialogInterface.dismiss()
-                        }
-                        .setNegativeButton(R.string.live_updates_negative) { dialogInterface, _ ->
-                            dialogInterface.dismiss()
-                        }
-                        .show()
-                }
+//                binding.btnWatch.setOnClickListener {
+//                    MaterialAlertDialogBuilder(requireContext())
+//                        .setTitle(R.string.live_updates_title)
+//                        .setMultiChoiceItems(R.array.live_update_values, booleanArrayOf(true, true, true, false)) { dialog, which, isChecked ->
+//
+//                        }
+//                        .setPositiveButton(R.string.live_updates_positive) { dialogInterface, _ ->
+//                            val searchTiploc = allCallingPoints.find { location ->
+//                                location.stationCode!!.equals(viewModel.depStation.value?.crs, true)
+//                            }
+//                            searchTiploc?.let { location ->
+//                                location.tiploc?.let { tiploc ->
+//                                    viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""),
+//                                        PreferenceProvider(requireContext()).getFirebaseId(), serviceDetailsResult)
+//                                }
+//                            }
+//                            dialogInterface.dismiss()
+//                        }
+//                        .setNegativeButton(R.string.live_updates_negative) { dialogInterface, _ ->
+//                            dialogInterface.dismiss()
+//                        }
+//                        .show()
+//                }
 
                 binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
                 binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
