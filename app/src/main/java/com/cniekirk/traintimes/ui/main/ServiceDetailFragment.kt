@@ -71,7 +71,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                 val scheduled = sdf.parse(locations[0].sta!!)
                 if (estimated.after(scheduled)) {
                     Log.e(TAG, "AFTER")
-                    binding.currentRunningTime.text = output.format(estimated)
+                    binding.currentRunningTime.text = "Delayed, now departing at ${output.format(estimated)}"
                     binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                     binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                     binding.currentRunningTime.alpha = 1f
@@ -89,7 +89,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                     val scheduled = sdf.parse(locations[0].std!!)
                     if (estimated.after(scheduled)) {
                         Log.e(TAG, "AFTER")
-                        binding.currentRunningTime.text = output.format(estimated)
+                        binding.currentRunningTime.text = "Delayed, now departing at ${output.format(estimated)}"
                         binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                         binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                         binding.currentRunningTime.alpha = 1f
@@ -122,7 +122,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
         binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
         binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0, this)
 
-        viewModel.serviceDetailsResult.observe(viewLifecycleOwner, Observer { serviceDetailsResult ->
+        viewModel.serviceDetailsResult.observe(viewLifecycleOwner, { serviceDetailsResult ->
 
             if (serviceDetailsResult.isCancelled) {
 
@@ -153,6 +153,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injecta
                 Log.e(TAG, "PREVIOUS: ${previousWithCurrent.toString()}")
                 serviceDetailsResult.currentLocation?.let {
                     previousWithCurrent?.let { prevCur ->
+                        Log.e(TAG, "PREVIOUS: ${prevCur.size}")
                         previousWithCurrent = prevCur.subList(0, prevCur.lastIndex - 1)
                         previousWithCurrent = previousWithCurrent?.plus(it)
                     }

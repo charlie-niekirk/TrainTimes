@@ -112,18 +112,26 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
      *
      * @return An [Either] that exposes a [Failure] or [GetBoardWithDetailsResult]
      */
-    override fun getArrivalsAtStation(target: String, destination: String): Either<Failure, GetBoardWithDetailsResult> {
+    override fun getArrivalsAtStation(arrivingAt: String, comingFrom: String): Either<Failure, GetBoardWithDetailsResult> {
         val body = ArrBody(GetArrBoardWithDetailsRequest(
             numRows = NumRows(numRows = "20"),
-            crs = target,
-            filterCrs = destination,
+            crs = arrivingAt,
+            filterCrs = comingFrom,
             filterType = "to",
             time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).now(),
             timeWindow = "120"))
         val envelope = ArrEnvelope(header = Header(AccessToken()), body = body)
 
         return when (networkHandler.isConnected) {
-            true -> request(nreService.getArrivalBoardWithDetails(envelope)) { it.body.getArrBoardWithDetailsResponse.getBoardWithDetailsResult }
+            true -> request(nreService.getArrivalBoardWithDetails(envelope)) { env ->
+                env.body.getArrBoardWithDetailsResponse.getBoardWithDetailsResult.nrccMessages?.let { nrccMessages ->
+                    nrccMessages.messages?.let { messages ->
+                        val trimmed = messages.map { message -> message.copy(message = message.message?.parseEncoded()?.parseEncoded()?.replace("\n", "")?.trim()) }
+                        val nrcc = nrccMessages.copy(messages = trimmed)
+                        return@request env.body.getArrBoardWithDetailsResponse.getBoardWithDetailsResult.copy(nrccMessages = nrcc)
+                    }
+                } ?: run { return@request env.body.getArrBoardWithDetailsResponse.getBoardWithDetailsResult }
+            }
             else -> Either.Left(Failure.NetworkConnectionError())
         }
     }

@@ -110,7 +110,7 @@ class StationTimelineAdapter(
 
                 if (!callingPoints[position]?.etd.isNullOrEmpty()) {
                     val etd = sdf.parse(callingPoints[position]?.etd!!)
-                    holder.stationStatus.text = output.format(etd!!)
+                    holder.stationStatus.text = output.format(std!!)
                     if (!etd.after(std)) {
                         holder.stationStatus.setTextColor(holder.itemView.resources.getColor(R.color.colorGreen, null))
                     } else {

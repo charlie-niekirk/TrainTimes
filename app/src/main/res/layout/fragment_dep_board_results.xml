@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_favourites"
@@ -21,11 +21,9 @@
         android:backgroundTint="@color/colorPrimaryDark"
         app:rippleColor="@color/colorFabText" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:background="@color/colorBackground"
         android:animateLayoutChanges="true"
         android:id="@+id/root_layout">
@@ -66,34 +64,31 @@
             android:textColor="@color/colorAccent"
             tools:text="London Waterloo"/>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/services_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/btn_back"
-            app:layout_constraintTop_toBottomOf="@id/btn_back"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/circularstd"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="@color/colorAccent"
-            android:text="@string/services_header"/>
+<!--        <com.google.android.material.textview.MaterialTextView-->
+<!--            android:id="@+id/services_header"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintStart_toStartOf="@id/btn_back"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/btn_back"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:fontFamily="@font/circularstd"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="@color/colorAccent"-->
+<!--            android:text="@string/services_header"/>-->
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/dep_arr_chip"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dep_arr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/services_header"
-            app:layout_constraintBottom_toBottomOf="@id/services_header"
-            app:layout_constraintStart_toEndOf="@id/services_header"
-            android:layout_marginStart="12dp"
-            app:chipCornerRadius="8dp"
-            app:chipStrokeWidth="2dp"
-            app:chipStrokeColor="@color/colorAccent"
-            app:chipEndPadding="3dp"
-            app:chipStartPadding="3dp"
-            android:textColor="@color/colorAccent"
-            android:text="Departures"
+            app:layout_constraintStart_toEndOf="@id/route_description"
+            app:layout_constraintTop_toTopOf="@id/btn_back"
+            app:layout_constraintBottom_toBottomOf="@id/btn_back"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/circularstd"
+            android:textSize="16sp"
+            android:textColor="@color/transDepArrText"
+            android:text="@string/departing"
             tools:text="Departures"/>
 
         <ImageView
@@ -132,7 +127,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dep_arr_chip"
+            app:layout_constraintTop_toBottomOf="@id/btn_back"
             android:layout_marginTop="2dp"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/design_bottom_navigation_height"

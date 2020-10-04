@@ -3,6 +3,7 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="transPrimary">#30FFFFFF</color>
     <color name="transSubText">#40000000</color>
+    <color name="transDepArrText">#60000000</color>
     <color name="colorPrimaryDark">#2196F3</color>
 <!--    <color name="colorAccent">#2196F3</color>-->
     <color name="colorAccent">#101010</color>

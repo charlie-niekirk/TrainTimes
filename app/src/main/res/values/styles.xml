@@ -40,5 +40,11 @@
     <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
+    
+    <style name="MaterialSwitchStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/circularstd</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
 
 </resources>

@@ -64,7 +64,7 @@ class DepartureListAdapter(private val services: List<Service>,
         holder.tocName.text = services[position].operator
         setPillColor(holder.tocName.text.toString(), holder)
 
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.ENGLISH)
         val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
         val std = sdf.parse(services[position].scheduledDeparture!!)
         services[position].estimatedDeparture?.let {

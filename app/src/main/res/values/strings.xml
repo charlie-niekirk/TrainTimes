@@ -137,4 +137,6 @@
     <string name="btn_fav_text">Add Favourite</string>
     <string name="prefs">basic_preferences</string>
     <string name="toc_dest_sep_text">to</string>
+    <string name="departing">Departures</string>
+    <string name="arriving">Arrivals</string>
 </resources>

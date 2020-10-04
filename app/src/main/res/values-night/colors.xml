@@ -17,6 +17,7 @@
     <color name="colorNrccBadge">#ef5350</color>
     <color name="colorFab">#1976D2</color>
     <color name="colorFabText">#FFFFFF</color>
+    <color name="transDepArrText">#60FFFFFF</color>
 
     <color name="widgetBg">#60000000</color>
 </resources>
