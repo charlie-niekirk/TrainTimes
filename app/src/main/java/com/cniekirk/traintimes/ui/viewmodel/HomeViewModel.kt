@@ -1,7 +1,6 @@
 package com.cniekirk.traintimes.ui.viewmodel
 
 import android.util.Log
-import androidx.datastore.DataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -21,6 +20,7 @@ import com.cniekirk.traintimes.model.getdepboard.res.NrccMessages
 import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
+import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
 import kotlinx.coroutines.*
@@ -49,7 +49,7 @@ class HomeViewModel constructor(
     private val connectionState: ConnectionStateEmitter
 ) : BaseViewModel() {
 
-    val services: LiveData<List<Service>>
+    val services: LiveData<List<DepartureItem>>
         get() = _services
     val crsStationCodes: LiveData<List<CRS>>
         get() = _crsStationCodes
@@ -76,7 +76,7 @@ class HomeViewModel constructor(
     val favourites: LiveData<List<Query>>
         get() = _favourites
 
-    private val _services = MutableLiveData<List<Service>>()
+    private val _services = MutableLiveData<List<DepartureItem>>()
     private val _crsStationCodes = MutableLiveData<List<CRS>>()
     private val _depStation = MutableLiveData<CRS>()
     private val _destStation = MutableLiveData<CRS>()
@@ -281,6 +281,10 @@ class HomeViewModel constructor(
 
     }
 
+    fun clearServices() {
+        _services.postValue(emptyList())
+    }
+
     fun removeFavourite() {
 
         val favs = _favourites.value
@@ -328,7 +332,19 @@ class HomeViewModel constructor(
 
     private fun handleResponse(response: GetBoardWithDetailsResult) {
         response.trainServices?.let {
-            _services.value = it.trainServices
+            if (_services.value.isNullOrEmpty()) {
+                val initialServicesList = mutableListOf(DepartureItem.LoadBeforeItem, DepartureItem.LoadAfterItem)
+                initialServicesList.addAll(1, it.trainServices?.map { service -> DepartureItem.DepartureServiceItem(service) }!!)
+                Log.e(TAG, initialServicesList[initialServicesList.size - 1].toString())
+                _services.value = initialServicesList
+            } else {
+                _services.value?.let { current ->
+                    val deps = current.toMutableList()
+                    deps.addAll(1, it.trainServices?.map { service -> DepartureItem.DepartureServiceItem(service) }!!)
+                    _services.value = deps
+                }
+            }
+
         } ?: run {
             _services.value = emptyList()
         }

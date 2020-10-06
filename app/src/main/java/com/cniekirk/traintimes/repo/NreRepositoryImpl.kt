@@ -58,14 +58,14 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
      *
      * @return An [Either] that exposes a [Failure] or [GetBoardWithDetailsResult]
      */
-    override fun getDeparturesAtStation(station: CRS, destination: CRS): Either<Failure, GetBoardWithDetailsResult> {
+    override fun getDeparturesAtStation(station: CRS, destination: CRS, time: String): Either<Failure, GetBoardWithDetailsResult> {
 
         val body = Body(GetDepBoardWithDetailsRequest(
             numRows = "20",
             crs = station.crs,
             filterCrs = destination.crs,
             filterType = "to",
-            time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).now(),
+            time = time,
             timeWindow = "120",
             getNonPassengerServices = false))
 

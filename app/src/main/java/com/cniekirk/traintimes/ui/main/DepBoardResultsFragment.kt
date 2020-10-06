@@ -28,6 +28,7 @@ import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.ui.behaviour.FabShrinkingOnScrollListener
 import com.cniekirk.traintimes.ui.custom.SwitchTrackTextDrawable
@@ -49,7 +50,9 @@ import javax.inject.Inject
 private const val TAG = "DepBoardResultsFragment"
 
 class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), Injectable,
-    DepartureListAdapter.DepartureItemClickListener {
+    DepartureListAdapter.DepartureItemClickListener,
+    DepartureListAdapter.LoadPreviousItemClickListener,
+    DepartureListAdapter.LoadNextItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
@@ -129,10 +132,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
         })
 
         viewModel.services.observe(viewLifecycleOwner, { service ->
+
             //service
             val depAdapter =
                 DepartureListAdapter(
                     service,
+                    this,
+                    this,
                     this
                 )
             binding.homeServicesList.adapter = depAdapter
@@ -141,6 +147,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
                 startPostponedEnterTransition()
                 true
             }
+            // Don't show load previous by default
+            binding.homeServicesList.scrollToPosition(1)
             animatedLoadingIndicator.cancel()
         })
 
@@ -214,6 +222,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
             binding.homeServicesList.adapter =
                 DepartureListAdapter(
                     emptyList(),
+                    this,
+                    this,
                     this
                 )
             binding.root.findNavController().navigateUp()
@@ -229,6 +239,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
         binding.homeServicesList.adapter =
             DepartureListAdapter(
                 emptyList(),
+                this,
+                this,
                 this
             )
         binding.homeServicesList.addItemDecoration(DividerItemDecoration(home_services_list.context, layoutManager.orientation))
@@ -303,7 +315,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 //
 //        val navigateBundle = bundleOf("backgroundTransName" to bgName)
         viewModel.services.value?.let { services ->
-            viewModel.setServiceId(services[position].rid)
+            val service = services[position] as DepartureItem.DepartureServiceItem
+            viewModel.setServiceId(service.service.rid)
         }
 
 //        val extras = FragmentNavigatorExtras(
@@ -312,6 +325,14 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
         binding.root.findNavController().navigate(R.id.serviceDetailFragment,
             null)
+
+    }
+
+    override fun onPreviousClick() {
+
+    }
+
+    override fun onNextClick() {
 
     }
 

@@ -12,10 +12,13 @@ import com.cniekirk.traintimes.model.servicedetails.res.GetServiceDetailsResult
 import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
+import com.cniekirk.traintimes.utils.extensions.now
+import java.text.SimpleDateFormat
+import java.util.*
 
 interface NreRepository {
 
-    fun getDeparturesAtStation(station: CRS, destination: CRS): Either<Failure, GetBoardWithDetailsResult>
+    fun getDeparturesAtStation(station: CRS, destination: CRS, time: String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).now()): Either<Failure, GetBoardWithDetailsResult>
 
     fun getRecentQueries(): Either<Failure, List<Query>>
 

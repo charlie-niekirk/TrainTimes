@@ -43,7 +43,6 @@ import javax.inject.Inject
 private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
-    DepartureListAdapter.DepartureItemClickListener,
     RecentQueriesAdapter.RecentQueryClickListener {
 
     @Inject
@@ -212,22 +211,22 @@ class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
 
     }
 
-    override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
-
-        val bgName = "${getString(R.string.departure_background_transition)}-$position"
-
-        val navigateBundle = bundleOf("backgroundTransName" to bgName)
-        viewModel.services.value?.let { services ->
-            viewModel.setServiceId(services[position].rid)
-        }
-
-        val extras = FragmentNavigatorExtras(
-            (itemBackground as ConstraintLayout) to bgName
-        )
-
-        view?.findNavController()?.navigate(R.id.serviceDetailFragment,
-            navigateBundle, null, extras)
-    }
+//    override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
+//
+//        val bgName = "${getString(R.string.departure_background_transition)}-$position"
+//
+//        val navigateBundle = bundleOf("backgroundTransName" to bgName)
+//        viewModel.services.value?.let { services ->
+//            viewModel.setServiceId(services[position].rid)
+//        }
+//
+//        val extras = FragmentNavigatorExtras(
+//            (itemBackground as ConstraintLayout) to bgName
+//        )
+//
+//        view?.findNavController()?.navigate(R.id.serviceDetailFragment,
+//            navigateBundle, null, extras)
+//    }
 
     // Recent queries
     override fun onClick(position: Int) =

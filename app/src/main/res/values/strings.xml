@@ -139,4 +139,6 @@
     <string name="toc_dest_sep_text">to</string>
     <string name="departing">Departures</string>
     <string name="arriving">Arrivals</string>
+    <string name="previous_departures">Load Previous Departures</string>
+    <string name="next_departures">Load Next Departures</string>
 </resources>
