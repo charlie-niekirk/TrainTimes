@@ -9,6 +9,6 @@ fun SimpleDateFormat.now(): String {
     return this.format(Date.from(Instant.now()))
 }
 
-fun SimpleDateFormat.hoursFromNow(numHours: Long): String {
-    return this.format(Date.from(Instant.now().minus(numHours, ChronoUnit.HOURS)))
+fun Instant.hoursFromNow(numHours: Long): Date {
+    return Date.from(this.minus(numHours, ChronoUnit.HOURS))
 }

@@ -10,6 +10,7 @@ import com.cniekirk.traintimes.base.SingleLiveEvent
 import com.cniekirk.traintimes.base.ViewModelFactory
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.domain.model.DepartureAtTimeRequest
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.Favourites
 //import com.cniekirk.traintimes.model.Favourites
@@ -23,11 +24,16 @@ import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
+import com.cniekirk.traintimes.utils.extensions.hoursFromNow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,6 +45,7 @@ class HomeViewModel constructor(
     private val getStationsUseCase: GetStationsUseCase,
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
     private val getDeparturesUseCase: GetDeparturesUseCase,
+    private val getDeparturesAtTime: GetDeparturesAtTimeUseCase,
     private val getServiceDetailsUseCase: GetServiceDetailsUseCase,
     private val getArrivalsUseCase: GetArrivalsUseCase,
     private val trackServiceUseCase: TrackServiceUseCase,
@@ -91,6 +98,8 @@ class HomeViewModel constructor(
 
     private val scopedIOContext = viewModelScope + Dispatchers.IO
 
+    private var requestDate: Instant = Instant.now()
+
     @ExperimentalCoroutinesApi
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
     fun depStationText(): String? = handle.get<String>("depStation")
@@ -108,12 +117,12 @@ class HomeViewModel constructor(
         getAllStationCodesUseCase(null) { it.either(::handleFailure, ::handleCrs) }
     }
 
-    fun getTrains() {
+    private fun getTrainsInternal(time: String) {
         Log.e(TAG, "EXEC - getTrains()")
         _destStation.value?.let { crs ->
             _depStation.value?.let { depCrs ->
                 // Get specific departures
-                getDeparturesUseCase(arrayOf(depCrs, crs))
+                getDeparturesAtTime(DepartureAtTimeRequest(depCrs, crs, time))
                 { it.either(::handleFailure, ::handleResponse) }
             } ?: run {
                 // Get all arrivals
@@ -124,7 +133,7 @@ class HomeViewModel constructor(
             // Check if empty
             _depStation.value?.let {
                 // Get all departures
-                getDeparturesUseCase(arrayOf(_depStation.value!!, CRS("", "")))
+                getDeparturesAtTime(DepartureAtTimeRequest(_depStation.value!!, CRS("", ""), time))
                 { it.either(::handleFailure, ::handleResponse) }
             } ?: run {
                 // Needed so old value isn't cached and reloaded which looks odd to the user
@@ -132,6 +141,23 @@ class HomeViewModel constructor(
                 handleFailure(Failure.NoCrsFailure())
             }
         }
+    }
+
+    fun getTrains() {
+
+        requestDate = Instant.now()
+        val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).format(Date.from(requestDate))
+        getTrainsInternal(time)
+
+    }
+
+    fun getPreviousTrains() {
+
+        requestDate = requestDate.minus(1, ChronoUnit.HOURS)
+        val previousTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH)
+            .format(Date.from(requestDate))
+        getTrainsInternal(previousTime)
+
     }
 
     fun getRecentSearches() {
@@ -372,6 +398,7 @@ class HomeViewModelFactory @Inject constructor(
     private val getStationsUseCase: GetStationsUseCase,
     private val getAllStationCodesUseCase: GetAllStationCodesUseCase,
     private val getDeparturesUseCase: GetDeparturesUseCase,
+    private val getDeparturesAtTimeUseCase: GetDeparturesAtTimeUseCase,
     private val getServiceDetailsUseCase: GetServiceDetailsUseCase,
     private val getArrivalsUseCase: GetArrivalsUseCase,
     private val trackServiceUseCase: TrackServiceUseCase,
@@ -384,8 +411,8 @@ class HomeViewModelFactory @Inject constructor(
 
     override fun create(handle: SavedStateHandle): HomeViewModel {
         return HomeViewModel(handle, getStationsUseCase, getAllStationCodesUseCase,
-                getDeparturesUseCase, getServiceDetailsUseCase, getArrivalsUseCase,
-                trackServiceUseCase, getRecentQueriesUseCase, saveFavouriteUseCase,
+                getDeparturesUseCase, getDeparturesAtTimeUseCase, getServiceDetailsUseCase,
+                getArrivalsUseCase, trackServiceUseCase, getRecentQueriesUseCase, saveFavouriteUseCase,
                 getFavouritesUseCase, removeFavouriteUseCase, connectionStateEmitter)
     }
 }

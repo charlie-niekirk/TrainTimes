@@ -328,8 +328,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
 
     }
 
-    override fun onPreviousClick() {
+    override fun onPause() {
+        viewModel.clearServices()
+        super.onPause()
+    }
 
+    override fun onPreviousClick() {
+        viewModel.getPreviousTrains()
     }
 
     override fun onNextClick() {
