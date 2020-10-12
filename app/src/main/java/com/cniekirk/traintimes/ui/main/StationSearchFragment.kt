@@ -5,22 +5,19 @@ import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.databinding.FragmentStationSearchBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.ui.adapter.StationListAdapter
-import com.cniekirk.traintimes.utils.extensions.hideKeyboard
-import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
-import com.cniekirk.traintimes.utils.extensions.onFocusChange
-import com.google.android.material.transition.MaterialContainerTransform
+import com.cniekirk.traintimes.utils.extensions.hideKeyboard
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -29,7 +26,8 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class StationSearchFragment: Fragment(R.layout.fragment_station_search), Injectable, StationListAdapter.OnStationItemSelected {
+@AndroidEntryPoint
+class StationSearchFragment: Fragment(R.layout.fragment_station_search), StationListAdapter.OnStationItemSelected {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory

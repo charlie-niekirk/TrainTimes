@@ -14,19 +14,15 @@ import com.cniekirk.traintimes.databinding.ActivityMainBinding
 import com.cniekirk.traintimes.utils.anim.kb.FluidContentResizer
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity(), HasAndroidInjector {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
 
     private val navController by lazy { findNavController(R.id.nav_host_fragment) }
     private val binding by viewBinding(ActivityMainBinding::inflate)
-
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +52,5 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector {
         return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp()
                 || super.onSupportNavigateUp()
     }
-
-    override fun androidInjector() = dispatchingAndroidInjector
 
 }

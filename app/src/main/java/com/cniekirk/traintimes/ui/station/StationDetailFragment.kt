@@ -10,10 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -21,7 +19,6 @@ import com.bumptech.glide.Glide
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentStationDetailBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.ui.viewmodel.StationViewModel
 import com.cniekirk.traintimes.ui.viewmodel.StationViewModelFactory
 import com.cniekirk.traintimes.utils.viewBinding
@@ -33,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
@@ -40,7 +38,8 @@ import javax.inject.Inject
  *
  * @author Charles Niekirk 2020
  */
-class StationDetailFragment: Fragment(R.layout.fragment_station_detail), Injectable, OnMapReadyCallback {
+@AndroidEntryPoint
+class StationDetailFragment: Fragment(R.layout.fragment_station_detail), OnMapReadyCallback {
 
     @Inject
     lateinit var viewModelFactory: StationViewModelFactory

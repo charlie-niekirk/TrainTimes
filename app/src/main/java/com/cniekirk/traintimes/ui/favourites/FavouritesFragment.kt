@@ -14,17 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentFavouritesBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.ui.adapter.FavouritesAdapter
 import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dep_board_results.*
 import kotlinx.android.synthetic.main.fragment_favourites.*
 import javax.inject.Inject
 
-class FavouritesFragment: Fragment(R.layout.fragment_favourites), Injectable, FavouritesAdapter.FavouritesClickListener {
+@AndroidEntryPoint
+class FavouritesFragment: Fragment(R.layout.fragment_favourites), FavouritesAdapter.FavouritesClickListener {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory

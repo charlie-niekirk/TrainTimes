@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
+import com.cniekirk.traintimes.databinding.DepartureListItemBinding
+import com.cniekirk.traintimes.databinding.LoadNextItemBinding
+import com.cniekirk.traintimes.databinding.LoadPreviousItemBinding
 import com.cniekirk.traintimes.model.Dep
 import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.ui.DepartureItem
@@ -94,20 +97,20 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
                 val platform = if (departureServices[position - 1].platform.isNullOrEmpty()) "TBD" else departureServices[position - 1].platform
                 val destinations = departureServices[position - 1].destination.locations
 
-                depHolder.itemView.transitionName = "${depHolder.itemView.context.getString(R.string.departure_background_transition)}-${position - 1}"
+                depHolder.binding.root.transitionName = "${depHolder.itemView.context.getString(R.string.departure_background_transition)}-${position - 1}"
 
-                depHolder.departureDestinationName.text = destinations[destinations.size - 1].locationName?.parseEncoded()
-                depHolder.departureDestinationName.transitionName = "${depHolder.itemView.context.getString(R.string.departure_text_transition)}-${position - 1}"
+                depHolder.binding.departureDestinationName.text = destinations[destinations.size - 1].locationName?.parseEncoded()
+                depHolder.binding.departureDestinationName.transitionName = "${depHolder.itemView.context.getString(R.string.departure_text_transition)}-${position - 1}"
 
-                depHolder.platformName.text = depHolder.containerView?.context?.getString(R.string.platform_prefix, platform)
+                depHolder.binding.departurePlatformName.text = depHolder.containerView?.context?.getString(R.string.platform_prefix, platform)
                 departureServices[position - 1].platformIsHidden?.let {
                     if (it) {
-                        holder.platformName.text = (holder.platformName.text as String?)?.plus(" (Predicted)")
+                        holder.binding.departurePlatformName.text = (holder.binding.departurePlatformName.text as String?)?.plus(" (Predicted)")
                     }
                 }
-                depHolder.scheduledDepartureTime.text = departureServices[position - 1].scheduledDeparture
-                depHolder.tocName.text = departureServices[position - 1].operator
-                setPillColor(holder.tocName.text.toString(), holder)
+                depHolder.binding.scheduledDepartureTime.text = departureServices[position - 1].scheduledDeparture
+                depHolder.binding.tocName.text = departureServices[position - 1].operator
+                setPillColor(holder.binding.tocName.text.toString(), holder)
 
                 val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.ENGLISH)
                 val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
@@ -115,40 +118,40 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
                 departureServices[position - 1].estimatedDeparture?.let {
                     val etd = sdf.parse(it)
                     if (etd!!.after(std)) {
-                        depHolder.scheduledDepartureTime.paintFlags =
-                            (depHolder.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
-                        depHolder.estimatedDepartureTime
-                            .setTextColor(depHolder.itemView.resources.getColor(R.color.colorRed, null))
-                        depHolder.estimatedDepartureTime.text = output.format(etd)
+                        depHolder.binding.scheduledDepartureTime.paintFlags =
+                            (depHolder.binding.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
+                        depHolder.binding.estimatedDepartureTime
+                            .setTextColor(depHolder.binding.root.resources.getColor(R.color.colorRed, null))
+                        depHolder.binding.estimatedDepartureTime.text = output.format(etd)
                     } else {
-                        depHolder.estimatedDepartureTime
-                            .setTextColor(depHolder.itemView.resources.getColor(R.color.colorGreen, null))
-                        depHolder.estimatedDepartureTime.text = "On Time"
+                        depHolder.binding.estimatedDepartureTime
+                            .setTextColor(depHolder.binding.root.resources.getColor(R.color.colorGreen, null))
+                        depHolder.binding.estimatedDepartureTime.text = "On Time"
                     }
                 } ?: run {
-                    depHolder.estimatedDepartureTime
+                    depHolder.binding.estimatedDepartureTime
                         .setTextColor(depHolder.itemView.resources.getColor(R.color.colorGreen, null))
-                    depHolder.estimatedDepartureTime.text = "On Time"
+                    depHolder.binding.estimatedDepartureTime.text = "On Time"
                 }
 
-                depHolder.scheduledDepartureTime.text = output.format(std)
+                depHolder.binding.scheduledDepartureTime.text = output.format(std)
 
                 departureServices[position - 1].length?.let {
-                    depHolder.numCoaches.text = String.format(depHolder.containerView.resources.getString(R.string.num_coaches_text), it)
+                    depHolder.binding.numCoaches.text = String.format(depHolder.containerView.resources.getString(R.string.num_coaches_text), it)
                 } ?: run {
-                    depHolder.numCoaches.visibility = View.INVISIBLE
+                    depHolder.binding.numCoaches.visibility = View.INVISIBLE
                 }
 
                 val serviceItem = services[position] as DepartureItem.DepartureServiceItem
                 if (serviceItem.isCircular) {
                     // Show the text
-                    depHolder.circularServiceIndicator.visibility = View.VISIBLE
-                    depHolder.circularServiceIndicator.text = depHolder.containerView.resources.getString(R.string.circular_service_indication)
+                    depHolder.binding.circularServiceIndicator.visibility = View.VISIBLE
+                    depHolder.binding.circularServiceIndicator.text = depHolder.containerView.resources.getString(R.string.circular_service_indication)
                 } else {
-                    depHolder.circularServiceIndicator.visibility = View.GONE
+                    depHolder.binding.circularServiceIndicator.visibility = View.GONE
                 }
 
-                depHolder.itemView.setOnClickListener { clickListener.onClick(position, depHolder.itemView, depHolder.departureDestinationName) }
+                depHolder.binding.root.setOnClickListener { clickListener.onClick(position, depHolder.itemView, depHolder.binding.departureDestinationName) }
 
             }
             getItemViewType(position) == MORE_TYPE -> {
@@ -160,90 +163,90 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
 
     private fun setPillColor(toc: String, holder: DepartureListViewHolder) {
 
-        holder.tocName.setTextColor(holder.tocName.resources.getColor(android.R.color.white, null))
+        holder.binding.tocName.setTextColor(holder.binding.tocName.resources.getColor(android.R.color.white, null))
 
         when (toc.toLowerCase()) {
-            "tfl rail" -> holder.tocName.apply {
+            "tfl rail" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocTflRail, null))
             }
-            "great western railway" -> holder.tocName.apply {
+            "great western railway" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGwr, null))
             }
-            "northern" -> holder.tocName.apply {
+            "northern" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocNorthern, null))
             }
-            "south western railway" -> holder.tocName.apply {
+            "south western railway" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocSwr, null))
             }
-            "london overground" -> holder.tocName.apply {
+            "london overground" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocLondOverground, null))
             }
-            "london north eastern railway" -> holder.tocName.apply {
+            "london north eastern railway" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocLner, null))
             }
-            "hull trains" -> holder.tocName.apply {
+            "hull trains" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocHullTrains, null))
             }
-            "great northern" -> holder.tocName.apply {
+            "great northern" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGreatNorthern, null))
             }
-            "thameslink" -> holder.tocName.apply {
+            "thameslink" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocThameslink, null))
             }
-            "greater anglia" -> holder.tocName.apply {
+            "greater anglia" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGreaterAnglia, null))
             }
-            "crosscountry" -> holder.tocName.apply {
+            "crosscountry" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocXC, null))
             }
-            "gatwick express" -> holder.tocName.apply {
+            "gatwick express" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGatwick, null))
             }
-            "southern" -> holder.tocName.apply {
+            "southern" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocSouthern, null))
             }
-            "southeastern" -> holder.tocName.apply {
+            "southeastern" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocSoutheastern, null))
             }
-            "c2c" -> holder.tocName.apply {
+            "c2c" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocC2c, null))
             }
-            "avanti west coast" -> holder.tocName.apply {
+            "avanti west coast" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocAvantiWest, null))
             }
-            "west midlands trains" -> holder.tocName.apply {
+            "west midlands trains" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocWestmidlands, null))
             }
-            "chiltern railways" -> holder.tocName.apply {
+            "chiltern railways" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocChiltern, null))
             }
-            "east midlands railway" -> holder.tocName.apply {
+            "east midlands railway" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocEastMid, null))
             }
-            "transpennine express" -> holder.tocName.apply {
+            "transpennine express" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocTranspenine, null))
             }
-            "eurostar" -> holder.tocName.apply {
+            "eurostar" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocEuStar, null))
             }
-            "heathrow express" -> holder.tocName.apply {
+            "heathrow express" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocHeathrow, null))
             }
-            "grand central" -> holder.tocName.apply {
+            "grand central" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocGrandCentral, null))
             }
-            "transport for wales" -> holder.tocName.apply {
+            "transport for wales" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocTfw, null))
             }
-            "scotrail" -> holder.tocName.apply {
+            "scotrail" -> holder.binding.tocName.apply {
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocScotrail, null))
             }
-            "merseyrail" -> holder.tocName.apply {
-                holder.tocName.setTextColor(holder.tocName.resources.getColor(R.color.colorBackground, null))
+            "merseyrail" -> holder.binding.tocName.apply {
+                holder.binding.tocName.setTextColor(holder.binding.tocName.resources.getColor(R.color.colorBackground, null))
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.tocMerseyRail, null))
             }
-            else -> holder.tocName.apply {
-                holder.tocName.setTextColor(holder.tocName.resources.getColor(android.R.color.black, null))
+            else -> holder.binding.tocName.apply {
+                holder.binding.tocName.setTextColor(holder.binding.tocName.resources.getColor(android.R.color.black, null))
                 (background as GradientDrawable).color = ColorStateList.valueOf(resources.getColor(R.color.colorAccent, null))
             }
         }
@@ -261,44 +264,28 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
     open class DepartureListViewHolder(itemView: View):
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
-        override val containerView: View
-            get() = itemView
+        val binding = DepartureListItemBinding.bind(itemView)
 
-        val departureDestinationName: MaterialTextView by lazy {
-            itemView.findViewById(R.id.departure_destination_name)
-        }
-        val platformName: MaterialTextView by lazy {
-            itemView.findViewById(R.id.departure_platform_name)
-        }
-        val tocName: MaterialTextView by lazy {
-            itemView.findViewById(R.id.toc_name)
-        }
-        val scheduledDepartureTime: MaterialTextView by lazy {
-            itemView.findViewById(R.id.scheduled_departure_time)
-        }
-        val estimatedDepartureTime: MaterialTextView by lazy {
-            itemView.findViewById(R.id.estimated_departure_time)
-        }
-        val numCoaches: MaterialTextView by lazy {
-            itemView.findViewById(R.id.num_coaches)
-        }
-        val circularServiceIndicator: MaterialTextView by lazy {
-            itemView.findViewById(R.id.circular_service_indicator)
-        }
+        override val containerView: View
+            get() = binding.root
     }
 
     open class LoadPreviousViewHolder(itemView: View):
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
+        val binding = LoadPreviousItemBinding.bind(itemView)
+
         override val containerView: View
-            get() = itemView
+            get() = binding.root
     }
 
     open class LoadMoreViewHolder(itemView: View):
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
+        val binding = LoadNextItemBinding.bind(itemView)
+
         override val containerView: View
-            get() = itemView
+            get() = binding.root
     }
 
     interface LoadPreviousItemClickListener {

@@ -1,21 +1,15 @@
 package com.cniekirk.traintimes.ui.main
 
-import android.graphics.drawable.Animatable2
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -24,25 +18,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentHomeBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
-import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.ui.adapter.RecentQueriesAdapter
-import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
-import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.android.synthetic.main.fragment_dep_board_results.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment(R.layout.fragment_home), Injectable,
+@AndroidEntryPoint
+class HomeFragment : Fragment(R.layout.fragment_home),
     RecentQueriesAdapter.RecentQueryClickListener {
 
     @Inject

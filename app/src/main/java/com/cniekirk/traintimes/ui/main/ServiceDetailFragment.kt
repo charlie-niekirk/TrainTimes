@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.model.getdepboard.res.Location
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.ui.adapter.StationTimelineAdapter
@@ -28,13 +27,15 @@ import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "ServiceDetailFragment"
 
-class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Injectable, StationTimelineAdapter.OnStationItemClickedListener {
+@AndroidEntryPoint
+class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), StationTimelineAdapter.OnStationItemClickedListener {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory

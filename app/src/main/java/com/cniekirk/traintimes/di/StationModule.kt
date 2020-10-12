@@ -14,6 +14,9 @@ import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -26,13 +29,14 @@ import javax.inject.Singleton
 /**
  * @author Charlie Niekirk
  **/
+@InstallIn(ApplicationComponent::class)
 @Module
 class StationModule {
 
     @Provides
     @Singleton
     @Named("StationCache")
-    fun provideCache(context: Context): Cache {
+    fun provideCache(@ApplicationContext context: Context): Cache {
         return Cache(context.cacheDir, 10 * 1024 * 1024)
     }
 

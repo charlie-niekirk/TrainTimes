@@ -8,10 +8,14 @@ import com.cniekirk.traintimes.model.Favourites
 import com.cniekirk.traintimes.repo.*
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.KeyStore
 import javax.inject.Named
 import javax.inject.Singleton
 
+@InstallIn(ApplicationComponent::class)
 @Module
 class SecurityModule {
 
@@ -37,7 +41,7 @@ class SecurityModule {
 
     @Provides
     @Singleton
-    fun provideFavouritesDataStore(context: Context, cryptoRepository: CryptoRepository): DataStore<Favourites> {
+    fun provideFavouritesDataStore(@ApplicationContext context: Context, cryptoRepository: CryptoRepository): DataStore<Favourites> {
         return context.createDataStore(
             "favourite_routes.pb",
             serializer = FavouritesSerializer(cryptoRepository)

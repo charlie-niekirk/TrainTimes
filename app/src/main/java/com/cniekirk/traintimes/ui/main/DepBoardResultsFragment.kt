@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.model.State
 import com.cniekirk.traintimes.model.ui.DepartureItem
@@ -44,13 +43,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dep_board_results.*
 import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "DepBoardResultsFragment"
 
-class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), Injectable,
+@AndroidEntryPoint
+class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
     DepartureListAdapter.DepartureItemClickListener,
     DepartureListAdapter.LoadPreviousItemClickListener,
     DepartureListAdapter.LoadNextItemClickListener {

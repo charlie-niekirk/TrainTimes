@@ -10,6 +10,9 @@ import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,6 +20,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
+@InstallIn(ApplicationComponent::class)
 @Module
 class CRSModule {
 
@@ -56,7 +60,7 @@ class CRSModule {
     @Singleton
     @Provides
     @Named("CrsDb")
-    fun provideAppDb(context: Context): AppDb {
+    fun provideAppDb(@ApplicationContext context: Context): AppDb {
         return AppDb.getInstance(context)
     }
 

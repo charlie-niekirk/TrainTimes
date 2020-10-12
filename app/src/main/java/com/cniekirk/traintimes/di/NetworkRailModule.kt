@@ -17,6 +17,9 @@ import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,13 +32,14 @@ import javax.inject.Singleton
 /**
  * @author Charlie Niekirk
  */
+@InstallIn(ApplicationComponent::class)
 @Module
 class NetworkRailModule {
 
     @Provides
     @Singleton
     @Named("NetworkCache")
-    fun provideCache(context: Context): Cache {
+    fun provideCache(@ApplicationContext context: Context): Cache {
         return Cache(context.cacheDir, 10 * 1024 * 1024)
     }
 
@@ -111,7 +115,7 @@ class NetworkRailModule {
     @Singleton
     @Provides
     @Named("Net")
-    fun provideAppDb(context: Context): AppDb {
+    fun provideAppDb(@ApplicationContext context: Context): AppDb {
         return AppDb.getInstance(context)
     }
 

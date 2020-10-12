@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.ui.planner
 
-import android.content.Intent
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
@@ -17,18 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentPlannerResultsBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.ui.adapter.JourneyPlanAdapter
 import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModel
 import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_planner_results.*
-import java.net.URI
 import javax.inject.Inject
 
-class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results), Injectable,
+@AndroidEntryPoint
+class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results),
     JourneyPlanAdapter.JourneyPlanClickListener {
 
     @Inject

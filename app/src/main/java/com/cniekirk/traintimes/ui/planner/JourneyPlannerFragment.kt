@@ -1,12 +1,10 @@
 package com.cniekirk.traintimes.ui.planner
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -24,22 +22,21 @@ import com.afollestad.materialdialogs.list.customListAdapter
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentJourneyPlannerBinding
-import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
-import com.cniekirk.traintimes.model.journeyplanner.req.Railcard
-import com.cniekirk.traintimes.utils.viewBinding
 import com.cniekirk.traintimes.ui.adapter.PassengerAdapter
 import com.cniekirk.traintimes.ui.adapter.RailcardAdapter
 import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModel
 import com.cniekirk.traintimes.ui.viewmodel.JourneyPlannerViewModelFactory
+import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
 
-class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner), Injectable,
+@AndroidEntryPoint
+class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
     RailcardAdapter.RailcardClickListener, PassengerAdapter.OnPassengerClickedListener {
 
     companion object {
