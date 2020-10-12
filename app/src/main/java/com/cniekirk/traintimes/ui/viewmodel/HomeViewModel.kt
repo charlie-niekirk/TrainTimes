@@ -11,6 +11,7 @@ import com.cniekirk.traintimes.base.ViewModelFactory
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.model.DepartureAtTimeRequest
+import com.cniekirk.traintimes.domain.model.State
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.Favourites
 //import com.cniekirk.traintimes.model.Favourites
@@ -82,6 +83,8 @@ class HomeViewModel constructor(
         get() = _saveFavouriteSuccess
     val favourites: LiveData<List<Query>>
         get() = _favourites
+    val state: LiveData<State>
+        get() = _state
 
     private val _services = MutableLiveData<List<DepartureItem>>()
     private val _crsStationCodes = MutableLiveData<List<CRS>>()
@@ -95,6 +98,7 @@ class HomeViewModel constructor(
     private val _nrccMessages = MutableLiveData<List<Message>>()
     private val _saveFavouriteSuccess = SingleLiveEvent<Boolean>()
     private val _favourites = MutableLiveData<List<Query>>()
+    private val _state = MutableLiveData<State>()
 
     private val scopedIOContext = viewModelScope + Dispatchers.IO
 
@@ -118,6 +122,7 @@ class HomeViewModel constructor(
     }
 
     private fun getTrainsInternal(time: String) {
+        _state.postValue(State.Loading)
         Log.e(TAG, "EXEC - getTrains()")
         _destStation.value?.let { crs ->
             _depStation.value?.let { depCrs ->
@@ -360,8 +365,14 @@ class HomeViewModel constructor(
         response.trainServices?.let {
             if (_services.value.isNullOrEmpty()) {
                 val initialServicesList = mutableListOf(DepartureItem.LoadBeforeItem, DepartureItem.LoadAfterItem)
-                initialServicesList.addAll(1, it.trainServices?.map { service -> DepartureItem.DepartureServiceItem(service) }!!)
-                Log.e(TAG, initialServicesList[initialServicesList.size - 1].toString())
+                val allServices = it.trainServices?.map { service -> DepartureItem.DepartureServiceItem(service) }
+                allServices?.forEach { depItem ->
+                    val subLoc = depItem.service.subsequentLocations?.locations
+                    if (depItem.service.origin.location.crs.equals(subLoc!![subLoc.size - 1].stationCode, true)) {
+                        depItem.isCircular = true
+                    }
+                }
+                initialServicesList.addAll(1, allServices!!)
                 _services.value = initialServicesList
             } else {
                 _services.value?.let { current ->
@@ -379,6 +390,7 @@ class HomeViewModel constructor(
                 _nrccMessages.postValue(it)
             }
         }
+        _state.postValue(State.Idle)
     }
 
     private fun handleServiceDetails(serviceDetails: ServiceDetailsUiModel) {

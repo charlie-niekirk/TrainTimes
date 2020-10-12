@@ -36,6 +36,21 @@
         tools:text="Platform: 4"/>
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/circular_service_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/departure_destination_name"
+        app:layout_constraintTop_toTopOf="@id/departure_destination_name"
+        app:layout_constraintBottom_toBottomOf="@id/departure_destination_name"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/transDepArrText"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Circular service"/>
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/toc_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

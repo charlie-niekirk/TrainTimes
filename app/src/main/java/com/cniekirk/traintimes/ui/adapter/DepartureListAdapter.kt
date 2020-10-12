@@ -139,6 +139,15 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
                     depHolder.numCoaches.visibility = View.INVISIBLE
                 }
 
+                val serviceItem = services[position] as DepartureItem.DepartureServiceItem
+                if (serviceItem.isCircular) {
+                    // Show the text
+                    depHolder.circularServiceIndicator.visibility = View.VISIBLE
+                    depHolder.circularServiceIndicator.text = depHolder.containerView.resources.getString(R.string.circular_service_indication)
+                } else {
+                    depHolder.circularServiceIndicator.visibility = View.GONE
+                }
+
                 depHolder.itemView.setOnClickListener { clickListener.onClick(position, depHolder.itemView, depHolder.departureDestinationName) }
 
             }
@@ -272,6 +281,9 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
         }
         val numCoaches: MaterialTextView by lazy {
             itemView.findViewById(R.id.num_coaches)
+        }
+        val circularServiceIndicator: MaterialTextView by lazy {
+            itemView.findViewById(R.id.circular_service_indicator)
         }
     }
 

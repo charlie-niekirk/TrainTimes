@@ -28,6 +28,7 @@ import com.cniekirk.traintimes.base.withFactory
 import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
 import com.cniekirk.traintimes.di.Injectable
 import com.cniekirk.traintimes.domain.Failure
+import com.cniekirk.traintimes.domain.model.State
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.ui.behaviour.FabShrinkingOnScrollListener
@@ -78,6 +79,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             isEnabled = true
             viewModel.clearNrcc()
+            viewModel.clearServices()
             findNavController().popBackStack()
         }
     }
@@ -131,6 +133,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
             }
         })
 
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            when(state) {
+                is State.Loading -> animatedLoadingIndicator.loop(binding.loadingIndicator)
+                is State.Idle -> animatedLoadingIndicator.cancel()
+            }
+        })
+
         viewModel.services.observe(viewLifecycleOwner, { service ->
 
             //service
@@ -149,7 +158,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
             }
             // Don't show load previous by default
             binding.homeServicesList.scrollToPosition(1)
-            animatedLoadingIndicator.cancel()
+            //animatedLoadingIndicator.cancel()
         })
 
         viewModel.nrccMessages.observe(viewLifecycleOwner, { messages ->
@@ -188,7 +197,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        animatedLoadingIndicator.loop(binding.loadingIndicator)
+        //animatedLoadingIndicator.loop(binding.loadingIndicator)
 
         binding.homeServicesList.addOnScrollListener(FabShrinkingOnScrollListener(binding.btnFavourites))
 
@@ -326,11 +335,6 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results), In
         binding.root.findNavController().navigate(R.id.serviceDetailFragment,
             null)
 
-    }
-
-    override fun onPause() {
-        viewModel.clearServices()
-        super.onPause()
     }
 
     override fun onPreviousClick() {

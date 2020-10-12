@@ -141,4 +141,5 @@
     <string name="arriving">Arrivals</string>
     <string name="previous_departures">Load Previous Departures</string>
     <string name="next_departures">Load Next Departures</string>
+    <string name="circular_service_indication">Circular service</string>
 </resources>
