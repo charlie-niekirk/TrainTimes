@@ -198,6 +198,7 @@ class StationDetailFragment: Fragment(R.layout.fragment_station_detail), OnMapRe
         //val waterloo = LatLng(51.503518,-0.1132977)
         googleMap.addMarker(MarkerOptions().position(stationLocation).title("Waterloo"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stationLocation, 14.0f))
+        googleMap.uiSettings.isScrollGesturesEnabled = false
     }
 
     override fun onPause() {

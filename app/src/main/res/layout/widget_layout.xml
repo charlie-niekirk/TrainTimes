@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,11 +20,20 @@
             android:fontFamily="@font/circularstd"
             android:textSize="22sp"
             android:textColor="@color/colorAccent"
-            android:text="WMN to NXG"
             android:paddingTop="8dp"
             android:paddingStart="12dp"
             android:paddingEnd="8dp"
-            android:paddingBottom="8dp"/>
+            android:paddingBottom="8dp"
+            tools:text="WMN to NXG"/>
+
+        <ImageView
+            android:id="@+id/btn_update_widget"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_baseline_sync"
+            app:tint="@color/colorAccent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"/>
 
         <!-- app:tint doesn't work properly for RemoteViews -->
         <ImageView
@@ -31,12 +41,17 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_settings"
-            android:tint="@color/colorAccent"
+            app:tint="@color/colorAccent"
             android:contentDescription="@string/settings_button_content_description"
             android:layout_marginEnd="8dp"
             android:layout_gravity="center_vertical" />
 
     </LinearLayout>
+
+<!--    <ListView-->
+<!--        android:id="@+id/services_list"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,16 +62,10 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/widget_inset_bg">
 
-        <TextView
-            android:id="@+id/services_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/circularstd"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:text="@string/services_header"/>
+        <ListView
+            android:id="@+id/services_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
