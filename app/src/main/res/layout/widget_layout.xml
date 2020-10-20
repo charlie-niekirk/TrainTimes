@@ -33,7 +33,9 @@
             android:src="@drawable/ic_baseline_sync"
             app:tint="@color/colorAccent"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true" />
 
         <!-- app:tint doesn't work properly for RemoteViews -->
         <ImageView

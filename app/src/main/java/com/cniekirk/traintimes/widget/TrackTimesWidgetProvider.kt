@@ -7,10 +7,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.service.ServicesListService
 
+private const val TAG = "TrackTimesWidgetProvide"
 
 class TrackTimesWidgetProvider : AppWidgetProvider() {
 
@@ -51,14 +53,13 @@ class TrackTimesWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
+        Log.e(TAG, "Received intent: ${intent.action}")
+//        if (intent.action?.equals())
         intent.extras?.let {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val thisAppWidget = ComponentName(
-                context.packageName,
-                TrackTimesWidgetProvider::class.java.name
-            )
-            val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
-            onUpdate(context, appWidgetManager, appWidgetIds)
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                ComponentName(context, TrackTimesWidgetProvider::class.java))
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.services_list);
         }
     }
 

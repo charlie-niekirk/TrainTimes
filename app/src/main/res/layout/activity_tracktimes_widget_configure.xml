@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -12,13 +13,64 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/start_guide"
         app:layout_constraintTop_toTopOf="@id/header_guide"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:fontFamily="@font/circularstd"
         android:textSize="@dimen/screen_title_size"
         android:textColor="@color/colorText"
         android:text="@string/configure_widget_title"/>
 
+    <View
+        android:id="@+id/widget_preview_contrast"
+        android:layout_width="0dp"
+        android:layout_height="180dp"
+        app:layout_constraintTop_toBottomOf="@id/widget_config_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorAccent"/>
 
+    <View
+        android:id="@+id/widget_preview"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/widget_preview_contrast"
+        app:layout_constraintBottom_toBottomOf="@id/widget_preview_contrast"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/widget_preview_bg"
+        android:backgroundTint="@color/colorPrimary"
+        android:elevation="4dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/opacity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/widget_preview_contrast"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/circularstd"
+        android:textColor="@color/colorText"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="@string/opacity"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/widget_opacity_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/opacity_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:valueFrom="0.0"
+        android:valueTo="100.0"
+        app:trackColorInactive="@color/colorSidelineTrans"
+        app:trackColorActive="@color/colorAccent"
+        android:value="100.0"
+        app:thumbColor="@color/colorAccent"
+        app:haloColor="@color/colorAccent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
