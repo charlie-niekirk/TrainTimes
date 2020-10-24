@@ -22,7 +22,7 @@ interface NreRepository {
 
     fun getRecentQueries(): Either<Failure, List<Query>>
 
-    fun getArrivalsAtStation(target: String, destination: String): Either<Failure, GetBoardWithDetailsResult>
+    fun getArrivalsAtStation(target: String, from: String): Either<Failure, GetBoardWithDetailsResult>
 
     fun getServiceDetails(serviceId: String): Either<Failure, ServiceDetailsUiModel>
 

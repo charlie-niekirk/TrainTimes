@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
+import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.model.State
@@ -125,7 +126,13 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
         viewModel.depStation.observe(viewLifecycleOwner, { dep ->
             viewModel.destStation.value?.let { dest ->
                 dep?.let {
-                    binding.routeDescription.text = "${it.crs} to ${dest.crs}"
+                    if (it.crs.equals("", true)) {
+                        binding.routeDescription.text = dest.stationName
+                    } else {
+                        binding.routeDescription.text = "${it.crs} to ${dest.crs}"
+                    }
+                } ?: run {
+                    binding.routeDescription.text = dest.stationName
                 }
             } ?: run {
                 dep?.let {
@@ -212,15 +219,20 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
             viewModel.destStation.value?.let {
                 if (it.crs.isEmpty()) {
                     viewModel.saveDestStation(viewModel.depStation.value!!)
+                    viewModel.saveDepStation(CRS("", ""))
                 } else {
                     viewModel.saveDepStation(viewModel.destStation.value!!)
+                    viewModel.saveDestStation(CRS("", ""))
+
                 }
             } ?: run {
                 viewModel.depStation.value?.let {
                     if (it.crs.isEmpty()) {
                         viewModel.saveDepStation(viewModel.destStation.value!!)
+                        viewModel.saveDestStation(CRS("", ""))
                     } else {
                         viewModel.saveDestStation(viewModel.depStation.value!!)
+                        viewModel.saveDepStation(CRS("", ""))
                     }
                 }
             }

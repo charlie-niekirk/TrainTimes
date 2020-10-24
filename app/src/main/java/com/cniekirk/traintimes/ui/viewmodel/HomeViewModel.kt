@@ -126,20 +126,32 @@ class HomeViewModel constructor(
         Log.e(TAG, "EXEC - getTrains()")
         _destStation.value?.let { crs ->
             _depStation.value?.let { depCrs ->
-                // Get specific departures
-                getDeparturesAtTime(DepartureAtTimeRequest(depCrs, crs, time))
-                { it.either(::handleFailure, ::handleResponse) }
+                if (!depCrs.crs.equals("", true)) {
+                    // Get specific departures
+                    getDeparturesAtTime(DepartureAtTimeRequest(depCrs, crs, time))
+                    { it.either(::handleFailure, ::handleResponse) }
+                } else {
+                    // Get all arrivals
+                    getArrivalsUseCase(arrayOf(crs.crs, ""))
+                    { it.either(::handleFailure, ::handleResponse) }
+                }
             } ?: run {
                 // Get all arrivals
-                getArrivalsUseCase(arrayOf(crs.crs))
+                getArrivalsUseCase(arrayOf(crs.crs, ""))
                 { it.either(::handleFailure, ::handleResponse) }
             }
         } ?: run {
             // Check if empty
-            _depStation.value?.let {
-                // Get all departures
-                getDeparturesAtTime(DepartureAtTimeRequest(_depStation.value!!, CRS("", ""), time))
-                { it.either(::handleFailure, ::handleResponse) }
+            _depStation.value?.let { depCrs ->
+                if (!depCrs.crs.equals("", true)) {
+                    // Get all departures
+                    getDeparturesAtTime(DepartureAtTimeRequest(_depStation.value!!, CRS("", ""), time))
+                    { it.either(::handleFailure, ::handleResponse) }
+                } else {
+                    // Needed so old value isn't cached and reloaded which looks odd to the user
+                    _services.postValue(emptyList())
+                    handleFailure(Failure.NoCrsFailure())
+                }
             } ?: run {
                 // Needed so old value isn't cached and reloaded which looks odd to the user
                 _services.postValue(emptyList())

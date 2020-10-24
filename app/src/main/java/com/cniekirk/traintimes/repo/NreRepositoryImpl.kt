@@ -112,11 +112,11 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
      *
      * @return An [Either] that exposes a [Failure] or [GetBoardWithDetailsResult]
      */
-    override fun getArrivalsAtStation(arrivingAt: String, comingFrom: String): Either<Failure, GetBoardWithDetailsResult> {
+    override fun getArrivalsAtStation(target: String, from: String): Either<Failure, GetBoardWithDetailsResult> {
         val body = ArrBody(GetArrBoardWithDetailsRequest(
             numRows = NumRows(numRows = "20"),
-            crs = arrivingAt,
-            filterCrs = comingFrom,
+            crs = target,
+            filterCrs = from,
             filterType = "to",
             time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ", Locale.ENGLISH).now(),
             timeWindow = "120"))
