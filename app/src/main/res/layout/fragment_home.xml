@@ -52,6 +52,27 @@
             android:contentDescription="@string/settings_button_content_description"
             android:transitionName="sharedElementContainer"/>
 
+        <ImageView
+            android:id="@+id/dep_marker"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:layout_constraintStart_toStartOf="@+id/dest_marker"
+            app:layout_constraintEnd_toEndOf="@id/dest_marker"
+            app:layout_constraintTop_toTopOf="@id/search_select_dep_station"
+            app:layout_constraintBottom_toBottomOf="@id/search_select_dep_station"
+            android:src="@drawable/circle_origin"
+            app:tint="@color/colorAccent"/>
+
+        <ImageView
+            android:id="@+id/dest_marker"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            app:layout_constraintStart_toStartOf="@+id/start_guide"
+            app:layout_constraintTop_toTopOf="@id/search_select_dest_station"
+            app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
+            android:src="@drawable/ic_baseline_location_on"
+            app:tint="@color/colorAccent"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/search_select_dep_station"
             android:layout_width="0dp"
@@ -60,7 +81,7 @@
             android:background="@drawable/station_selector_btn_bg"
             android:transitionName="firstTransition"
             app:layout_constraintEnd_toEndOf="@id/end_guide"
-            app:layout_constraintStart_toStartOf="@id/start_guide"
+            app:layout_constraintStart_toStartOf="@id/search_select_dest_station"
             app:layout_constraintTop_toBottomOf="@id/home_title"
             android:clickable="true"
             android:focusable="true"
@@ -96,10 +117,11 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginTop="12dp"
+            android:layout_marginStart="4dp"
             android:background="@drawable/station_selector_btn_bg"
             android:transitionName="secondTransition"
             app:layout_constraintEnd_toEndOf="@id/end_guide"
-            app:layout_constraintStart_toStartOf="@id/start_guide"
+            app:layout_constraintStart_toEndOf="@id/dest_marker"
             app:layout_constraintTop_toBottomOf="@id/search_select_dep_station"
             android:clickable="true"
             android:focusable="true"
@@ -129,6 +151,8 @@
             app:layout_constraintBottom_toBottomOf="@id/search_select_dest_station"
             app:layout_constraintEnd_toEndOf="@id/search_select_dest_station"
             app:layout_constraintTop_toTopOf="@id/search_select_dest_station" />
+
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/search_button"

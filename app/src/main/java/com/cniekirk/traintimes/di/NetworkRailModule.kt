@@ -82,7 +82,7 @@ class NetworkRailModule {
     @Named("cache")
     fun provideCacheMoshi(): Moshi {
         return Moshi.Builder()
-            //.add(KotlinJsonAdapterFactory())
+            .add(KotlinJsonAdapterFactory())
             .build()
     }
 
@@ -91,8 +91,8 @@ class NetworkRailModule {
     @Named("journey")
     fun provideJourneyMoshi(): Moshi {
         return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
             .add(SingleToArrayAdapter.INSTANCE)
-            //.add(KotlinJsonAdapterFactory())
             .build()
     }
 

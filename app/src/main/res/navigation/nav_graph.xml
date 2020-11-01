@@ -21,17 +21,9 @@
             app:destination="@id/settingsFragment"/>
         <action
             android:id="@+id/action_homeFragment_to_serviceDetailFragment"
-            app:destination="@id/serviceDetailFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:destination="@id/serviceDetailFragment"/>
         <action
             android:id="@+id/action_homeFragment_to_favouritesFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:destination="@id/favouritesFragment" />
     </fragment>
     <fragment
@@ -79,24 +71,12 @@
         android:label="FavouritesFragment">
         <action
             android:id="@+id/action_favouritesFragment_to_journeyPlannerFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:destination="@id/journeyPlannerFragment" />
         <action
             android:id="@+id/action_favouritesFragment_to_settingsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:destination="@id/settingsFragment" />
         <action
             android:id="@+id/action_favouritesFragment_to_homeFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment

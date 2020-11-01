@@ -14,7 +14,7 @@
         android:fontFamily="@font/circularstd"
         android:text="@string/settings"
         android:textColor="@color/colorAccent"
-        android:textSize="28sp"
+        android:textSize="@dimen/screen_title_size"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="25dp"

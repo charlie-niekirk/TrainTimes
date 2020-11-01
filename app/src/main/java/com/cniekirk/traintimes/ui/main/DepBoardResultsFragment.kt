@@ -2,24 +2,17 @@ package com.cniekirk.traintimes.ui.main
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,12 +25,10 @@ import com.cniekirk.traintimes.domain.model.State
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.ui.behaviour.FabShrinkingOnScrollListener
-import com.cniekirk.traintimes.ui.custom.SwitchTrackTextDrawable
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.extensions.cancel
-import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.extensions.loop
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -166,14 +157,16 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
             }
             // Don't show load previous by default
             binding.homeServicesList.scrollToPosition(1)
-            //animatedLoadingIndicator.cancel()
+
         })
 
         viewModel.nrccMessages.observe(viewLifecycleOwner, { messages ->
 
-            binding.btnShowNrcc.visibility = View.VISIBLE
-            binding.nrccBadge.text = "${messages.size}"
-            binding.nrccBadge.visibility = View.VISIBLE
+            if (!messages.isNullOrEmpty()) {
+                binding.btnShowNrcc.visibility = View.VISIBLE
+                binding.nrccBadge.text = "${messages.size}"
+                binding.nrccBadge.visibility = View.VISIBLE
+            }
 
         })
 
@@ -182,6 +175,12 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
                 is Failure.NoCrsFailure -> {
                     animatedLoadingIndicator.cancel()
                     Snackbar.make(binding.root, "No station selected!", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(resources.getColor(R.color.colorRed, null))
+                        .show()
+                }
+                else -> {
+                    animatedLoadingIndicator.cancel()
+                    Snackbar.make(binding.root, "Unknown error!", Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(resources.getColor(R.color.colorRed, null))
                         .show()
                 }
@@ -270,51 +269,16 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
         binding.btnShowNrcc.setOnClickListener {
             val messages = viewModel.nrccMessages.value
 
-//            MaterialAlertDialogBuilder(requireContext())
-//                .setView(R.layout.nrcc_messages_alert)
-//                .setp
+            val alertMsg = messages?.map { it.message }?.joinToString(separator = "\n\n")
 
-//            if (nrccList.isEmpty()) {
-//                messages?.forEachIndexed { i, message ->
-//                    Handler(Looper.getMainLooper()).postDelayed({
-//                        val inflater = LayoutInflater.from(requireContext())
-//                        val messageView: View =
-//                            inflater.inflate(R.layout.dynamic_nrcc_message, binding.root, false)
-//                        messageView.id = View.generateViewId()
-//                        nrccList.add(messageView)
-//                        binding.root.addView(messageView, 0)
-//
-//                        val messageBody: MaterialTextView = messageView.findViewById(R.id.message_body)
-//                        messageBody.text = message.message
-//
-//                        val set = ConstraintSet().apply { clone(binding.rootLayout) }
-//                        if (i > 0) {
-//                            Log.i(TAG, "${nrccList[nrccList.lastIndex - 1].id} and ${messageView.id}")
-//                            set.connect(messageView.id, ConstraintSet.TOP, nrccList[nrccList.lastIndex - 1].id, ConstraintSet.BOTTOM, 50.dp)
-//                            set.connect(nrccList[nrccList.lastIndex - 1].id, ConstraintSet.BOTTOM, messageView.id, ConstraintSet.TOP, 0.dp)
-//                        } else {
-//                            Log.i(TAG, "${binding.depArrChip.id} and ${messageView.id}")
-//                            set.connect(messageView.id, ConstraintSet.TOP, binding.depArrChip.id, ConstraintSet.BOTTOM, 8.dp)
-//                        }
-//                        if (i == messages.lastIndex) {
-//                            Log.i(TAG, "Home services: ${binding.homeServicesList.id} and ${messageView.id}")
-//                            set.connect(messageView.id, ConstraintSet.BOTTOM, binding.homeServicesList.id, ConstraintSet.TOP, 0.dp)
-//                            set.connect(binding.homeServicesList.id, ConstraintSet.TOP, messageView.id, ConstraintSet.BOTTOM, 8.dp)
-//                        }
-//                        set.connect(messageView.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 80.dp)
-//                        set.connect(messageView.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 80.dp)
-//                        set.applyTo(binding.rootLayout)
-//                    }, 200)
-//                }
-//            } else {
-//                val set = ConstraintSet().apply { clone(binding.rootLayout) }
-//                set.connect(binding.homeServicesList.id, ConstraintSet.TOP, binding.servicesHeader.id, ConstraintSet.BOTTOM, 80.dp)
-//                set.applyTo(binding.rootLayout)
-//                nrccList.forEach {
-//                    (it.parent as ViewGroup).removeView(it)
-//                }
-//                nrccList.clear()
-//            }
+            if (!alertMsg.isNullOrEmpty()) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setMessage(alertMsg)
+                    .setTitle(R.string.nrcc_alert_title)
+                    .setPositiveButton(R.string.ok) { dialog, _ ->
+                        dialog.dismiss()
+                    }.show()
+            }
 
         }
 
@@ -333,17 +297,10 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
         isFirst = false
 
-//        val bgName = "${getString(R.string.departure_background_transition)}-$position"
-//
-//        val navigateBundle = bundleOf("backgroundTransName" to bgName)
         viewModel.services.value?.let { services ->
             val service = services[position] as DepartureItem.DepartureServiceItem
             viewModel.setServiceId(service.service.rid)
         }
-
-//        val extras = FragmentNavigatorExtras(
-//            (itemBackground as ConstraintLayout) to bgName
-//        )
 
         binding.root.findNavController().navigate(R.id.serviceDetailFragment,
             null)

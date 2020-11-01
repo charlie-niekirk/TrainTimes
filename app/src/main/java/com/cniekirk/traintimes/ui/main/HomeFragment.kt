@@ -10,7 +10,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -64,7 +63,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.connectionStateEmitter.observe(viewLifecycleOwner, Observer { connected ->
+        viewModel.connectionStateEmitter.observe(viewLifecycleOwner, { connected ->
             connected?.let {
                 if (connected) {
                     val sb = Snackbar.make(binding.root, R.string.reconnected, Snackbar.LENGTH_SHORT)
@@ -80,7 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
             }
         })
 
-        viewModel.depStation.observe(viewLifecycleOwner, Observer {
+        viewModel.depStation.observe(viewLifecycleOwner, {
             if (it == null) {
                 binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDepText.text = getString(R.string.departing_from)
@@ -96,7 +95,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
             }
         })
 
-        viewModel.destStation.observe(viewLifecycleOwner, Observer {
+        viewModel.destStation.observe(viewLifecycleOwner, {
             if (it == null) {
                 binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDestText.text = getString(R.string.arriving_at)
@@ -113,7 +112,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         })
 
         viewModel.depStationText()?.let { savedDepStation ->
-            viewModel.crsStationCodes.observe(viewLifecycleOwner, Observer { crsList ->
+            viewModel.crsStationCodes.observe(viewLifecycleOwner, { crsList ->
                 val crs = crsList.find { crs -> crs.crs.equals(savedDepStation, true) }
                 crs?.let {
                     viewModel.saveDepStation(crs)
@@ -158,6 +157,9 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                     // Log maybe?
                     Log.e(TAG, "No recent queries")
                 }
+                else -> {
+                    Log.e(TAG, "Unknown error observing failure state")
+                }
             }
         })
 
@@ -201,23 +203,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
 
     }
-
-//    override fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView) {
-//
-//        val bgName = "${getString(R.string.departure_background_transition)}-$position"
-//
-//        val navigateBundle = bundleOf("backgroundTransName" to bgName)
-//        viewModel.services.value?.let { services ->
-//            viewModel.setServiceId(services[position].rid)
-//        }
-//
-//        val extras = FragmentNavigatorExtras(
-//            (itemBackground as ConstraintLayout) to bgName
-//        )
-//
-//        view?.findNavController()?.navigate(R.id.serviceDetailFragment,
-//            navigateBundle, null, extras)
-//    }
 
     // Recent queries
     override fun onClick(position: Int) =

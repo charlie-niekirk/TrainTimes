@@ -25,6 +25,7 @@ import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -122,6 +123,11 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
 
         binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
         binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0, this)
+
+        binding.serviceAlertSwitch.setOnClickListener {
+//            MaterialAlertDialogBuilder(requireContext())
+//                .setTitle()
+        }
 
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, { serviceDetailsResult ->
 

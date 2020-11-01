@@ -55,10 +55,13 @@ class StationDetailFragment: Fragment(R.layout.fragment_station_detail), OnMapRe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val backward =  MaterialSharedAxis(MaterialSharedAxis.Z,  false)
-        returnTransition = backward
+        reenterTransition = backward
 
         val forward =  MaterialSharedAxis(MaterialSharedAxis.Z,  true)
+        exitTransition = forward
+
         enterTransition = forward
+        returnTransition = backward
     }
 
     override fun onCreateView(

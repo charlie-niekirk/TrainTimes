@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,10 +39,6 @@ import javax.inject.Inject
 class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
     RailcardAdapter.RailcardClickListener, PassengerAdapter.OnPassengerClickedListener {
 
-    companion object {
-        fun newInstance() = JourneyPlannerFragment()
-    }
-
     @Inject
     lateinit var viewModelFactory: JourneyPlannerViewModelFactory
 
@@ -56,7 +52,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
         super.onCreate(savedInstanceState)
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
@@ -190,7 +186,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.failure.observe(viewLifecycleOwner, Observer {
+        viewModel.failure.observe(viewLifecycleOwner, {
             when (it) {
                 is Failure.NoDestinationFailure -> {
                     Snackbar.make(binding.root, R.string.error_no_destination, Snackbar.LENGTH_SHORT)
@@ -202,25 +198,28 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
                         .setBackgroundTint(resources.getColor(R.color.colorRed, null))
                         .show()
                 }
+                else -> {
+
+                }
             }
         })
 
-        viewModel.chipDateTime.observe(viewLifecycleOwner, Observer {
+        viewModel.chipDateTime.observe(viewLifecycleOwner, {
             binding.datetimeChip.text = it
         })
 
-        viewModel.returnChipDateTime.observe(viewLifecycleOwner, Observer {
+        viewModel.returnChipDateTime.observe(viewLifecycleOwner, {
             binding.returnDatetimeChip.text = it
         })
 
-        viewModel.depStation.observe(viewLifecycleOwner, Observer {
+        viewModel.depStation.observe(viewLifecycleOwner, {
             if (it == null) {
-                binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+                binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDepText.text = getString(R.string.departing_from)
                 binding.searchArrowDep.setOnClickListener(null)
             } else {
                 if (binding.searchDepText.text.toString().equals(getString(R.string.departing_from), false)) {
-                    binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+                    binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
                     binding.searchDepText.text = it.stationName
                     binding.searchArrowDep.setOnClickListener {
                         viewModel.clearDepStation()
@@ -229,14 +228,14 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
             }
         })
 
-        viewModel.destStation.observe(viewLifecycleOwner, Observer {
+        viewModel.destStation.observe(viewLifecycleOwner, {
             if (it == null) {
-                binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+                binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDestText.text = getString(R.string.arriving_at_planner)
                 binding.searchArrowDest.setOnClickListener(null)
             } else {
                 if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at_planner), false)) {
-                    binding.searchArrowDest.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+                    binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
                     binding.searchDestText.text = it.stationName
                     binding.searchArrowDest.setOnClickListener {
                         viewModel.clearDestStation()
@@ -246,7 +245,7 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
         })
 
         viewModel.depStationText()?.let { savedDepStation ->
-            viewModel.crsStationCodes.observe(viewLifecycleOwner, Observer { crsList ->
+            viewModel.crsStationCodes.observe(viewLifecycleOwner, { crsList ->
                 val crs = crsList.find { crs -> crs.crs.equals(savedDepStation, true) }
                 crs?.let {
                     viewModel.saveDepStation(crs)
@@ -254,12 +253,12 @@ class JourneyPlannerFragment: Fragment(R.layout.fragment_journey_planner),
             })
             viewModel.getCrsCodes()
             binding.searchDepText.text = savedDepStation
-            binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_clear, null))
+            binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
             binding.searchArrowDep.setOnClickListener {
                 viewModel.clearDepStation()
             }
         } ?: run {
-            binding.searchArrowDep.setImageDrawable(resources.getDrawable(R.drawable.ic_keyboard_arrow_right, null))
+            binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
             binding.searchDepText.text = getString(R.string.departing_from)
             binding.searchArrowDep.setOnClickListener(null)
         }

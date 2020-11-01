@@ -143,4 +143,6 @@
     <string name="next_departures">Load Next Departures</string>
     <string name="circular_service_indication">Circular service</string>
     <string name="opacity">Opacity</string>
+    <string name="nrcc_alert_title">Station Alerts</string>
+    <string name="alert_switch_text">Alerts  </string>
 </resources>

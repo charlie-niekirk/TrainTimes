@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Night mode detected")
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
                 window.statusBarColor = resources.getColor(R.color.colorBackground, null)
-
             }
         }
 
