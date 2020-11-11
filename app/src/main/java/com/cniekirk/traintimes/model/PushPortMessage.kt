@@ -1,5 +1,5 @@
 package com.cniekirk.traintimes.model
-import com.squareup.moshi.Json
+import com.squareup.moshi.*
 
 data class PushPortMessageItem(
     @Json(name = "TS")
@@ -111,3 +111,36 @@ data class DepAttrs(
     @Json(name = "src")
     val src: String?
 )
+
+class PlatformAdapter {
+    @ToJson
+    fun toJson(writer: JsonWriter, value: Plat, @PlatformString platformStringAdapter: JsonAdapter<Plat>) {
+        platformStringAdapter.toJson(writer, value)
+    }
+
+    @FromJson
+    fun fromJson(jsonReader: JsonReader, @PlatformString platformStringAdapter: JsonAdapter<Plat>,
+    defaultAdapter: JsonAdapter<Plat>): Plat? {
+        return when {
+            jsonReader.peek() == JsonReader.Token.STRING -> { platformStringAdapter.fromJson(jsonReader) }
+            jsonReader.peek() == JsonReader.Token.BEGIN_OBJECT -> { defaultAdapter.fromJson(jsonReader) }
+            else -> { null }
+        }
+    }
+}
+
+class PlatformStringAdapter {
+    @ToJson
+    fun toJson(platform: Plat): String {
+        return "${platform.platform}"
+    }
+    @FromJson
+    @PlatformString
+    fun fromJson(platformString: String): Plat {
+        return Plat(platformString, PlatAttrs("false", "false"))
+    }
+}
+
+@Retention(AnnotationRetention.RUNTIME)
+@JsonQualifier
+annotation class PlatformString

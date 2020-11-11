@@ -1,13 +1,13 @@
 package com.cniekirk.traintimes.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -27,9 +27,8 @@ import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
+import timber.log.Timber
 import javax.inject.Inject
-
-private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home),
@@ -84,8 +83,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDepText.text = getString(R.string.departing_from)
                 binding.searchArrowDep.setOnClickListener(null)
+                binding.btnSwapStations.visibility = View.GONE
             } else {
                 if (binding.searchDepText.text.toString().equals(getString(R.string.departing_from), false)) {
+                    viewModel.destStation.value?.let {
+                        if (!binding.btnSwapStations.isVisible)
+                            binding.btnSwapStations.visibility = View.VISIBLE
+                    }
                     binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
                     binding.searchDepText.text = it.stationName
                     binding.searchArrowDep.setOnClickListener {
@@ -100,8 +104,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDestText.text = getString(R.string.arriving_at)
                 binding.searchArrowDest.setOnClickListener(null)
+                binding.btnSwapStations.visibility = View.GONE
             } else {
                 if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at), false)) {
+                    viewModel.depStation.value?.let {
+                        if (!binding.btnSwapStations.isVisible)
+                            binding.btnSwapStations.visibility = View.VISIBLE
+                    }
                     binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
                     binding.searchDestText.text = it.stationName
                     binding.searchArrowDest.setOnClickListener {
@@ -155,10 +164,10 @@ class HomeFragment : Fragment(R.layout.fragment_home),
             when (it) {
                 is Failure.NoRecentQueriesFailure -> {
                     // Log maybe?
-                    Log.e(TAG, "No recent queries")
+                    Timber.e("No recent queries")
                 }
                 else -> {
-                    Log.e(TAG, "Unknown error observing failure state")
+                    Timber.e("Unknown error observing failure state")
                 }
             }
         })
@@ -194,6 +203,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         binding.homeBtnSettings.setOnClickListener {
             view.findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
+        }
+
+        binding.btnSwapStations.setOnClickListener {
+            val dep = viewModel.depStation.value!!
+            val dest = viewModel.destStation.value!!
+            viewModel.saveDepStation(dest)
+            viewModel.saveDestStation(dep)
         }
 
         val layoutManager = LinearLayoutManager(requireContext())

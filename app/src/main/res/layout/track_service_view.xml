@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/modal_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="@dimen/screen_title_size"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/track_service_modal_title"/>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/platform_updates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/modal_dialog_title"
+        app:layout_constraintTop_toBottomOf="@id/modal_dialog_title"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/platform_updates_checkbox_text"
+        android:textColor="@color/colorText"
+        android:visibility="gone"/>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/delay_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/modal_dialog_title"
+        app:layout_constraintTop_toBottomOf="@id/platform_updates"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/delay_updates_checkbox_text"/>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/delay_repay_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/modal_dialog_title"
+        app:layout_constraintTop_toBottomOf="@id/delay_notifications"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/delay_repay_checkbox_text"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_track"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="@id/modal_dialog_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/delay_repay_notification"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/colorAccent"
+        android:textAllCaps="false"
+        app:cornerRadius="6dp"
+        android:fontFamily="@font/circularstd"
+        android:text="@string/track_service_btn_text"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

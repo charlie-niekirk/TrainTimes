@@ -1,6 +1,6 @@
 package com.cniekirk.traintimes.ui.viewmodel
 
-import android.util.Log
+//import com.cniekirk.traintimes.model.Favourites
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -14,31 +14,28 @@ import com.cniekirk.traintimes.domain.model.DepartureAtTimeRequest
 import com.cniekirk.traintimes.domain.model.State
 import com.cniekirk.traintimes.domain.usecase.*
 import com.cniekirk.traintimes.model.Favourites
-//import com.cniekirk.traintimes.model.Favourites
 import com.cniekirk.traintimes.model.getdepboard.local.Query
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.getdepboard.res.Message
-import com.cniekirk.traintimes.model.getdepboard.res.NrccMessages
-import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.track.req.TrackServiceRequest
 import com.cniekirk.traintimes.model.track.res.TrackServiceResponse
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
 import com.cniekirk.traintimes.utils.ConnectionStateEmitter
-import com.cniekirk.traintimes.utils.extensions.hoursFromNow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
-import java.io.IOException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val TAG = "HomeViewModel"
 
 @Singleton
 class HomeViewModel constructor(
@@ -123,7 +120,7 @@ class HomeViewModel constructor(
 
     private fun getTrainsInternal(time: String) {
         _state.postValue(State.Loading)
-        Log.e(TAG, "EXEC - getTrains()")
+        Timber.i("EXEC - getTrains()")
         _destStation.value?.let { crs ->
             _depStation.value?.let { depCrs ->
                 if (!depCrs.crs.equals("", true)) {
@@ -214,7 +211,7 @@ class HomeViewModel constructor(
             _destStation.value = toCrs
             handle.set("destStation", toCrs.stationName)
         } ?: run {
-            Log.e(TAG, "StationName: ${from.stationName}")
+            Timber.i("StationName: ${from.stationName}")
             _depStation.value = from
             handle.set("depStation", from.stationName)
         }
@@ -229,7 +226,7 @@ class HomeViewModel constructor(
         val to = _favourites.value?.get(position)?.toCrs
         to?.let {
             if (to.isEmpty()) {
-                Log.e(TAG, "StationName: ${from.stationName}")
+                Timber.i("StationName: ${from.stationName}")
                 _depStation.value = from
                 handle.set("depStation", from.stationName)
             } else {
@@ -240,7 +237,7 @@ class HomeViewModel constructor(
                 handle.set("destStation", toCrs.stationName)
             }
         } ?: run {
-            Log.e(TAG, "StationName: ${from.stationName}")
+            Timber.i("StationName: ${from.stationName}")
             _depStation.value = from
             handle.set("depStation", from.stationName)
         }
@@ -254,7 +251,7 @@ class HomeViewModel constructor(
     }
 
     private fun handleTrackResult(trackServiceResponse: TrackServiceResponse) {
-        Log.d("VM", "Tracking? ${trackServiceResponse.tracking}")
+        Timber.d("Tracking? ${trackServiceResponse.tracking}")
         _trackServiceSuccess.postValue(trackServiceResponse.tracking)
     }
 
@@ -294,19 +291,19 @@ class HomeViewModel constructor(
 
     fun saveFavouriteRoute() {
 
-        Log.e(TAG, "Saving!")
+        Timber.d("Saving!")
 
         _depStation.value?.let { dep ->
-            Log.e(TAG, "Saving 1")
+            Timber.d("Saving 1")
             _destStation.value?.let { dest ->
-                Log.e(TAG, "Saving 2")
+                Timber.d("Saving 2")
                 saveFavouriteUseCase(arrayOf(dep, dest)) {
-                    Log.e(TAG, "Saving 3")
+                    Timber.d("Saving 3")
                     it.either(::handleFailure, ::handleFavouritesSuccess)
                 }
             } ?: run {
                 saveFavouriteUseCase(arrayOf(dep, CRS("", ""))) {
-                    Log.e(TAG, "Saving 3")
+                    Timber.d("Saving 3")
                     it.either(::handleFailure, ::handleFavouritesSuccess)
                 }
             }
@@ -349,7 +346,7 @@ class HomeViewModel constructor(
     }
 
     private fun handleFavouriteRemoved(success: Boolean) {
-        Log.i(TAG, "Favourite removed successfully: $success")
+        Timber.i("Favourite removed successfully: $success")
     }
 
     private fun handleFavouritesFlow(favourites: Flow<Favourites>) {

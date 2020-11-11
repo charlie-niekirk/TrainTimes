@@ -4,7 +4,6 @@ import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +23,7 @@ import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_planner_results.*
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -75,7 +75,7 @@ class JourneyPlannerResultsFragment: Fragment(R.layout.fragment_planner_results)
             avd.stop()
             it?.let { response ->
                 response.outwardJourney?.let { journeys ->
-                    Log.e("RESULTS", "Preferences should show price: ${viewModel.shouldShowPrice()}")
+                    Timber.i("Preferences should show price: ${viewModel.shouldShowPrice()}")
                     binding.journeyList.adapter = JourneyPlanAdapter(journeys.toMutableList(), viewModel.shouldShowPrice())
                 }
             }

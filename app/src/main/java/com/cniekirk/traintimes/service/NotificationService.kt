@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.cniekirk.traintimes.ui.activity.MainActivity
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.data.prefs.PreferenceProvider
+import com.cniekirk.traintimes.model.PlatformAdapter
 import com.cniekirk.traintimes.model.PushPortMessageItem
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -19,6 +20,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,11 +52,12 @@ class NotificationService : FirebaseMessagingService() {
             PendingIntent.FLAG_ONE_SHOT
         )
 
-        Log.d(TAG, data["body"].toString())
+        Timber.d(data["body"].toString())
 
         val pushPortMessage = data["body"]
         val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
+            .add(PlatformAdapter())
+            .addLast(KotlinJsonAdapterFactory())
             .build()
 
         val pushPortList = Types.newParameterizedType(List::class.java, PushPortMessageItem::class.java)
@@ -90,7 +93,7 @@ class NotificationService : FirebaseMessagingService() {
                             loc?.tiploc.equals(msgLocation.stationAttrs?.tpl, true)
                         }
 
-                        Log.e(TAG, allCachedLocations?.toString()!!)
+                        Timber.i(allCachedLocations?.toString()!!)
 
                         if (msgLocation.plat?.get(0)?.platform.equals(matchingLocation?.platform, true)) {
                             if (msgLocation.plat?.get(0)?.platAttrs?.platsup.isNullOrEmpty().and(

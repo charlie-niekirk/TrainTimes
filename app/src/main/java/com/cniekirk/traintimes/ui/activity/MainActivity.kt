@@ -2,7 +2,6 @@ package com.cniekirk.traintimes.ui.activity
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +14,7 @@ import com.cniekirk.traintimes.utils.anim.kb.FluidContentResizer
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-
-private const val TAG = "MainActivity"
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -32,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         // If is dark mode
         when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                Log.e(TAG, "Night mode detected")
+                Timber.e("Night mode detected")
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
                 window.statusBarColor = resources.getColor(R.color.colorBackground, null)
             }

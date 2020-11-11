@@ -1,12 +1,12 @@
 package com.cniekirk.traintimes.repo
 
-import android.util.Log
-import androidx.datastore.DataStore
+import androidx.datastore.core.DataStore
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Either
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.model.Favourite
 import com.cniekirk.traintimes.model.Favourites
+import timber.log.Timber
 import javax.inject.Inject
 
 private const val TAG = "ProtoRepositoryImpl"
@@ -24,7 +24,7 @@ class ProtoRepositoryImpl @Inject constructor(
         }
 
         favouritesDataStore.updateData { favourites ->
-            Log.i(TAG, "Added favourite!")
+            Timber.i("Added favourite!")
             favourites.copy(favourites.favourite.plus(favourite))
         }
 

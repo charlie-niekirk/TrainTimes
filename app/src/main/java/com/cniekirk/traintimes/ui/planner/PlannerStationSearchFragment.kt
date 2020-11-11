@@ -1,12 +1,10 @@
 package com.cniekirk.traintimes.ui.planner
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
@@ -24,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @FlowPreview
@@ -47,7 +46,7 @@ class PlannerStationSearchFragment: Fragment(R.layout.fragment_planner_station_s
         super.onActivityCreated(savedInstanceState)
 
         viewModel.listenForNewSearch()
-        viewModel.crsStationCodes.observe(viewLifecycleOwner, Observer {
+        viewModel.crsStationCodes.observe(viewLifecycleOwner, {
             it?.let {
                 val adapter =
                     StationListAdapter(
@@ -105,11 +104,11 @@ class PlannerStationSearchFragment: Fragment(R.layout.fragment_planner_station_s
         hideKeyboard()
         if (isDeparture) {
             //viewModel.depStation.value = crs
-            Log.d("FR", "ACTUALLY SAVED")
+            Timber.d("ACTUALLY SAVED")
             viewModel.saveDepStation(crs)
         } else {
             //viewModel.destStation.value = crs
-            Log.d("FR", "ACTUALLY SAVED dest")
+            Timber.d("ACTUALLY SAVED dest")
             viewModel.saveDestStation(crs)
         }
         binding.root.findNavController().popBackStack()

@@ -145,4 +145,10 @@
     <string name="opacity">Opacity</string>
     <string name="nrcc_alert_title">Station Alerts</string>
     <string name="alert_switch_text">Alerts  </string>
+    <string name="add_alert_button">Add alert button</string>
+    <string name="track_service_modal_title">Live Updates</string>
+    <string name="platform_updates_checkbox_text">Platform updates</string>
+    <string name="delay_updates_checkbox_text">Delay notifications</string>
+    <string name="delay_repay_checkbox_text">Auto compensation notification</string>
+    <string name="track_service_btn_text">Track Service</string>
 </resources>

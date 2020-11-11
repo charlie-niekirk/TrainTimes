@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.JourneyPlanItemBinding
 import com.cniekirk.traintimes.model.journeyplanner.res.Journey
+import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -20,7 +20,7 @@ class JourneyPlanAdapter(private val journeys: MutableList<Journey>,
     override fun getItemCount() = journeys.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JourneyViewHolder {
-        Log.d("Adapter", "Size: ${journeys.size}")
+        Timber.d("Size: ${journeys.size}")
         val itemBinding = JourneyPlanItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return JourneyViewHolder(itemBinding)
     }

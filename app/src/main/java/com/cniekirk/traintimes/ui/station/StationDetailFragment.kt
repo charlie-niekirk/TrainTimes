@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +30,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -81,10 +81,10 @@ class StationDetailFragment: Fragment(R.layout.fragment_station_detail), OnMapRe
                 binding.stationName.text = it.stationName
                 binding.map.clipToOutline = true
 
-                Log.e(StationDetailFragment::class.java.simpleName, "Toilets ${it.stationFacilities?.toilets}")
+                Timber.i("Toilets ${it.stationFacilities?.toilets}")
 
                 it.stationFacilities?.toilets?.let { toilets -> toilets.available?.let { available ->
-                    Log.e(StationDetailFragment::class.java.simpleName, "Are toilets available? $available")
+                    Timber.i("Are toilets available? $available")
                     Glide.with(requireContext()).load(if (available) R.drawable.ic_baseline_check else R.drawable.ic_baseline_cancel).into(binding.isToiletAvailable)
                     if (!available) {
                         binding.isToiletAvailable.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.colorRed))
@@ -181,24 +181,23 @@ class StationDetailFragment: Fragment(R.layout.fragment_station_detail), OnMapRe
             Configuration.UI_MODE_NIGHT_YES -> {
                 try {
                     if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.dark_style))) {
-                        Log.e(StationDetailFragment::class.java.simpleName, getString(R.string.map_parse_error))
+                        Timber.i(getString(R.string.map_parse_error))
                     }
                 } catch (exception: Resources.NotFoundException) {
-                    Log.e(StationDetailFragment::class.java.simpleName, exception.toString())
+                    Timber.e(exception)
                 }
             }
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
                 try {
                     if (!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.light_style))) {
-                        Log.e(StationDetailFragment::class.java.simpleName, getString(R.string.map_parse_error))
+                        Timber.i(getString(R.string.map_parse_error))
                     }
                 } catch (exception: Resources.NotFoundException) {
-                    Log.e(StationDetailFragment::class.java.simpleName, exception.toString())
+                    Timber.e(exception)
                 }
             }
         }
 
-        //val waterloo = LatLng(51.503518,-0.1132977)
         googleMap.addMarker(MarkerOptions().position(stationLocation).title("Waterloo"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stationLocation, 14.0f))
         googleMap.uiSettings.isScrollGesturesEnabled = false

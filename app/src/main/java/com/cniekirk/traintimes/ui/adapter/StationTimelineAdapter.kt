@@ -4,18 +4,16 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.cniekirk.traintimes.R
-import com.cniekirk.traintimes.model.getdepboard.res.CallingPoint
 import com.cniekirk.traintimes.model.getdepboard.res.Location
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -89,7 +87,7 @@ class StationTimelineAdapter(
             val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
             val std = if (callingPoints[position]?.std.isNullOrEmpty()) {
-                Log.d("WTF", callingPoints[position].toString())
+                Timber.d(callingPoints[position].toString())
                 sdf.parse(callingPoints[position]?.sta!!)
             } else {
                 sdf.parse(callingPoints[position]?.std!!)

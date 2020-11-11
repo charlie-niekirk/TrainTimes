@@ -1,6 +1,5 @@
 package com.cniekirk.traintimes.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.cniekirk.traintimes.base.BaseViewModel
@@ -8,7 +7,9 @@ import com.cniekirk.traintimes.base.SingleLiveEvent
 import com.cniekirk.traintimes.base.ViewModelFactory
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.data.prefs.PreferenceProvider
-import com.cniekirk.traintimes.domain.usecase.*
+import com.cniekirk.traintimes.domain.usecase.GetAllStationCodesUseCase
+import com.cniekirk.traintimes.domain.usecase.GetJourneyPlanUseCase
+import com.cniekirk.traintimes.domain.usecase.GetStationsUseCase
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRepoRequest
 import com.cniekirk.traintimes.model.journeyplanner.req.JourneyPlanRequest
 import com.cniekirk.traintimes.model.journeyplanner.req.Railcard
@@ -19,6 +20,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import timber.log.Timber
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -88,9 +90,9 @@ class JourneyPlannerViewModel(
                             getJourneyPlanUseCase(query) { it.either(::handleFailure, ::handleJourneyPlanResponse) }
                         }
                     }
-                } ?: run { Log.e("Vm", "No date for some reason") }
-            } ?: run { Log.e("Vm", "PLANNING - Fail dest") }
-        } ?: run { Log.e("Vm", "PLANNING - Fail dep") }
+                } ?: run { Timber.e("No date for some reason") }
+            } ?: run { Timber.e("PLANNING - Fail dest") }
+        } ?: run { Timber.e("PLANNING - Fail dep") }
     }
 
     fun getCrsCodes() {
@@ -194,16 +196,20 @@ class JourneyPlannerViewModel(
     }
 
     fun updateRailcards(code: String, count: Int) {
-        if (railcards.value!!.isEmpty()) {
-            Log.e("VM", "Empty!")
-            railcards.postValue(mutableListOf(Railcard(code, count)))
-        } else if (railcards.value!!.find{ code.equals(it.code, true) } != null) {
-            railcards.value!!.find{ code.equals(it.code, true) }?.count =
-                railcards.value!!.find{ code.equals(it.code, true) }?.count?.plus(count)!!
-            Log.e("VM", "Count: ${railcards.value!!.find{ code.equals(it.code, true) }?.count}")
-        } else {
-            // List exists and Railcard does not
-            railcards.value!!.add(Railcard(code, count))
+        when {
+            railcards.value!!.isEmpty() -> {
+                Timber.i("Empty!")
+                railcards.postValue(mutableListOf(Railcard(code, count)))
+            }
+            railcards.value!!.find{ code.equals(it.code, true) } != null -> {
+                railcards.value!!.find{ code.equals(it.code, true) }?.count =
+                    railcards.value!!.find{ code.equals(it.code, true) }?.count?.plus(count)!!
+                Timber.i("Count: ${railcards.value!!.find{ code.equals(it.code, true) }?.count}")
+            }
+            else -> {
+                // List exists and Railcard does not
+                railcards.value!!.add(Railcard(code, count))
+            }
         }
     }
 

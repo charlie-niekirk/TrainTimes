@@ -4,14 +4,13 @@ import android.content.res.Resources
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
+import timber.log.Timber
 
-private const val TAG = "View"
 /**
  * Experimenting with inline / crossinline
  */
@@ -34,7 +33,7 @@ fun View.onNextMeasure(runnable: () -> Unit) {
                 runnable()
 
             } else if (visibility == View.GONE) {
-                Log.w(TAG, "View's visibility is set to Gone. It'll never be measured: ${resourceName()}")
+                Timber.w("View's visibility is set to Gone. It'll never be measured: ${resourceName()}")
                 viewTreeObserver.removeOnPreDrawListener(this)
             }
             return true

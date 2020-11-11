@@ -2,7 +2,6 @@ package com.cniekirk.traintimes.ui.main
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +36,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dep_board_results.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -189,7 +189,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
         arguments?.let { isFirst = it.getBoolean("isFromSearch") }
         if (isFirst) {
-            Log.e(TAG, "GET TRAINS")
+            Timber.d( "Getting Trains...")
             viewModel.getTrains()
         }
 

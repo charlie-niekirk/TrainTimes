@@ -29,6 +29,7 @@ import com.cniekirk.traintimes.utils.extensions.now
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.request
 import com.squareup.moshi.JsonAdapter
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -68,8 +69,6 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             time = time,
             timeWindow = "120",
             getNonPassengerServices = false))
-
-//        Log.e(TAG, "getDeparturesAtStation: $body")
 
         val envelope = Envelope(header = Header(AccessToken()), body = body)
 
@@ -161,7 +160,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
             true -> request(nreService.getServiceDetails(envelope)) {
                 val serviceDetails = it.body.getServiceDetailsByRIDResponse.getServiceDetailsResult
 
-                Log.d(TAG, serviceDetails.locations.toString())
+                Timber.d(serviceDetails.locations.toString())
 
                 var previous = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Actual", true) }
                 var subsequent = serviceDetails.locations?.locations?.filter { location -> location.departureType.equals("Forecast", true)
@@ -210,14 +209,14 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
                     inward.forEach { inwardJourney ->
                         val returnFares = inwardJourney.fare?.filter { fare ->
                             fare.direction.equals("RETURN", true) }
-                        val cheapest = returnFares?.minBy { fare -> fare.totalPrice?.toInt()!! }
+                        val cheapest = returnFares?.minByOrNull { fare -> fare.totalPrice?.toInt()!! }
                         cheapest?.let { newReturnJourneys.add(inwardJourney.copy(fare = listOf(cheapest))) }
                             ?: run { newReturnJourneys.add(inwardJourney) }
                     }
                 }
 
                 it.outwardJourney?.forEach { outward ->
-                    val cheapest = outward.fare?.minBy { fare -> fare.totalPrice?.toInt()!! }
+                    val cheapest = outward.fare?.minByOrNull { fare -> fare.totalPrice?.toInt()!! }
                     cheapest?.let { newOutJourneys.add(outward.copy(fare = listOf(cheapest))) }
                         ?: run { newOutJourneys.add(outward) }
                 }

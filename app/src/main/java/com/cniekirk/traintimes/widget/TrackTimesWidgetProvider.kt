@@ -7,12 +7,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.RemoteViews
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.service.ServicesListService
-
-private const val TAG = "TrackTimesWidgetProvide"
+import timber.log.Timber
 
 class TrackTimesWidgetProvider : AppWidgetProvider() {
 
@@ -53,7 +51,7 @@ class TrackTimesWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        Log.e(TAG, "Received intent: ${intent.action}")
+        Timber.i("Received intent: ${intent.action}")
 //        if (intent.action?.equals())
         intent.extras?.let {
             val appWidgetManager = AppWidgetManager.getInstance(context)

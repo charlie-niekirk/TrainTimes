@@ -3,15 +3,13 @@ package com.cniekirk.traintimes.ui.activity
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.ActivityTracktimesWidgetConfigureBinding
 import com.cniekirk.traintimes.utils.viewBinding
-
-private const val TAG = "WidgetConfigureActivity"
+import timber.log.Timber
 
 class WidgetConfigureActivity : AppCompatActivity() {
 
@@ -25,7 +23,7 @@ class WidgetConfigureActivity : AppCompatActivity() {
         // If is dark mode
         when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                Log.e(TAG, "Night mode detected")
+                Timber.d("Night mode detected")
                 window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
                 window.statusBarColor = resources.getColor(R.color.colorBackground, null)
 
@@ -34,10 +32,6 @@ class WidgetConfigureActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-
-
     }
-
-
 
 }

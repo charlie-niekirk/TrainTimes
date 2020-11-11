@@ -3,7 +3,6 @@ package com.cniekirk.traintimes.ui.main
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -14,8 +13,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
+import com.cniekirk.traintimes.data.prefs.PreferenceProvider
 import com.cniekirk.traintimes.databinding.FragmentServiceDetailBinding
 import com.cniekirk.traintimes.model.getdepboard.res.Location
 import com.cniekirk.traintimes.model.ui.ServiceDetailsUiModel
@@ -25,15 +30,15 @@ import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-
-private const val TAG = "ServiceDetailFragment"
 
 @AndroidEntryPoint
 class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), StationTimelineAdapter.OnStationItemClickedListener {
@@ -63,7 +68,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
     }
 
     private fun processTimePill(serviceDetailsResult: ServiceDetailsUiModel) {
-        Log.e(TAG, "Exec")
+        Timber.i("Exec")
 
         serviceDetailsResult.subsequentLocations?.let { locations ->
             val sdf = SimpleDateFormat("YYYY-mm-DD'T'hh:mm", Locale.ENGLISH)
@@ -72,31 +77,31 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
                 val estimated = sdf.parse(it)
                 val scheduled = sdf.parse(locations[0].sta!!)
                 if (estimated.after(scheduled)) {
-                    Log.e(TAG, "AFTER")
+                    Timber.i("AFTER")
                     binding.currentRunningTime.text = "Delayed, now departing at ${output.format(estimated)}"
                     binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                     binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                     binding.currentRunningTime.alpha = 1f
                 } else {
-                    Log.e(TAG, "ON_TIME")
+                    Timber.i("ON_TIME")
                     binding.currentRunningTime.text = "Currently On Time"
                     binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
                     binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
                     binding.currentRunningTime.alpha = 1f
                 }
             } ?: run {
-                Log.e(TAG, "HIDDEN")
+                Timber.i("HIDDEN")
                 locations[0].etd?.let {
                     val estimated = sdf.parse(it)
                     val scheduled = sdf.parse(locations[0].std!!)
                     if (estimated.after(scheduled)) {
-                        Log.e(TAG, "AFTER")
+                        Timber.i("AFTER")
                         binding.currentRunningTime.text = "Delayed, now departing at ${output.format(estimated)}"
                         binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                         binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorRed, null)))
                         binding.currentRunningTime.alpha = 1f
                     } else {
-                    Log.e(TAG, "ON_TIME")
+                        Timber.i("ON_TIME")
                     binding.currentRunningTime.text = "Currently On Time"
                     binding.currentRunningTime.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
                     binding.timeIndicatorDot.backgroundTintList = (ColorStateList.valueOf(resources.getColor(R.color.colorGreen, null)))
@@ -105,7 +110,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
                 }
             }
         } ?: run {
-            Log.e(TAG, "HIDDEN")
+            Timber.i("HIDDEN")
             binding.currentRunningTime.visibility = View.INVISIBLE
         }
     }
@@ -124,11 +129,6 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
         binding.stationStops.layoutManager = LinearLayoutManager(requireContext())
         binding.stationStops.adapter = StationTimelineAdapter(emptyList(), 0, this)
 
-        binding.serviceAlertSwitch.setOnClickListener {
-//            MaterialAlertDialogBuilder(requireContext())
-//                .setTitle()
-        }
-
         viewModel.serviceDetailsResult.observe(viewLifecycleOwner, { serviceDetailsResult ->
 
             if (serviceDetailsResult.isCancelled) {
@@ -146,7 +146,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
             } else {
 
                 val destinationIndex = serviceDetailsResult.subsequentLocations?.lastIndex ?: 0
-                Log.d(TAG, serviceDetailsResult.subsequentLocations.toString())
+                Timber.d(serviceDetailsResult.subsequentLocations.toString())
                 val destination = serviceDetailsResult.subsequentLocations!![destinationIndex]
                 val previousCallingPoints = serviceDetailsResult.previousLocations
                 val subsequentCallingPoints = serviceDetailsResult.subsequentLocations
@@ -157,15 +157,15 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
 //                serviceDetailsResult.std!!, serviceDetailsResult.etd, serviceDetailsResult.atd))
 
                 var previousWithCurrent = previousCallingPoints
-                Log.e(TAG, "PREVIOUS: ${previousWithCurrent.toString()}")
+                Timber.d("PREVIOUS: ${previousWithCurrent.toString()}")
                 serviceDetailsResult.currentLocation?.let {
                     previousWithCurrent?.let { prevCur ->
-                        Log.e(TAG, "PREVIOUS: ${prevCur.size}")
+                        Timber.d("PREVIOUS: ${prevCur.size}")
                         previousWithCurrent = prevCur.subList(0, prevCur.lastIndex - 1)
                         previousWithCurrent = previousWithCurrent?.plus(it)
                     }
                 }
-                Log.e(TAG, "PREVIOUS (with current): ${previousWithCurrent.toString()}")
+                Timber.d("PREVIOUS (with current): ${previousWithCurrent.toString()}")
 
                 var allCallingPoints = previousWithCurrent?.plus(subsequentCallingPoints)
                     ?: subsequentCallingPoints
@@ -179,29 +179,34 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
                     }
                 }
 
-//                binding.btnWatch.setOnClickListener {
-//                    MaterialAlertDialogBuilder(requireContext())
-//                        .setTitle(R.string.live_updates_title)
-//                        .setMultiChoiceItems(R.array.live_update_values, booleanArrayOf(true, true, true, false)) { dialog, which, isChecked ->
-//
-//                        }
-//                        .setPositiveButton(R.string.live_updates_positive) { dialogInterface, _ ->
-//                            val searchTiploc = allCallingPoints.find { location ->
-//                                location.stationCode!!.equals(viewModel.depStation.value?.crs, true)
-//                            }
-//                            searchTiploc?.let { location ->
-//                                location.tiploc?.let { tiploc ->
-//                                    viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""),
-//                                        PreferenceProvider(requireContext()).getFirebaseId(), serviceDetailsResult)
-//                                }
-//                            }
-//                            dialogInterface.dismiss()
-//                        }
-//                        .setNegativeButton(R.string.live_updates_negative) { dialogInterface, _ ->
-//                            dialogInterface.dismiss()
-//                        }
-//                        .show()
-//                }
+                binding.btnWatch.setOnClickListener {
+
+                    val dlg = MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).customView(R.layout.track_service_view)
+                    val dlgView = dlg.getCustomView()
+
+                    val platformUpdatesCheck = dlgView.findViewById<MaterialCheckBox>(R.id.platform_updates)
+                    val delayUpdatesCheck = dlgView.findViewById<MaterialCheckBox>(R.id.delay_notifications)
+                    val compensationUpdatesCheck = dlgView.findViewById<MaterialCheckBox>(R.id.delay_repay_notification)
+
+                    val trackServiceBtn = dlgView.findViewById<MaterialButton>(R.id.btn_track)
+
+                    trackServiceBtn.setOnClickListener {
+                        // Submit values
+                        val searchTiploc = allCallingPoints.find { location ->
+                                location.stationCode!!.equals(viewModel.depStation.value?.crs, true)
+                        }
+                        searchTiploc?.let { location ->
+                            location.tiploc?.let { tiploc ->
+                                viewModel.trackService(serviceDetailsResult.rid!!, tiploc.replace(" ", ""),
+                                    PreferenceProvider(requireContext()).getFirebaseId(), serviceDetailsResult)
+                            }
+                        }
+                        dlg.dismiss()
+                    }
+
+                    dlg.show()
+
+                }
 
                 binding.stationStops.adapter = StationTimelineAdapter(allCallingPoints, currentIndex, this)
                 binding.stationStops.scrollToPosition(previousCallingPoints?.size ?: 0)
@@ -216,7 +221,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
         })
 
         viewModel.trackServiceSuccess.observe(viewLifecycleOwner, Observer {
-            Log.e(TAG, "Got to here? $it")
+            Timber.d("Got to here? $it")
             if (it) {
                 val sb = Snackbar.make(binding.root, R.string.tracking, Snackbar.LENGTH_SHORT)
                 sb.anchorView = binding.snackbarLocation
@@ -241,7 +246,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
     private fun changeTocBg() {
         binding.operatorName.setTextColor(resources.getColor(android.R.color.white, null))
 
-        Log.e(TAG, "TOC: ${binding.operatorName.text}")
+        Timber.d("TOC: ${binding.operatorName.text}")
 
         when (binding.operatorName.text.toString().toLowerCase()) {
             "tfl rail" -> binding.operatorName.apply {

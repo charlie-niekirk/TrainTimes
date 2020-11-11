@@ -2,23 +2,20 @@ package com.cniekirk.traintimes.service
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.domain.Failure
-import com.cniekirk.traintimes.domain.model.State
 import com.cniekirk.traintimes.model.getdepboard.res.GetBoardWithDetailsResult
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.repo.NreRepository
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-
-private const val TAG = "ServicesListService"
 
 @AndroidEntryPoint
 class ServicesListService : RemoteViewsService() {
@@ -90,7 +87,7 @@ class ListRemoteViewsFactory(val context: Context, val intent: Intent, val nreRe
     }
 
     private fun handleFailure(failure: Failure) {
-        Log.e(TAG, "Failed: $failure")
+        Timber.e("Failed: $failure")
     }
 
     private fun handleResponse(response: GetBoardWithDetailsResult) {

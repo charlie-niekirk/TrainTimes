@@ -99,17 +99,19 @@
         tools:textColor="@color/colorGreen"
         tools:text="Currently On Time"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/service_alert_switch"
+    <ImageView
+        android:id="@+id/btn_watch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/current_running_time"
         app:layout_constraintTop_toTopOf="@id/current_running_time"
         app:layout_constraintBottom_toBottomOf="@id/current_running_time"
         android:layout_marginStart="12dp"
-        app:thumbTint="@color/thumb_color"
-        android:fontFamily="@font/circularstd"
-        android:text="@string/alert_switch_text"/>
+        android:src="@drawable/ic_baseline_add_alert"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/add_alert_button" />
 
     <ImageView
         android:id="@+id/back_up_btn"

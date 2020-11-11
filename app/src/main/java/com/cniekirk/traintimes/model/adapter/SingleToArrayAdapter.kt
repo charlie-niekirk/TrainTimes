@@ -1,11 +1,9 @@
 package com.cniekirk.traintimes.model.adapter
 
-import android.util.Log
 import com.squareup.moshi.*
+import timber.log.Timber
 import java.lang.reflect.Type
 import java.util.*
-
-private const val TAG = "SingleToArrayAdapter"
 
 // TODO: THIS FUCKING THING ISN'T WORKING
 class SingleToArrayAdapter(
@@ -35,7 +33,7 @@ class SingleToArrayAdapter(
             val delegateAdapter: JsonAdapter<List<Any>> = moshi.adapter(type, delegateAnnotations)
             val elementAdapter: JsonAdapter<Any> = moshi.adapter(elementType)
 
-            Log.e(TAG, "Created it at least!!")
+            Timber.d("Created it at least!!")
             return SingleToArrayAdapter(delegateAdapter, elementAdapter)
         }
     }
