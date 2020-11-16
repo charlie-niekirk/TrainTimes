@@ -72,6 +72,8 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
 
         val envelope = Envelope(header = Header(AccessToken()), body = body)
 
+        Timber.e("For comparison: $envelope")
+
         val query = if (destination.stationName.isEmpty()) {
             Query(station.crs, station.stationName)
         } else {
@@ -113,7 +115,7 @@ class NreRepositoryImpl @Inject constructor(private val networkHandler: NetworkH
      */
     override fun getArrivalsAtStation(target: String, from: String): Either<Failure, GetBoardWithDetailsResult> {
         val body = ArrBody(GetArrBoardWithDetailsRequest(
-            numRows = NumRows(numRows = "20"),
+            numRows = 20,
             crs = target,
             filterCrs = from,
             filterType = "to",

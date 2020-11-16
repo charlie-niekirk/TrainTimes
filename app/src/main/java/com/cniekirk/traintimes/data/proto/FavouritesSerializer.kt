@@ -1,7 +1,7 @@
 package com.cniekirk.traintimes.data.proto
 
-import androidx.datastore.CorruptionException
-import androidx.datastore.Serializer
+import androidx.datastore.core.CorruptionException
+import androidx.datastore.core.Serializer
 import com.cniekirk.traintimes.model.Favourites
 import com.cniekirk.traintimes.repo.CryptoRepository
 import java.io.IOException
@@ -28,5 +28,8 @@ class FavouritesSerializer @Inject constructor(
     override fun writeTo(t: Favourites, output: OutputStream) {
         cryptoRepository.encrypt(Favourites.ADAPTER.encode(t), output)
     }
+
+    override val defaultValue: Favourites
+        get() = Favourites(emptyList())
 
 }

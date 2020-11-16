@@ -1,7 +1,7 @@
 package com.cniekirk.traintimes.di
 
 import android.content.Context
-import androidx.datastore.DataStore
+import androidx.datastore.core.DataStore
 import androidx.datastore.createDataStore
 import com.cniekirk.traintimes.data.proto.FavouritesSerializer
 import com.cniekirk.traintimes.model.Favourites

@@ -19,10 +19,9 @@ interface NREService {
     )
     fun getDepartureBoardWithDetails(@Body body: Envelope): Call<GetDepBoardSoapEnvelope>
 
-    @POST("/OpenLDBWS/ldb11.asmx")
+    @POST("/OpenLDBSVWS/ldbsv12.asmx")
     @Headers(
-        "Content-Type: text/xml",
-        "SOAPAction: http://thalesgroup.com/RTTI/2015-05-14/ldb/GetArrBoardWithDetails"
+        "Content-Type: text/xml"
     )
     fun getArrivalBoardWithDetails(@Body body: ArrEnvelope): Call<GetArrBoardSoapEnvelope>
 

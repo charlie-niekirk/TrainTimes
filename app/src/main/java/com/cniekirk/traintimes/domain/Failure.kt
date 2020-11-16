@@ -6,7 +6,7 @@ package com.cniekirk.traintimes.domain
 sealed class Failure {
 
     class NetworkConnectionError: Failure()
-    class ServerError(): Failure()
+    class ServerError(message: String): Failure()
     class NoCrsFailure(): Failure()
     class NoDestinationFailure(): Failure()
     class MoreRailcardsThanPassengersError: Failure()

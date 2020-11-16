@@ -122,6 +122,7 @@ class HomeViewModel constructor(
         _state.postValue(State.Loading)
         Timber.i("EXEC - getTrains()")
         _destStation.value?.let { crs ->
+            Timber.i("Dest should be good!")
             _depStation.value?.let { depCrs ->
                 if (!depCrs.crs.equals("", true)) {
                     // Get specific departures
@@ -133,6 +134,7 @@ class HomeViewModel constructor(
                     { it.either(::handleFailure, ::handleResponse) }
                 }
             } ?: run {
+                Timber.i("Dep should be empty!")
                 // Get all arrivals
                 getArrivalsUseCase(arrayOf(crs.crs, ""))
                 { it.either(::handleFailure, ::handleResponse) }
@@ -266,22 +268,22 @@ class HomeViewModel constructor(
     }
 
     fun saveDepStation(crs: CRS) {
-        _depStation.postValue(crs)
+        _depStation.value = crs
         handle.set("depStation", crs.stationName)
     }
 
     fun saveDestStation(crs: CRS) {
-        _destStation.postValue(crs)
+        _destStation.value = crs
         handle.set("destStation", crs.stationName)
     }
 
     fun clearDepStation() {
-        _depStation.postValue(null)
+        _depStation.value = null
         handle.remove<String>("depStation")
     }
 
     fun clearDestStation() {
-        _destStation.postValue(null)
+        _destStation.value = null
         handle.remove<String>("destStation")
     }
 

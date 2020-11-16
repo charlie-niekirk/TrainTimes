@@ -83,18 +83,16 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDepText.text = getString(R.string.departing_from)
                 binding.searchArrowDep.setOnClickListener(null)
-                binding.btnSwapStations.visibility = View.GONE
+                if (viewModel.destStation.value == null) {
+                    binding.btnSwapStations.visibility = View.GONE
+                }
             } else {
-                if (binding.searchDepText.text.toString().equals(getString(R.string.departing_from), false)) {
-                    viewModel.destStation.value?.let {
-                        if (!binding.btnSwapStations.isVisible)
-                            binding.btnSwapStations.visibility = View.VISIBLE
-                    }
-                    binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
-                    binding.searchDepText.text = it.stationName
-                    binding.searchArrowDep.setOnClickListener {
-                        viewModel.clearDepStation()
-                    }
+                if (!binding.btnSwapStations.isVisible)
+                    binding.btnSwapStations.visibility = View.VISIBLE
+                binding.searchArrowDep.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
+                binding.searchDepText.text = it.stationName
+                binding.searchArrowDep.setOnClickListener {
+                    viewModel.clearDepStation()
                 }
             }
         })
@@ -104,18 +102,16 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_keyboard_arrow_right, null))
                 binding.searchDestText.text = getString(R.string.arriving_at)
                 binding.searchArrowDest.setOnClickListener(null)
-                binding.btnSwapStations.visibility = View.GONE
+                if (viewModel.depStation.value == null) {
+                    binding.btnSwapStations.visibility = View.GONE
+                }
             } else {
-                if (binding.searchDestText.text.toString().equals(getString(R.string.arriving_at), false)) {
-                    viewModel.depStation.value?.let {
-                        if (!binding.btnSwapStations.isVisible)
-                            binding.btnSwapStations.visibility = View.VISIBLE
-                    }
-                    binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
-                    binding.searchDestText.text = it.stationName
-                    binding.searchArrowDest.setOnClickListener {
-                        viewModel.clearDestStation()
-                    }
+                if (!binding.btnSwapStations.isVisible)
+                    binding.btnSwapStations.visibility = View.VISIBLE
+                binding.searchArrowDest.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_clear, null))
+                binding.searchDestText.text = it.stationName
+                binding.searchArrowDest.setOnClickListener {
+                    viewModel.clearDestStation()
                 }
             }
         })
@@ -206,10 +202,18 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
 
         binding.btnSwapStations.setOnClickListener {
-            val dep = viewModel.depStation.value!!
-            val dest = viewModel.destStation.value!!
-            viewModel.saveDepStation(dest)
-            viewModel.saveDestStation(dep)
+            viewModel.depStation.value?.let {
+                viewModel.saveDestStation(it)
+                if (viewModel.destStation.value == null) {
+                    viewModel.clearDepStation()
+                }
+            }
+            viewModel.destStation.value?.let {
+                viewModel.saveDepStation(it)
+                if (viewModel.depStation.value == null) {
+                    viewModel.clearDestStation()
+                }
+            }
         }
 
         val layoutManager = LinearLayoutManager(requireContext())

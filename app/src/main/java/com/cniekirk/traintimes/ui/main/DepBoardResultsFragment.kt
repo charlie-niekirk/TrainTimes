@@ -204,8 +204,6 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //animatedLoadingIndicator.loop(binding.loadingIndicator)
-
         binding.homeServicesList.addOnScrollListener(FabShrinkingOnScrollListener(binding.btnFavourites))
 
         binding.depArr.setOnClickListener {
@@ -218,20 +216,20 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
             viewModel.destStation.value?.let {
                 if (it.crs.isEmpty()) {
                     viewModel.saveDestStation(viewModel.depStation.value!!)
-                    viewModel.saveDepStation(CRS("", ""))
+                    viewModel.clearDepStation()
                 } else {
-                    viewModel.saveDepStation(viewModel.destStation.value!!)
-                    viewModel.saveDestStation(CRS("", ""))
-
+                    viewModel.saveDepStation(it)
+                    viewModel.clearDestStation()
                 }
             } ?: run {
                 viewModel.depStation.value?.let {
                     if (it.crs.isEmpty()) {
                         viewModel.saveDepStation(viewModel.destStation.value!!)
-                        viewModel.saveDestStation(CRS("", ""))
+                        viewModel.clearDestStation()
                     } else {
-                        viewModel.saveDestStation(viewModel.depStation.value!!)
-                        viewModel.saveDepStation(CRS("", ""))
+                        Timber.i("Good dep, saving to dest")
+                        viewModel.saveDestStation(it)
+                        viewModel.clearDepStation()
                     }
                 }
             }

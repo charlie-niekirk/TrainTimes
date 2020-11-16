@@ -60,8 +60,8 @@ class JourneyPlannerViewModel(
     @ExperimentalCoroutinesApi
     fun listenForNewSearch() {
         GlobalScope.launch { queryChannel.asFlow().debounce(300).collect { query ->
-            getStationsUseCase(query) { it.either(::handleFailure, ::handleCrs) }
-        }
+                getStationsUseCase(query) { it.either(::handleFailure, ::handleCrs) }
+            }
         }
     }
 
