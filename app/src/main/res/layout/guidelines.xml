@@ -23,4 +23,18 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="24dp"/>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/popup_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/popup_collapsed_top_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3"/>
+
 </merge>

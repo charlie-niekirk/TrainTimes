@@ -1,10 +1,16 @@
 package com.cniekirk.traintimes.ui.main
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.LinearInterpolator
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,8 +32,10 @@ import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
 import com.cniekirk.traintimes.ui.behaviour.FabShrinkingOnScrollListener
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
+import com.cniekirk.traintimes.utils.Blur
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
 import com.cniekirk.traintimes.utils.extensions.cancel
+import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.extensions.loop
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,8 +47,6 @@ import kotlinx.android.synthetic.main.fragment_dep_board_results.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-
-private const val TAG = "DepBoardResultsFragment"
 
 @AndroidEntryPoint
 class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
@@ -55,7 +61,6 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
     private val viewModel: HomeViewModel by activityViewModels { withFactory(viewModelFactory, arguments) }
 
     private val animatedLoadingIndicator by lazy(LazyThreadSafetyMode.NONE) { binding.loadingIndicator.drawable as AnimatedVectorDrawable }
-    private val nrccList = ArrayList<View>()
     private var isFirst = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -215,15 +220,18 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
             viewModel.destStation.value?.let {
                 if (it.crs.isEmpty()) {
+                    Timber.i("Dest good, but empty, saving null to dest")
                     viewModel.saveDestStation(viewModel.depStation.value!!)
                     viewModel.clearDepStation()
                 } else {
+                    Timber.i("Good dest, saving to dep")
                     viewModel.saveDepStation(it)
                     viewModel.clearDestStation()
                 }
             } ?: run {
                 viewModel.depStation.value?.let {
                     if (it.crs.isEmpty()) {
+                        Timber.i("Dep good, but empty, saving null to dep")
                         viewModel.saveDepStation(viewModel.destStation.value!!)
                         viewModel.clearDestStation()
                     } else {
@@ -245,6 +253,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
                     this,
                     this
                 )
+            viewModel.clearServices()
             binding.root.findNavController().navigateUp()
         }
 
@@ -300,8 +309,68 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
             viewModel.setServiceId(service.service.rid)
         }
 
-        binding.root.findNavController().navigate(R.id.serviceDetailFragment,
-            null)
+        binding.root.findNavController().navigate(R.id.serviceDetailFragment, null)
+
+    }
+
+    override fun onLongClick(position: Int, height: Int, yPos: Int) {
+
+        // Blur the bg
+        binding.blurTarget.setImageDrawable(Blur.createBlur(requireActivity(), binding.root))
+
+        val animatorSet = AnimatorSet()
+        val animator = ValueAnimator.ofFloat(0f, 1f)
+        animator.interpolator = FastOutSlowInInterpolator()
+        animator.duration = 200
+        animator.addUpdateListener {
+            val value = it.animatedValue as Float
+            binding.blurTarget.alpha = value
+            binding.popupContainer.alpha = value
+        }
+
+        val boxAnim = AnimatorSet()
+        val heightAnimator = ValueAnimator.ofInt((binding.popupContainer.bottom - binding.popupContainer.top),
+            (binding.popupContainer.bottom - binding.popupContainer.top) + (binding.popupContainer.y - (binding.routeDescription.y + 16.dp)).toInt())
+        heightAnimator.interpolator = LinearInterpolator()
+        heightAnimator.duration = 130
+        val params = binding.popupContainer.layoutParams
+        heightAnimator.addUpdateListener {
+            params.height = it.animatedValue as Int
+            binding.popupContainer.layoutParams = params
+        }
+
+        val yAnimator = ValueAnimator.ofFloat(binding.popupContainer.y, binding.routeDescription.y + 16.dp)
+        yAnimator.interpolator = LinearInterpolator()
+        yAnimator.duration = 130
+        yAnimator.addUpdateListener {
+            binding.popupContainer.y = it.animatedValue as Float
+        }
+
+        boxAnim.playTogether(heightAnimator, yAnimator)
+        animatorSet.playSequentially(animator, boxAnim)
+        animatorSet.start()
+
+        // Make the custom view visible
+
+
+        // Animate the custom view into position
+
+        // Load the data?
+
+    }
+
+    override fun onLongClickRelease() {
+
+        val animator = ValueAnimator.ofFloat(1f, 0f)
+        animator.interpolator = FastOutSlowInInterpolator()
+        animator.duration = 200
+        animator.addUpdateListener {
+            binding.blurTarget.alpha = it.animatedValue as Float
+            binding.popupContainer.alpha = it.animatedValue as Float
+        }
+        animator.start()
+
+        binding.blurTarget.setImageDrawable(null)
 
     }
 

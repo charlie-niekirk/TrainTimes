@@ -3,8 +3,8 @@ package com.cniekirk.traintimes.ui.adapter
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -12,16 +12,13 @@ import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.databinding.DepartureListItemBinding
 import com.cniekirk.traintimes.databinding.LoadNextItemBinding
 import com.cniekirk.traintimes.databinding.LoadPreviousItemBinding
-import com.cniekirk.traintimes.model.Dep
-import com.cniekirk.traintimes.model.getdepboard.res.Service
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.extensions.LayoutContainer
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
-
-private const val TAG = "DepartureListAdapter"
 
 private const val PREVIOUS_TYPE = 0
 private const val DEPARTURE_ITEM_TYPE = 1
@@ -32,6 +29,8 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
                            private val clickListener: DepartureItemClickListener,
                            private val nextClickListener: LoadNextItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var isLongPressed = false
 
     init {
         setHasStableIds(true)
@@ -49,25 +48,25 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
 
         return when (viewType) {
             PREVIOUS_TYPE -> {
-                Log.i(TAG, "PREVIOUS")
+                Timber.i("PREVIOUS")
                 val departureLayout = LayoutInflater.from(parent.context)
                     .inflate(R.layout.load_previous_item, parent, false)
                 LoadPreviousViewHolder(departureLayout)
             }
             DEPARTURE_ITEM_TYPE -> {
-                Log.i(TAG, "DEPARTURE")
+                Timber.i("DEPARTURE")
                 val departureLayout = LayoutInflater.from(parent.context)
                     .inflate(R.layout.departure_list_item, parent, false)
                 DepartureListViewHolder(departureLayout)
             }
             MORE_TYPE -> {
-                Log.i(TAG, "MORE")
+                Timber.i("MORE")
                 val departureLayout = LayoutInflater.from(parent.context)
                     .inflate(R.layout.load_next_item, parent, false)
                 LoadMoreViewHolder(departureLayout)
             }
             else -> {
-                Log.i(TAG, "WTF!?!")
+                Timber.i("WTF!?!")
                 val departureLayout = LayoutInflater.from(parent.context)
                     .inflate(R.layout.departure_list_item, parent, false)
                 DepartureListViewHolder(departureLayout)
@@ -76,7 +75,7 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
     }
 
     override fun getItemCount(): Int {
-        Log.i(TAG, "How many: ${services.size}")
+        Timber.i("How many: ${services.size}")
         return services.size
     }
     override fun onBindViewHolder(
@@ -99,10 +98,10 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
 
                 depHolder.binding.root.transitionName = "${depHolder.itemView.context.getString(R.string.departure_background_transition)}-${position - 1}"
 
-                depHolder.binding.departureDestinationName.text = destinations[destinations.size - 1].locationName?.parseEncoded()
+                depHolder.binding.departureDestinationName.text = destinations[destinations.size - 1].locationName.parseEncoded()
                 depHolder.binding.departureDestinationName.transitionName = "${depHolder.itemView.context.getString(R.string.departure_text_transition)}-${position - 1}"
 
-                depHolder.binding.departurePlatformName.text = depHolder.containerView?.context?.getString(R.string.platform_prefix, platform)
+                depHolder.binding.departurePlatformName.text = depHolder.containerView.context?.getString(R.string.platform_prefix, platform)
                 departureServices[position - 1].platformIsHidden?.let {
                     if (it) {
                         holder.binding.departurePlatformName.text = (holder.binding.departurePlatformName.text as String?)?.plus(" (Predicted)")
@@ -114,27 +113,30 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
 
                 val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.ENGLISH)
                 val output = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-                val std = sdf.parse(departureServices[position - 1].scheduledDeparture!!)
-                departureServices[position - 1].estimatedDeparture?.let {
-                    val etd = sdf.parse(it)
-                    if (etd!!.after(std)) {
-                        depHolder.binding.scheduledDepartureTime.paintFlags =
-                            (depHolder.binding.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
+                departureServices[position - 1].scheduledDeparture?.let { stDep ->
+                    val std = sdf.parse(stDep)
+
+                    departureServices[position - 1].estimatedDeparture?.let {
+                        val etd = sdf.parse(it)
+                        if (etd!!.after(std)) {
+                            depHolder.binding.scheduledDepartureTime.paintFlags =
+                                (depHolder.binding.scheduledDepartureTime.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG))
+                            depHolder.binding.estimatedDepartureTime
+                                .setTextColor(depHolder.binding.root.resources.getColor(R.color.colorRed, null))
+                            depHolder.binding.estimatedDepartureTime.text = output.format(etd)
+                        } else {
+                            depHolder.binding.estimatedDepartureTime
+                                .setTextColor(depHolder.binding.root.resources.getColor(R.color.colorGreen, null))
+                            depHolder.binding.estimatedDepartureTime.text = "On Time"
+                        }
+                    } ?: run {
                         depHolder.binding.estimatedDepartureTime
-                            .setTextColor(depHolder.binding.root.resources.getColor(R.color.colorRed, null))
-                        depHolder.binding.estimatedDepartureTime.text = output.format(etd)
-                    } else {
-                        depHolder.binding.estimatedDepartureTime
-                            .setTextColor(depHolder.binding.root.resources.getColor(R.color.colorGreen, null))
+                            .setTextColor(depHolder.itemView.resources.getColor(R.color.colorGreen, null))
                         depHolder.binding.estimatedDepartureTime.text = "On Time"
                     }
-                } ?: run {
-                    depHolder.binding.estimatedDepartureTime
-                        .setTextColor(depHolder.itemView.resources.getColor(R.color.colorGreen, null))
-                    depHolder.binding.estimatedDepartureTime.text = "On Time"
-                }
 
-                depHolder.binding.scheduledDepartureTime.text = output.format(std)
+                    depHolder.binding.scheduledDepartureTime.text = output.format(std)
+                }
 
                 departureServices[position - 1].length?.let {
                     depHolder.binding.numCoaches.text = String.format(depHolder.containerView.resources.getString(R.string.num_coaches_text), it)
@@ -152,6 +154,32 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
                 }
 
                 depHolder.binding.root.setOnClickListener { clickListener.onClick(position, depHolder.itemView, depHolder.binding.departureDestinationName) }
+                depHolder.binding.root.setOnLongClickListener {
+                    isLongPressed = true
+                    clickListener.onLongClick(position, depHolder.binding.root.height, depHolder.binding.root.y.toInt())
+                    true
+                }
+                depHolder.binding.root.setOnTouchListener { v, event ->
+
+                    if(isLongPressed) {
+                        depHolder.binding.root.parent.requestDisallowInterceptTouchEvent(true)
+
+                        if (event.action == MotionEvent.ACTION_UP) {
+                            clickListener.onLongClickRelease()
+                            isLongPressed = false
+                            depHolder.binding.root.parent.requestDisallowInterceptTouchEvent(false)
+                            depHolder.binding.root.setOnTouchListener { _,_ -> false }
+                            depHolder.binding.root.isPressed = false
+                        } else {
+                            v.onTouchEvent(event)
+                        }
+                    } else {
+                        v.onTouchEvent(event)
+                    }
+
+                    true
+
+                }
 
             }
             getItemViewType(position) == MORE_TYPE -> {
@@ -294,6 +322,8 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
 
     interface DepartureItemClickListener {
         fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView)
+        fun onLongClick(position: Int, height: Int, yPos: Int)
+        fun onLongClickRelease()
     }
 
     interface LoadNextItemClickListener {

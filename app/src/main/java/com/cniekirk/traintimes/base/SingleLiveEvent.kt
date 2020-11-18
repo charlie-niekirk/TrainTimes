@@ -1,10 +1,12 @@
 package com.cniekirk.traintimes.base
 
+import android.os.FileObserver
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import timber.log.Timber
+import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
 open class SingleLiveEvent<T> : MutableLiveData<T>() {
@@ -34,4 +36,7 @@ open class SingleLiveEvent<T> : MutableLiveData<T>() {
     fun call() {
         value = null
     }
+
 }
+
+

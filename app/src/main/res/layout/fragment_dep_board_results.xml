@@ -28,7 +28,40 @@
         android:animateLayoutChanges="true"
         android:id="@+id/root_layout">
 
-        <include layout="@layout/guidelines"/>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/header_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="24dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/popup_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/popup_collapsed_top_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3"/>
 
         <ImageView
             android:id="@+id/loading_indicator"
@@ -141,6 +174,24 @@
             android:layout_marginBottom="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/blur_target"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.0"/>
+
+        <View
+            android:id="@+id/popup_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/start_guide"
+            app:layout_constraintEnd_toEndOf="@id/end_guide"
+            app:layout_constraintTop_toBottomOf="@id/popup_collapsed_top_guide"
+            app:layout_constraintBottom_toBottomOf="@id/popup_guide"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/popup_background"
+            android:alpha="0.0"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
