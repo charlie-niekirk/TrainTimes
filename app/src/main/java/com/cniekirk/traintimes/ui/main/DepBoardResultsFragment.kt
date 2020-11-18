@@ -4,14 +4,19 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.graphics.PorterDuff
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.view.animation.BounceInterpolator
 import android.view.animation.LinearInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.activity.addCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,13 +32,16 @@ import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.model.State
+import com.cniekirk.traintimes.model.ui.Action
 import com.cniekirk.traintimes.model.ui.DepartureItem
 import com.cniekirk.traintimes.ui.adapter.DepartureListAdapter
+import com.cniekirk.traintimes.ui.adapter.PopupActionAdapter
 import com.cniekirk.traintimes.ui.behaviour.FabShrinkingOnScrollListener
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.Blur
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
+import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.cancel
 import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.extensions.loop
@@ -313,43 +321,113 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
     }
 
-    override fun onLongClick(position: Int, height: Int, yPos: Int) {
+    override fun onLongClick(itemView: View, height: Int, yPos: Int) {
+
+        binding.btnFavourites.hide()
+        binding.popupActionsMenu.layoutManager = LinearLayoutManager(requireContext())
 
         // Blur the bg
-        binding.blurTarget.setImageDrawable(Blur.createBlur(requireActivity(), binding.root))
+        binding.blurTarget.setImageDrawable(Blur.createBlur(requireActivity(), binding.rootLayout))
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.rootLayout)
+
+        val originalPopupY = binding.popupContainer.y
+        val itemXY = IntArray(2)
+        itemView.getLocationInWindow(itemXY)
+        binding.popupContainer.y = itemXY[1].toFloat()
+        binding.popupActionsMenu.y = itemXY[1].toFloat()
 
         val animatorSet = AnimatorSet()
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.interpolator = FastOutSlowInInterpolator()
-        animator.duration = 200
-        animator.addUpdateListener {
-            val value = it.animatedValue as Float
-            binding.blurTarget.alpha = value
-            binding.popupContainer.alpha = value
-        }
-
         val boxAnim = AnimatorSet()
-        val heightAnimator = ValueAnimator.ofInt((binding.popupContainer.bottom - binding.popupContainer.top),
-            (binding.popupContainer.bottom - binding.popupContainer.top) + (binding.popupContainer.y - (binding.routeDescription.y + 16.dp)).toInt())
-        heightAnimator.interpolator = LinearInterpolator()
-        heightAnimator.duration = 130
-        val params = binding.popupContainer.layoutParams
-        heightAnimator.addUpdateListener {
-            params.height = it.animatedValue as Int
-            binding.popupContainer.layoutParams = params
+
+        val animator = ValueAnimator.ofFloat(0f, 1f)
+        animator.apply {
+            interpolator = FastOutSlowInInterpolator()
+            duration = 200
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                binding.blurTarget.alpha = value
+                binding.popupContainer.alpha = value
+                binding.popupActionsMenu.alpha = value
+            }
         }
 
-        val yAnimator = ValueAnimator.ofFloat(binding.popupContainer.y, binding.routeDescription.y + 16.dp)
-        yAnimator.interpolator = LinearInterpolator()
-        yAnimator.duration = 130
+        val initialYAnimator = ValueAnimator.ofFloat(binding.popupContainer.y, originalPopupY)
+        initialYAnimator.apply {
+            interpolator = LinearInterpolator()
+            duration = 100
+            addUpdateListener {
+                binding.popupContainer.y = it.animatedValue as Float
+            }
+        }
+
+        val heightAnimator = ValueAnimator.ofInt((binding.popupContainer.bottom - binding.popupContainer.top),
+            (binding.popupContainer.bottom - binding.popupContainer.top) * 2 + (originalPopupY - (binding.routeDescription.y + 16.dp)).toInt())
+        val params = binding.popupContainer.layoutParams
+        heightAnimator.apply {
+            interpolator = OvershootInterpolator()
+            duration = 200
+            addUpdateListener {
+                params.height = it.animatedValue as Int
+                binding.popupContainer.layoutParams = params
+            }
+        }
+
+        val yAnimator = ValueAnimator.ofFloat(originalPopupY, binding.routeDescription.y + 16.dp)
+        yAnimator.interpolator = OvershootInterpolator()
+        yAnimator.duration = 200
         yAnimator.addUpdateListener {
             binding.popupContainer.y = it.animatedValue as Float
         }
 
-        boxAnim.playTogether(heightAnimator, yAnimator)
-        animatorSet.playSequentially(animator, boxAnim)
+        val actionsAnimator = ValueAnimator.ofFloat(binding.popupActionsMenu.y,
+            binding.popupContainer.bottom.toFloat() +
+                    (binding.popupContainer.bottom - binding.popupContainer.top) + 50.dp)
+        actionsAnimator.interpolator = OvershootInterpolator()
+        actionsAnimator.duration = 200
+        actionsAnimator.addUpdateListener {
+            binding.popupActionsMenu.y = it.animatedValue as Float
+        }
+
+        boxAnim.playTogether(heightAnimator, yAnimator, actionsAnimator)
+        animatorSet.playSequentially(animator, initialYAnimator, boxAnim)
+        animatorSet.addListener(object: AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                binding.popupActionsMenu.adapter = PopupActionAdapter(Action.actions)
+            }
+        })
+
         animatorSet.start()
 
+        binding.popupContainer.isClickable = true
+        binding.blurTarget.isClickable = true
+
+        binding.blurTarget.setOnClickListener {
+            val anim = ValueAnimator.ofFloat(1f, 0f)
+            anim.interpolator = FastOutSlowInInterpolator()
+            anim.duration = 200
+            anim.addUpdateListener {
+                binding.blurTarget.alpha = it.animatedValue as Float
+                binding.popupContainer.alpha = it.animatedValue as Float
+                binding.popupActionsMenu.alpha = it.animatedValue as Float
+            }
+
+            anim.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    // Reset all views to initial layout
+                    binding.popupActionsMenu.adapter = PopupActionAdapter(emptyList())
+                    constraintSet.applyTo(binding.rootLayout)
+                    Timber.i("New Y: ${binding.popupContainer.y}")
+                    binding.popupContainer.isClickable = false
+                    binding.blurTarget.isClickable = false
+                    binding.blurTarget.setImageDrawable(null)
+                    binding.btnFavourites.show()
+                }
+            })
+
+            anim.start()
+        }
         // Make the custom view visible
 
 
@@ -360,17 +438,6 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
     }
 
     override fun onLongClickRelease() {
-
-        val animator = ValueAnimator.ofFloat(1f, 0f)
-        animator.interpolator = FastOutSlowInInterpolator()
-        animator.duration = 200
-        animator.addUpdateListener {
-            binding.blurTarget.alpha = it.animatedValue as Float
-            binding.popupContainer.alpha = it.animatedValue as Float
-        }
-        animator.start()
-
-        binding.blurTarget.setImageDrawable(null)
 
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#121212</color>
+    <color name="transActionBg">#e6000000</color>
     <color name="transPrimary">#30000000</color>
     <color name="transSubText">#40FFFFFF</color>
     <color name="colorPrimaryDark">#81D4FA</color>

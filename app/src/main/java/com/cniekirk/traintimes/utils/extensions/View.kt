@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.Interpolator
 import android.widget.ImageView
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
@@ -75,3 +76,6 @@ val View.keyboardIsVisible: Boolean
         .toWindowInsetsCompat(rootWindowInsets)
         .isVisible(WindowInsetsCompat.Type.ime())
 
+fun View.alphaAnimate(duration: Float, interpolator: Interpolator) {
+
+}

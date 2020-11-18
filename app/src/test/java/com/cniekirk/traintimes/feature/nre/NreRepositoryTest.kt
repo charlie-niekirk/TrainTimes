@@ -1,7 +1,6 @@
 package com.cniekirk.traintimes.feature.nre
 
 import com.cniekirk.traintimes.UnitTest
-import com.cniekirk.traintimes.data.local.FavouritesDao
 import com.cniekirk.traintimes.data.local.RecentQueriesDao
 import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.data.prefs.PreferenceProvider
@@ -30,7 +29,6 @@ class NreRepositoryTest: UnitTest() {
     @Mock private lateinit var trackTimesService: TrackTimesService
     @Mock private lateinit var preferenceProvider: PreferenceProvider
     @Mock private lateinit var recentQueriesDao: RecentQueriesDao
-    @Mock private lateinit var favouritesDao: FavouritesDao
     @Mock private lateinit var adapter: JsonAdapter<com.cniekirk.traintimes.model.getdepboard.local.Query>
 
     @Before fun setup() {
@@ -40,7 +38,6 @@ class NreRepositoryTest: UnitTest() {
             trackTimesService,
             preferenceProvider,
             recentQueriesDao,
-            favouritesDao,
             adapter
         )
     }

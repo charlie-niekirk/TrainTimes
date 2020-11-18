@@ -36,8 +36,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
-private const val TAG = "NreRepositoryImpl"
-
 /**
  * Repository implementation for the LDBSVWS web service
  *
