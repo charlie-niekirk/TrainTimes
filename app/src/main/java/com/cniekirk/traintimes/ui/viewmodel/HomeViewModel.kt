@@ -264,7 +264,7 @@ class HomeViewModel constructor(
     }
 
     fun setServiceId(serviceId: String) {
-        _serviceDetailId.postValue(serviceId)
+        _serviceDetailId.value = serviceId
     }
 
     fun saveDepStation(crs: CRS) {
@@ -345,6 +345,14 @@ class HomeViewModel constructor(
             }
         }
 
+    }
+
+    fun popupActivated() {
+        Timber.i("About to request 1!")
+        _serviceDetailId.value?.let { serviceId ->
+            Timber.i("About to request 2!")
+            getServiceDetailsUseCase(serviceId) { it.either(::handleFailure, ::handleServiceDetails) }
+        }
     }
 
     private fun handleFavouriteRemoved(success: Boolean) {

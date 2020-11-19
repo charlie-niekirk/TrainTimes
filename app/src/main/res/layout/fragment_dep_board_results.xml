@@ -181,7 +181,7 @@
             android:layout_height="match_parent"
             android:alpha="0.0"/>
 
-        <View
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/popup_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -191,7 +191,22 @@
             app:layout_constraintBottom_toBottomOf="@id/popup_guide"
             android:layout_marginTop="16dp"
             android:background="@drawable/popup_background"
-            android:alpha="0.0"/>
+            android:alpha="0.0">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/popup_route_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:fontFamily="@font/circularstd"
+                android:textSize="18sp"
+                android:textColor="@color/colorText"
+                android:textStyle="bold"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popup_actions_menu"

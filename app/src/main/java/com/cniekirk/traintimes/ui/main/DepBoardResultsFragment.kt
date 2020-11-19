@@ -4,31 +4,25 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
-import android.graphics.PorterDuff
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
-import android.view.animation.BounceInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.activity.addCallback
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cniekirk.traintimes.R
 import com.cniekirk.traintimes.base.withFactory
-import com.cniekirk.traintimes.data.local.model.CRS
 import com.cniekirk.traintimes.databinding.FragmentDepBoardResultsBinding
 import com.cniekirk.traintimes.domain.Failure
 import com.cniekirk.traintimes.domain.model.State
@@ -41,10 +35,10 @@ import com.cniekirk.traintimes.ui.viewmodel.HomeViewModel
 import com.cniekirk.traintimes.ui.viewmodel.HomeViewModelFactory
 import com.cniekirk.traintimes.utils.Blur
 import com.cniekirk.traintimes.utils.anim.DepartureListItemAnimtor
-import com.cniekirk.traintimes.utils.anim.SwooshInterpolator
 import com.cniekirk.traintimes.utils.extensions.cancel
 import com.cniekirk.traintimes.utils.extensions.dp
 import com.cniekirk.traintimes.utils.extensions.loop
+import com.cniekirk.traintimes.utils.extensions.parseEncoded
 import com.cniekirk.traintimes.utils.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -53,7 +47,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dep_board_results.*
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -91,7 +84,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
     }
 
     /**
-     * [HomeViewModel] [LiveData] observers are registered with [LifecycleOwner] of fragment
+     * [HomeViewModel] LiveData observers are registered with LifecycleOwner of fragment
      * to avoid unintentionally re-triggering the observer
      */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -133,7 +126,8 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
                     if (it.crs.equals("", true)) {
                         binding.routeDescription.text = dest.stationName
                     } else {
-                        binding.routeDescription.text = "${it.crs} to ${dest.crs}"
+                        binding.routeDescription.text =
+                            String.format(getString(R.string.route_desc_placeholder), it.crs, dest.crs)
                     }
                 } ?: run {
                     binding.routeDescription.text = dest.stationName
@@ -183,7 +177,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
         })
 
-        viewModel.failure.observe(viewLifecycleOwner, Observer {
+        viewModel.failure.observe(viewLifecycleOwner, {
             when (it) {
                 is Failure.NoCrsFailure -> {
                     animatedLoadingIndicator.cancel()
@@ -198,6 +192,11 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
                         .show()
                 }
             }
+        })
+
+        viewModel.serviceDetailsResult.observe(viewLifecycleOwner, { details ->
+            binding.popupRouteDescription.text = details.subsequentLocations
+                ?.get(details.subsequentLocations.lastIndex)?.locationName?.parseEncoded()
         })
 
         arguments?.let { isFirst = it.getBoolean("isFromSearch") }
@@ -321,10 +320,16 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
     }
 
-    override fun onLongClick(itemView: View, height: Int, yPos: Int) {
+    override fun onLongClick(itemView: View, position: Int, height: Int, yPos: Int) {
 
         binding.btnFavourites.hide()
         binding.popupActionsMenu.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.services.value?.let { services ->
+            val service = services[position] as DepartureItem.DepartureServiceItem
+            viewModel.setServiceId(service.service.rid)
+            viewModel.popupActivated()
+        }
 
         // Blur the bg
         binding.blurTarget.setImageDrawable(Blur.createBlur(requireActivity(), binding.rootLayout))
@@ -363,7 +368,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
         }
 
         val heightAnimator = ValueAnimator.ofInt((binding.popupContainer.bottom - binding.popupContainer.top),
-            (binding.popupContainer.bottom - binding.popupContainer.top) * 2 + (originalPopupY - (binding.routeDescription.y + 16.dp)).toInt())
+            (binding.popupContainer.bottom - binding.popupContainer.top) + (originalPopupY - (binding.routeDescription.y + 16.dp)).toInt())
         val params = binding.popupContainer.layoutParams
         heightAnimator.apply {
             interpolator = OvershootInterpolator()
@@ -382,8 +387,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
         }
 
         val actionsAnimator = ValueAnimator.ofFloat(binding.popupActionsMenu.y,
-            binding.popupContainer.bottom.toFloat() +
-                    (binding.popupContainer.bottom - binding.popupContainer.top) + 50.dp)
+            binding.popupContainer.bottom.toFloat() + 50.dp)
         actionsAnimator.interpolator = OvershootInterpolator()
         actionsAnimator.duration = 200
         actionsAnimator.addUpdateListener {
@@ -394,6 +398,7 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
         animatorSet.playSequentially(animator, initialYAnimator, boxAnim)
         animatorSet.addListener(object: AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
+                // Start loading popup content
                 binding.popupActionsMenu.adapter = PopupActionAdapter(Action.actions)
             }
         })
@@ -405,12 +410,14 @@ class DepBoardResultsFragment: Fragment(R.layout.fragment_dep_board_results),
 
         binding.blurTarget.setOnClickListener {
             val anim = ValueAnimator.ofFloat(1f, 0f)
-            anim.interpolator = FastOutSlowInInterpolator()
-            anim.duration = 200
-            anim.addUpdateListener {
-                binding.blurTarget.alpha = it.animatedValue as Float
-                binding.popupContainer.alpha = it.animatedValue as Float
-                binding.popupActionsMenu.alpha = it.animatedValue as Float
+            anim.apply {
+                interpolator = FastOutSlowInInterpolator()
+                duration = 200
+                addUpdateListener {
+                    binding.blurTarget.alpha = it.animatedValue as Float
+                    binding.popupContainer.alpha = it.animatedValue as Float
+                    binding.popupActionsMenu.alpha = it.animatedValue as Float
+                }
             }
 
             anim.addListener(object : AnimatorListenerAdapter() {

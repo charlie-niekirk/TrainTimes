@@ -39,6 +39,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.max
 
 @AndroidEntryPoint
 class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), StationTimelineAdapter.OnStationItemClickedListener {
@@ -161,7 +162,7 @@ class ServiceDetailFragment: Fragment(R.layout.fragment_service_detail), Station
                 serviceDetailsResult.currentLocation?.let {
                     previousWithCurrent?.let { prevCur ->
                         Timber.d("PREVIOUS: ${prevCur.size}")
-                        previousWithCurrent = prevCur.subList(0, prevCur.lastIndex - 1)
+                        previousWithCurrent = prevCur.subList(0, max(0, prevCur.lastIndex - 1))
                         previousWithCurrent = previousWithCurrent?.plus(it)
                     }
                 }

@@ -156,7 +156,10 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
                 depHolder.binding.root.setOnClickListener { clickListener.onClick(position, depHolder.itemView, depHolder.binding.departureDestinationName) }
                 depHolder.binding.root.setOnLongClickListener {
                     isLongPressed = true
-                    clickListener.onLongClick(depHolder.binding.root, depHolder.binding.root.height, depHolder.binding.root.y.toInt())
+                    clickListener.onLongClick(depHolder.binding.root,
+                        position,
+                        depHolder.binding.root.height,
+                        depHolder.binding.root.y.toInt())
                     true
                 }
                 depHolder.binding.root.setOnTouchListener { v, event ->
@@ -322,7 +325,7 @@ class DepartureListAdapter(private val services: List<DepartureItem>,
 
     interface DepartureItemClickListener {
         fun onClick(position: Int, itemBackground: View, destinationText: MaterialTextView)
-        fun onLongClick(itemView: View, height: Int, yPos: Int)
+        fun onLongClick(itemView: View, position: Int, height: Int, yPos: Int)
         fun onLongClickRelease()
     }
 
